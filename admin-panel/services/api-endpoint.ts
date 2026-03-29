@@ -1,0 +1,16 @@
+export const API_ENDPOINTS = {
+  AUTH: "/auth",
+  LOGIN: "/auth/login",
+  LOGOUT: "/auth/logout",
+  REGISTER: "/auth/register",
+  PROFILE: "/auth/profile",
+  CART: "/cart",
+  CART_ITEMS: (productVariantId: number) => `/cart/items/${productVariantId}`,
+  CHECKOUT: "/checkout",
+  REFRESH_TOKEN: "/auth/refresh-token",
+  ORDER: "/orders",
+  ORDERCART: "/orders/cart",
+  ORDERBUYNOW: "/orders/buynow",
+  USERADDRESS: "/addresses",
+  PAYMENT_ORDERCODE: (orderCode: string) => `/payment/${orderCode}`,
+} as const;
