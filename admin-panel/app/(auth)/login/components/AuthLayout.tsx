@@ -17,7 +17,7 @@ export default function AuthLayout({
           transition={{ duration: 1.5 }}
           className="absolute inset-0"
         >
-          <div className="absolute inset-0 bg-linear-to-br from-primary/40 to-slate-950 z-10" />
+          <div className="absolute inset-0 bg-linear-to-br from-primary/40 to-slate-900 z-10" />
 
           <div className="relative w-full h-full">
             <Image

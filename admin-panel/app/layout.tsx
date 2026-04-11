@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import AppInit from "./app-init";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
@@ -37,9 +38,10 @@ export default function RootLayout({
       className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full min-w-screen flex flex-col" suppressHydrationWarning>
+      <body className="min-h-full min-w-full flex flex-col" suppressHydrationWarning>
         <AppInit /> {/*Called refresh when user reload or F5 */}
         {children}
+         <Toaster />
       </body>
     </html>
   );

@@ -1,9 +1,9 @@
+"use client";
 import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/shared/components/ui/sidebar";
 import { TooltipProvider } from "@/shared/components/ui/tooltip";
-import SidebarWrapper from "@/shared/components/components/sidebar-wrapper";
 import { Bell, HelpCircle, Search } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
@@ -16,14 +16,20 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/shared/components/ui/breadcrumb";
+import SidebarWrapper from "@/shared/components/sidebar";
+import dynamic from "next/dynamic";
 
 export default function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const Clock = dynamic(() => import("@/shared/components/clock"), {
+    ssr: false,
+  });
+
   return (
-    <body
+    <div
       className="min-h-full flex flex-col bg-background text-foreground"
       suppressHydrationWarning={true}
     >
@@ -90,19 +96,14 @@ export default function AdminLayout({
                 <Separator orientation="vertical" className="h-4 mx-1" />
 
                 {/* Thời gian thực - Tạo cảm giác hệ thống đang vận hành */}
-                <div className="hidden sm:flex flex-col items-end text-[10px] text-muted-foreground leading-tight">
-                  <span className="font-medium text-foreground">
-                    Thứ Năm, 26/03
-                  </span>
-                  <span>01:31 AM</span>
-                </div>
+                <Clock />
               </div>
             </header>
 
-            <div className="flex-1 p-4 md:p-6">{children}</div>
+            <div className="flex-1">{children}</div>
           </main>
         </SidebarProvider>
       </TooltipProvider>
-    </body>
+    </div>
   );
 }

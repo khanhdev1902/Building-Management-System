@@ -3,7 +3,8 @@ import { z } from "zod";
 export const loginSchema = z
   .object({
     loginMethod: z.enum(["email", "phone"]),
-    email: z.string().email("Email không hợp lệ").optional(),
+    // email: z.string().email("Email không hợp lệ").optional(),
+    email: z.string().optional(),
     phone: z
       .string()
       .regex(/^[0-9]{10}$/, "Số điện thoại không hợp lệ")

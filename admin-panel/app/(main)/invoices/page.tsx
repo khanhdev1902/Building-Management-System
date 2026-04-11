@@ -1,18 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
+  Receipt,
   Search,
-  Plus,
-  FileText,
+  Filter,
+  FileDown,
+  Mail,
   MoreVertical,
-  Download,
   CheckCircle2,
   Clock,
   AlertCircle,
+  Plus,
+  Send,
+  Printer,
+  CreditCard,
+  QrCode,
+  ArrowUpRight,
 } from "lucide-react";
-import { Button } from "@/shared/components/ui/button";
+
+import {
+  Card,
+  CardContent,
+} from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
+import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
 import {
   Table,
@@ -23,183 +36,309 @@ import {
   TableRow,
 } from "@/shared/components/ui/table";
 import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/shared/components/ui/tabs";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/shared/components/ui/dropdown-menu";
+import { Checkbox } from "@/shared/components/ui/checkbox"; // Giả định có shadcn checkbox
 
-// Dữ liệu mẫu hóa đơn
-const INVOICES = [
+// Mock Data
+const mockInvoices = [
   {
-    id: "INV-001",
-    room: "101",
+    id: "INV-2026-001",
+    room: "A-101",
     tenant: "Nguyễn Văn A",
-    amount: "5.200.000",
-    date: "05/03/2026",
-    status: "paid",
+    amount: 5450000,
+    dueDate: "05/04/2026",
+    status: "Paid", // Paid, Pending, Overdue
+    type: "Hợp đồng",
+    updatedAt: "2 giờ trước",
   },
   {
-    id: "INV-002",
-    room: "102",
+    id: "INV-2026-002",
+    room: "B-205",
     tenant: "Trần Thị B",
-    amount: "4.850.000",
-    date: "10/03/2026",
-    status: "pending",
+    amount: 1250000,
+    dueDate: "05/04/2026",
+    status: "Pending",
+    type: "Điện nước",
+    updatedAt: "5 giờ trước",
   },
   {
-    id: "INV-003",
-    room: "201",
+    id: "INV-2026-003",
+    room: "A-502",
     tenant: "Lê Văn C",
-    amount: "6.100.000",
-    date: "01/03/2026",
-    status: "overdue",
-  },
-  {
-    id: "INV-004",
-    room: "305",
-    tenant: "Phạm Minh M",
-    amount: "4.500.000",
-    date: "12/03/2026",
-    status: "pending",
+    amount: 8900000,
+    dueDate: "25/03/2026",
+    status: "Overdue",
+    type: "Tổng hợp",
+    updatedAt: "1 ngày trước",
   },
 ];
 
-export default function InvoicesPage() {
+export default function InvoiceManagementPage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedInvoices, setSelectedInvoices] = useState<string[]>([]);
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div className="p-4 md:p-8 max-w-400 mx-auto space-y-6 bg-[#f8fafc] min-h-screen">
+      {/* 1. Header & Tổng quan */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Quản lý hóa đơn</h1>
-          <p className="text-muted-foreground">
-            Theo dõi tình trạng thanh toán và gửi thông báo tiền phòng tháng
-            này.
+          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+            <Receipt className="w-6 h-6 text-indigo-600" />
+            Quản lý Hóa đơn & Công nợ
+          </h1>
+          <p className="text-sm text-slate-500">
+            Tháng 03/2026 • 120 hóa đơn đã phát hành
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" /> Xuất báo cáo
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <Button variant="outline" className="flex-1 md:flex-none gap-2">
+            <Printer className="w-4 h-4" /> In hàng loạt
           </Button>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" /> Tạo hóa đơn
+          <Button className="flex-1 md:flex-none gap-2 bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200">
+            <Plus className="w-4 h-4" /> Tạo hóa đơn lẻ
           </Button>
         </div>
       </div>
 
-      {/* Tabs & Search */}
-      <Tabs defaultValue="all" className="w-full">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <TabsList>
-            <TabsTrigger value="all">Tất cả</TabsTrigger>
-            <TabsTrigger value="pending">Chờ thanh toán</TabsTrigger>
-            <TabsTrigger value="paid">Đã thu</TabsTrigger>
-            <TabsTrigger value="overdue">Quá hạn</TabsTrigger>
-          </TabsList>
+      {/* 2. Thống kê nhanh (KPI Cards) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatsCard
+          title="Tổng doanh thu"
+          value="1.24 tỷ"
+          subValue="+12% so với tháng trước"
+          icon={CreditCard}
+          color="indigo"
+        />
+        <StatsCard
+          title="Đã thu hồi"
+          value="840 tr"
+          subValue="68% tiến độ"
+          icon={CheckCircle2}
+          color="green"
+        />
+        <StatsCard
+          title="Nợ chờ xử lý"
+          value="320 tr"
+          subValue="45 hóa đơn"
+          icon={Clock}
+          color="amber"
+        />
+        <StatsCard
+          title="Nợ quá hạn"
+          value="85 tr"
+          subValue="Cần nhắc nợ ngay"
+          icon={AlertCircle}
+          color="red"
+        />
+      </div>
 
-          <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input placeholder="Tìm hóa đơn, phòng..." className="pl-9" />
+      {/* 3. Bộ lọc & Toolbar */}
+      <Card className="border-none shadow-sm">
+        <CardContent className="p-4 flex flex-col md:flex-row gap-4 justify-between items-center">
+          <div className="relative w-full md:w-96">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input
+              placeholder="Tìm mã số, phòng, tên cư dân..."
+              className="pl-10 bg-slate-50 border-none"
+            />
           </div>
-        </div>
+          <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-indigo-600 font-semibold bg-indigo-50"
+            >
+              Tất cả
+            </Button>
+            <Button variant="ghost" size="sm" className="text-slate-500">
+              Chưa thanh toán
+            </Button>
+            <Button variant="ghost" size="sm" className="text-slate-500">
+              Quá hạn
+            </Button>
+            <div className="w-px h-6 bg-slate-200 mx-2" />
+            <Button variant="outline" size="sm" className="gap-2">
+              <Filter className="w-4 h-4" /> Lọc thêm
+            </Button>
+            <Button variant="outline" size="sm" className="gap-2">
+              <FileDown className="w-4 h-4" /> Xuất Excel
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
-        <TabsContent value="all" className="mt-4 border rounded-lg bg-card">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[120px]">Mã HD</TableHead>
-                <TableHead>Phòng</TableHead>
-                <TableHead>Khách thuê</TableHead>
-                <TableHead>Số tiền</TableHead>
-                <TableHead>Ngày tạo</TableHead>
-                <TableHead>Trạng thái</TableHead>
-                <TableHead className="text-right">Thao tác</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {INVOICES.map((invoice) => (
-                <TableRow key={invoice.id}>
-                  <TableCell className="font-medium text-blue-600 cursor-pointer hover:underline">
-                    {invoice.id}
-                  </TableCell>
-                  <TableCell>P.{invoice.room}</TableCell>
-                  <TableCell>{invoice.tenant}</TableCell>
-                  <TableCell className="font-semibold">
-                    {invoice.amount}đ
-                  </TableCell>
-                  <TableCell>{invoice.date}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={invoice.status} />
-                  </TableCell>
-                  <TableCell className="text-right">
+      {/* 4. Danh sách hóa đơn */}
+      <Card className="border-none shadow-xl shadow-slate-200/50 overflow-hidden bg-white">
+        {selectedInvoices.length > 0 && (
+          <div className="bg-indigo-600 p-3 flex items-center justify-between text-white animate-in slide-in-from-top-4">
+            <span className="text-sm font-medium">
+              Đang chọn {selectedInvoices.length} hóa đơn
+            </span>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="secondary"
+                className="gap-2 text-indigo-700"
+              >
+                <Send className="w-3.5 h-3.5" /> Gửi thông báo nợ
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                className="gap-2 text-indigo-700"
+              >
+                <QrCode className="w-3.5 h-3.5" /> Tạo mã QR gộp
+              </Button>
+            </div>
+          </div>
+        )}
+        <Table>
+          <TableHeader className="bg-slate-50/50">
+            <TableRow>
+              <TableHead className="w-12.5">
+                <Checkbox />
+              </TableHead>
+              <TableHead>Mã hóa đơn</TableHead>
+              <TableHead>Phòng & Cư dân</TableHead>
+              <TableHead>Loại</TableHead>
+              <TableHead>Số tiền</TableHead>
+              <TableHead>Hạn thanh toán</TableHead>
+              <TableHead>Trạng thái</TableHead>
+              <TableHead className="text-right">Thao tác</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {mockInvoices.map((inv) => (
+              <TableRow
+                key={inv.id}
+                className="group hover:bg-slate-50/50 transition-colors"
+              >
+                <TableCell>
+                  <Checkbox />
+                </TableCell>
+                <TableCell className="font-mono text-xs font-bold text-slate-500">
+                  {inv.id}
+                </TableCell>
+                <TableCell>
+                  <div className="font-bold text-slate-800">{inv.room}</div>
+                  <div className="text-xs text-slate-400">{inv.tenant}</div>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    variant="outline"
+                    className="font-normal text-[10px] uppercase tracking-wider"
+                  >
+                    {inv.type}
+                  </Badge>
+                </TableCell>
+                <TableCell className="font-bold text-slate-900">
+                  {inv.amount.toLocaleString("vi-VN")} đ
+                </TableCell>
+                <TableCell>
+                  <div className="text-sm text-slate-600">{inv.dueDate}</div>
+                  {inv.status === "Overdue" && (
+                    <div className="text-[10px] text-red-500 font-medium">
+                      Đã trễ 4 ngày
+                    </div>
+                  )}
+                </TableCell>
+                <TableCell>
+                  <StatusBadge status={inv.status} />
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-slate-400 hover:text-indigo-600"
+                      title="Gửi email/Zalo"
+                    >
+                      <Mail className="w-4 h-4" />
+                    </Button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreVertical className="h-4 w-4" />
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreVertical className="w-4 h-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-                        <DropdownMenuItem>
-                          <FileText className="mr-2 h-4 w-4" /> Xem chi tiết
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem className="gap-2">
+                          <ArrowUpRight className="w-4 h-4" /> Chi tiết hóa đơn
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <CheckCircle2 className="mr-2 h-4 w-4 text-green-600" />{" "}
-                          Xác nhận đã thu
+                        <DropdownMenuItem className="gap-2 text-green-600">
+                          <CheckCircle2 className="w-4 h-4" /> Xác nhận thanh
+                          toán
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
-                          Xóa hóa đơn
+                        <DropdownMenuItem className="gap-2">
+                          <QrCode className="w-4 h-4" /> Xem mã QR thu tiền
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="gap-2 text-red-600">
+                          Hủy hóa đơn
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TabsContent>
-      </Tabs>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Card>
     </div>
   );
 }
 
-// Component hỗ trợ hiển thị Badge trạng thái
+// Sub-component: Badge trạng thái
 function StatusBadge({ status }: { status: string }) {
-  switch (status) {
-    case "paid":
-      return (
-        <Badge
-          variant="secondary"
-          className="bg-green-100 text-green-700 hover:bg-green-100 flex w-fit items-center gap-1"
-        >
-          <CheckCircle2 className="h-3 w-3" /> Đã thanh toán
-        </Badge>
-      );
-    case "pending":
-      return (
-        <Badge
-          variant="outline"
-          className="text-yellow-600 border-yellow-200 bg-yellow-50 flex w-fit items-center gap-1"
-        >
-          <Clock className="h-3 w-3" /> Chờ thu
-        </Badge>
-      );
-    case "overdue":
-      return (
-        <Badge variant="destructive" className="flex w-fit items-center gap-1">
-          <AlertCircle className="h-3 w-3" /> Quá hạn
-        </Badge>
-      );
-    default:
-      return null;
-  }
+  const styles: Record<string, string> = {
+    Paid: "bg-green-100 text-green-700 border-green-200",
+    Pending: "bg-amber-100 text-amber-700 border-amber-200",
+    Overdue: "bg-red-100 text-red-700 border-red-200",
+  };
+  const labels: Record<string, string> = {
+    Paid: "Đã thu tiền",
+    Pending: "Chờ thanh toán",
+    Overdue: "Quá hạn",
+  };
+
+  return (
+    <Badge
+      className={`${styles[status]} border shadow-none px-2 py-0.5 rounded-full text-[11px]`}
+    >
+      {labels[status]}
+    </Badge>
+  );
+}
+
+// Sub-component: Card thống kê
+function StatsCard({ title, value, subValue, icon: Icon, color }: any) {
+  const colors: any = {
+    indigo: "text-indigo-600 bg-indigo-50",
+    green: "text-green-600 bg-green-50",
+    amber: "text-amber-600 bg-amber-50",
+    red: "text-red-600 bg-red-50",
+  };
+
+  return (
+    <Card className="border-none shadow-sm bg-white">
+      <CardContent className="p-5 flex items-center justify-between">
+        <div>
+          <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">
+            {title}
+          </p>
+          <h3 className="text-2xl font-bold text-slate-900">{value}</h3>
+          <p className="text-[10px] text-slate-400 mt-1">{subValue}</p>
+        </div>
+        <div className={`p-3 rounded-2xl ${colors[color]}`}>
+          <Icon className="w-6 h-6" />
+        </div>
+      </CardContent>
+    </Card>
+  );
 }

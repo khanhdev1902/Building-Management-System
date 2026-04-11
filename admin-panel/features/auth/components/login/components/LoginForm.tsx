@@ -1,5 +1,5 @@
 "use client";
-import LoginTabs from "../../../../app/(auth)/login/components/LoginTabs";
+import LoginTabs from "../../../../../app/(auth)/login/components/LoginTabs";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,13 +9,14 @@ import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 
-import { itemVariants } from "../../../../app/(auth)/login/constants/animation";
-import PasswordInput from "../../../../shared/components/forms/PasswordInput";
+import { itemVariants } from "../../../../../app/(auth)/login/constants/animation";
+import PasswordInput from "../../../../../shared/components/forms/PasswordInput";
 import { LoginFormValues, loginSchema } from "../schemas/login.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { authApi } from "../../apis/auth.api";
+import { authApi } from "../../../apis/auth.api";
+import { toast } from "sonner";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -56,10 +57,10 @@ export default function LoginForm() {
       console.log("Đang xác thực...", data);
 
       // Giả lập gọi API trong 1.5s
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log(data)
+      // await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log(data);
       const req = await authApi.login(data);
-      console.log(req)
+      console.log(req);
 
       // Giả sử đăng nhập thành công
       // 1. Lưu token vào Cookie hoặc LocalStorage ở đây (nếu có)
@@ -69,8 +70,22 @@ export default function LoginForm() {
 
       // Hoặc dùng router.replace("/dashboard") nếu không muốn user
       // nhấn nút Back quay lại trang Login sau khi đã đăng nhập
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Lỗi đăng nhập:", error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const errorData = (error as any);
+      console.log("Error data from API:", errorData);
+
+      if (errorData && Array.isArray(errorData.message)) {
+        // Nếu message là mảng (như cái JSON bạn gửi), nối chúng lại bằng dấu phẩy hoặc xuống dòng
+        const fullMessage = errorData.message.join(". ");
+        toast.error('Lỗi đăng nhập!', { description: fullMessage });
+      } else if (typeof errorData?.message === "string") {
+        // Nếu chỉ có 1 message duy nhất
+        toast.error(errorData.message);
+      } else {
+        toast.error("Đăng nhập thất bại. Vui lòng thử lại!");
+      }
     } finally {
       setIsLoading(false);
     }
