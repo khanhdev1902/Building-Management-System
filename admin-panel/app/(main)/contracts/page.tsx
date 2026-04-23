@@ -387,7 +387,7 @@ function StatCard({ label, value, trend, unit, color }: any) {
   };
   return (
     <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
-      <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] mb-3">
+      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">
         {label}
       </p>
       <div className="flex items-baseline gap-2 mb-1">

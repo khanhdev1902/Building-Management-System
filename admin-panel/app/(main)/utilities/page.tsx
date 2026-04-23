@@ -1,25 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import {
   Zap,
-  Droplets,
   Search,
   Save,
   FileDown,
   History,
   AlertTriangle,
   CheckCircle2,
-  MoreVertical,
-  LayoutGrid,
-  Camera,
   ArrowRight,
-  TrendingUp,
-  TrendingDown,
-  Info,
   Calculator,
-  Filter,
   X,
   Clock,
   CheckCircle,
@@ -27,8 +19,6 @@ import {
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
 } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
@@ -42,12 +32,6 @@ import {
   TableRow,
 } from "@/shared/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/shared/components/ui/dropdown-menu";
 import {
   Popover,
   PopoverContent,
@@ -71,7 +55,7 @@ export default function UtilityReadingPage() {
   const [activeStatus, setActiveStatus] = useState("all"); // 'all' | 'done' | 'pending'
 
   return (
-    <div className="p-4 md:p-8 max-w-[1600px] mx-auto space-y-6 bg-[#f8fafc] min-h-screen pb-32 md:pb-8">
+    <div className="p-4 md:p-8 max-w-400 mx-auto space-y-6 bg-[#f8fafc] min-h-screen pb-32 md:pb-8">
       {/* 1. Header & Quick Actions */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sticky top-0 z-30 bg-[#f8fafc]/80 backdrop-blur-md pb-4 pt-2">
         <div>
@@ -251,6 +235,7 @@ export default function UtilityReadingPage() {
 
 // --- Cell Nhập liệu kèm Lịch sử ---
 // --- Cập nhật Logic cho InputRow ---
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function InputRow({ room, tenant, eOld, wOld, isAlert }: any) {
   const [eNew, setENew] = useState("");
   const [wNew, setWNew] = useState("");
@@ -285,7 +270,7 @@ function InputRow({ room, tenant, eOld, wOld, isAlert }: any) {
           ${isLocked ? 'border-emerald-200 bg-white/50' : 
             eUsage < 0 ? "bg-red-50 border-red-200" : "bg-slate-50 border-transparent hover:border-slate-200 focus-within:bg-white focus-within:border-amber-400"}
         `}>
-          <div className="flex flex-col min-w-[50px] pl-1 opacity-60">
+          <div className="flex flex-col min-w-12.5 pl-1 opacity-60">
             <span className="text-[9px] font-bold uppercase">Cũ</span>
             <span className="font-mono font-black text-slate-600">{eOld}</span>
           </div>
@@ -315,7 +300,7 @@ function InputRow({ room, tenant, eOld, wOld, isAlert }: any) {
           ${isLocked ? 'border-emerald-200 bg-white/50' : 
             wUsage < 0 ? "bg-red-50 border-red-200" : "bg-slate-50 border-transparent hover:border-slate-200 focus-within:bg-white focus-within:border-blue-400"}
         `}>
-          <div className="flex flex-col min-w-[50px] pl-1 opacity-60">
+          <div className="flex flex-col min-w-12.5 pl-1 opacity-60">
             <span className="text-[9px] font-bold uppercase">Cũ</span>
             <span className="font-mono font-black text-slate-600">{wOld}</span>
           </div>
@@ -444,8 +429,10 @@ function HistoryPopover({ label, unit }: { label: string; unit: string }) {
 }
 
 // --- Stat Progress Card ---
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function StatProgressCard({ label, current, total, color }: any) {
   const percent = (current / total) * 100;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const colorMap: any = {
     amber: "bg-amber-500",
     blue: "bg-blue-500",
@@ -464,7 +451,7 @@ function StatProgressCard({ label, current, total, color }: any) {
         <Progress
           value={percent}
           className="h-2 bg-slate-100"
-          indicatorClassName={colorMap[color]}
+          // indicatorClassName={colorMap[color]}
         />
         <p className="text-[10px] font-bold text-slate-400 mt-2 text-right">
           {percent.toFixed(0)}% hoàn thành

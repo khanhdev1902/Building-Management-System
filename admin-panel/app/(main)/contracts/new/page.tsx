@@ -3,11 +3,8 @@
 
 import React, { useState, useMemo } from "react";
 import {
-  User,
   Home,
   Calendar,
-  CreditCard,
-  FileCheck,
   ChevronRight,
   ArrowLeft,
   Info,
@@ -17,7 +14,6 @@ import {
   Droplets,
   Bike,
   Settings,
-  SquareArrowRightExit,
   LogOut,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
@@ -103,7 +99,7 @@ export default function CreateContract() {
   };
 
   return (
-    <div className=" relative grid grid-cols-1 lg:grid-cols-12 gap-0 min-h-[750px] border border-slate-100 bg-white shadow-2xl font-sans">
+    <div className=" relative grid grid-cols-1 lg:grid-cols-12 gap-0 min-h-187.5 border border-slate-100 bg-white shadow-2xl font-sans">
       <Link
         href="/contracts"
         onClick={() => alert("Thoát mà không lưu dữ liệu!")}
@@ -120,11 +116,11 @@ export default function CreateContract() {
         <div className="flex items-center gap-4 mb-10">
           <StepCircle num={1} active={step >= 1} label="Cư dân" />
           <div
-            className={`h-[1px] w-8 ${step > 1 ? "bg-slate-900" : "bg-slate-100"}`}
+            className={`h-px w-8 ${step > 1 ? "bg-slate-900" : "bg-slate-100"}`}
           />
           <StepCircle num={2} active={step >= 2} label="Phòng & Giá" />
           <div
-            className={`h-[1px] w-8 ${step > 2 ? "bg-slate-900" : "bg-slate-100"}`}
+            className={`h-px w-8 ${step > 2 ? "bg-slate-900" : "bg-slate-100"}`}
           />
           <StepCircle num={3} active={step >= 3} label="Vận hành" />
         </div>

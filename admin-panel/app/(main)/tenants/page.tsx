@@ -8,7 +8,6 @@ import {
   Phone,
   Mail,
   MessageCircle,
-  FileText,
   UserCheck,
   UserMinus,
   ShieldCheck,
@@ -194,7 +193,7 @@ export default function TenantsPage() {
         <Table>
           <TableHeader className="bg-slate-50/80">
             <TableRow>
-              <TableHead className="w-[300px] font-semibold text-slate-700">
+              <TableHead className="w-75 font-semibold text-slate-700">
                 Cư dân & Định danh
               </TableHead>
               <TableHead className="font-semibold text-slate-700">
@@ -234,7 +233,7 @@ export default function TenantsPage() {
                         {tenant.identityVerified && (
                           <ShieldCheck
                             className="w-3.5 h-3.5 text-blue-500"
-                            title="Đã xác minh CMND/CCCD"
+                            // title="Đã xác minh CMND/CCCD"
                           />
                         )}
                       </div>
@@ -337,6 +336,7 @@ export default function TenantsPage() {
 }
 
 function StatusBadge({ status }: { status: string }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const configs: any = {
     active: {
       label: "Đang ở",

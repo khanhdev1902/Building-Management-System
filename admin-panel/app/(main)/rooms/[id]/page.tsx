@@ -8,18 +8,12 @@ import {
   Zap,
   Droplets,
   Wifi,
-  Wind,
-  Tv,
-  Refrigerator,
   ClipboardList,
-  Calendar,
   ShieldCheck,
   Wrench,
   History,
   Edit3,
-  Trash2,
   Plus,
-  Save,
   X,
   Users,
   FileText,
@@ -178,7 +172,7 @@ export default function RoomDetailPage() {
                 <Edit3 className="mr-2 h-4 w-4" /> Sửa thông tin
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px] rounded-3xl">
+            <DialogContent className="sm:max-w-125 rounded-3xl">
               <DialogHeader>
                 <DialogTitle className="text-xl font-bold">
                   Cập nhật chi tiết phòng
@@ -282,7 +276,7 @@ export default function RoomDetailPage() {
                       + THÊM
                     </Button>
                   </div>
-                  <div className="space-y-2 max-h-[180px] overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="space-y-2 max-h-45 overflow-y-auto pr-2 custom-scrollbar">
                     {room.tenant.members.map((m) => (
                       <div
                         key={m.id}
@@ -481,8 +475,8 @@ export default function RoomDetailPage() {
                 </span>
               </div>
               <p className="text-sm text-slate-300 leading-relaxed font-medium">
-                "Khách thuê rất kỹ tính, phòng luôn sạch sẽ. Cần lưu ý bảo trì
-                máy lạnh định kỳ mỗi 6 tháng."
+                Khách thuê rất kỹ tính, phòng luôn sạch sẽ. Cần lưu ý bảo trì
+                máy lạnh định kỳ mỗi 6 tháng.
               </p>
             </div>
             <div className="absolute right-0 top-0 w-24 h-24 bg-indigo-500/10 blur-3xl group-hover:bg-indigo-500/20 transition-all duration-700"></div>

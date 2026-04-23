@@ -196,7 +196,7 @@ export default function RoomsPage() {
                 <Plus className="mr-2 h-5 w-5" /> Thêm phòng mới
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] rounded-2xl">
+            <DialogContent className="sm:max-w-106.25 rounded-2xl">
               <DialogHeader>
                 <DialogTitle className="text-2xl font-bold">
                   Thêm căn hộ mới
