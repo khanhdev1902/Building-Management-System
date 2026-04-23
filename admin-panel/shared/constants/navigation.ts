@@ -107,7 +107,7 @@ export const navigation = {
       icon: BarChart3,
       children: [
         {
-          title: "Doanh thu & Công nợ",
+          title: "Doanh thu",
           icon: Banknote,
           url: "/reports/revenue",
         },
@@ -132,11 +132,11 @@ export const navigation = {
       ],
     },
     {
-      title: "Cư dân & Thẻ",
+      title: "Cư dân & Hợp đồng",
       icon: UserCheck,
       children: [
         { title: "Danh sách cư dân", url: "/tenants" },
-        { title: "Hợp đồng/Sổ tạm trú", url: "/contracts" },
+        { title: "Hợp đồng", url: "/contracts" },
         // { title: "Quản lý thẻ (Xe/Thang máy)", url: "/cards" },
         // { title: "Quản lý gửi xe", url: "/parking" },
       ],
@@ -152,8 +152,8 @@ export const navigation = {
         { title: "Nhóm chat nội bộ", icon: MessageSquare, url: "/chats" },
         { title: "Bảng tin thông báo", icon: Bell, url: "/notifications" },
         { title: "Yêu cầu sửa chữa", icon: Wrench, url: "/maintenance" },
-        { title: "Đặt lịch tiện ích (BBQ/Gym)", url: "/amenities" }, //Mới
-        { title: "Phản hồi & Khiếu nại", url: "/feedback" }, //Cư dân phàn nàn
+        //{ title: "Đặt lịch tiện ích (BBQ/Gym)", url: "/amenities" }, //Mới
+        //{ title: "Phản hồi & Khiếu nại", url: "/feedback" }, //Cư dân phàn nàn
       ],
     },
     {
@@ -165,7 +165,7 @@ export const navigation = {
           url: "/invoices",
           permission: "invoice.view",
         },
-        { title: "Đối soát cổng thanh toán", url: "/finance/gateways" },
+        //{ title: "Đối soát cổng thanh toán", url: "/finance/gateways" },
       ],
     },
   ],
