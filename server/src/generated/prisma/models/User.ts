@@ -331,7 +331,7 @@ export type UserCreateInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -352,7 +352,7 @@ export type UserUncheckedCreateInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -415,7 +415,7 @@ export type UserCreateManyInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -614,7 +614,7 @@ export type UserCreateWithoutStaffProfileInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -634,7 +634,7 @@ export type UserUncheckedCreateWithoutStaffProfileInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -710,7 +710,7 @@ export type UserCreateWithoutTenantProfileInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -730,7 +730,7 @@ export type UserUncheckedCreateWithoutTenantProfileInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -806,7 +806,7 @@ export type UserCreateWithoutConversationMembersInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -826,7 +826,7 @@ export type UserUncheckedCreateWithoutConversationMembersInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -902,7 +902,7 @@ export type UserCreateWithoutMessagesInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -922,7 +922,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -998,7 +998,7 @@ export type UserCreateWithoutNotificationsInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -1018,7 +1018,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -1094,7 +1094,7 @@ export type UserCreateWithoutAuditLogsInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null
@@ -1114,7 +1114,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   id?: string
   email?: string | null
   passwordHash: string
-  role: $Enums.UserRole
+  role?: $Enums.UserRole
   firstName: string
   lastName: string
   phone?: string | null

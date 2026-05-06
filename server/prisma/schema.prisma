@@ -23,7 +23,7 @@ model User {
   id           String   @id @default(uuid())
   email        String?   @unique
   passwordHash String
-  role         UserRole   // e.g., Admin, Staff, Tenant
+  role         UserRole   @default(TENANT)
   firstName    String
   lastName     String
   phone        String?  @unique

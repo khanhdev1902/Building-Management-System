@@ -1,9 +1,17 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   LoginDto,
   RegisterDto,
-  RefreshTokenDto,
   ChangePasswordDto,
   ForgotPasswordDto,
   ResetPasswordDto,
@@ -12,31 +20,72 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import type { RequestWithUser } from 'src/common/types/auth.types';
 import { ApiResponse } from 'src/common/responses/api-response';
 
+import type { Response, Request } from 'express';
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  @Post('login')
-  async login(@Body() dto: LoginDto) {
-    console.log(dto);
-    const auth = await this.authService.login(dto);
-    return ApiResponse.success(auth, 'Xác thực thành công', 200);
-  }
 
   @Post('register')
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
 
+  @Post('login')
+  async login(
+    @Body() dto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    console.log(dto);
+    const auth = await this.authService.login(dto);
+    res.cookie('refreshToken', auth.refreshToken, {
+      httpOnly: true,
+      secure: false, // production: true
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày (milliseconds)
+    });
+    return ApiResponse.success(auth, 'Xác thực thành công', 200);
+  }
+
   @Post('refresh-token')
-  refreshToken(@Body() dto: RefreshTokenDto) {
-    return this.authService.refreshToken(dto);
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const refreshToken = req.cookies?.refreshToken;
+
+    if (!refreshToken) {
+      throw new UnauthorizedException(
+        'Không tìm thấy Refresh Token trong Cookie',
+      );
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    const result = await this.authService.refreshTokens(refreshToken);
+    res.cookie('refreshToken', result.refreshToken, {
+      httpOnly: true,
+      secure: false, // production: true
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày (milliseconds)
+    });
+    return ApiResponse.success(result, 'Lấy Access Token mới thành công', 200);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
-  logout(@Req() req: RequestWithUser) {
-    return this.authService.logout(req.user.id);
+  async logout(
+    @Req() req: RequestWithUser,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.logout(req.user.id);
+
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: false, // production: true
+      sameSite: 'strict',
+    });
+
+    return ApiResponse.message(result.message, 200);
   }
 
   @Post('forgot-password')

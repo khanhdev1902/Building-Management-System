@@ -3,5 +3,5 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class RefreshTokenDto {
   @IsString({ message: 'Refresh token phải là chuỗi' })
   @IsNotEmpty({ message: 'Refresh token không tồn tại!' })
-  refreshToken: string;
+  refreshToken!: string;
 }

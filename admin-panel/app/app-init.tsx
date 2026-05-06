@@ -4,7 +4,7 @@ import { useAuthStore } from "@/features/auth/stores/auth.store";
 import { authApi } from "@/features/auth/apis/auth.api";
 
 export default function AppInit() {
-  const { setAccessToken, setLoading } = useAuthStore();
+  const { setAccessToken, setLoading, accessToken, setUser } = useAuthStore();
   const calledRef = useRef(false);
 
   useEffect(() => {
@@ -17,10 +17,13 @@ export default function AppInit() {
       try {
         const res = await authApi.refreshToken();
         setAccessToken(res.data.accessToken);
+        setUser(res.data.user);
+
       } catch {
         // chưa login → bỏ qua
       } finally {
         setLoading(false);
+        console.log(accessToken, "đã refresh token thành công trong AppInit"); 
       }
     };
 

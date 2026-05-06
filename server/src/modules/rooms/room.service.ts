@@ -34,7 +34,7 @@ export class RoomService {
       include: {
         contracts: true,
         meters: true,
-        amenities: { include: { amenity: true } },
+        // amenities: { include: { amenity: true } },
       },
     });
     if (!room) throw new NotFoundException(`Room with ID ${id} not found`);

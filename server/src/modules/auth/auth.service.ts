@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -9,7 +10,6 @@ import {
   ChangePasswordDto,
   ForgotPasswordDto,
   LoginDto,
-  RefreshTokenDto,
   RegisterDto,
   ResetPasswordDto,
 } from './dto';
@@ -17,28 +17,61 @@ import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'src/common/types/auth.types';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private redisService: RedisService,
   ) {}
 
   async login(dto: LoginDto) {
+    const identifier = dto.email ? { email: dto.email } : { phone: dto.phone };
+    if (!identifier.email && !identifier.phone) {
+      throw new BadRequestException(
+        'Vui lòng cung cấp số điện thoại hoặc email',
+      );
+    }
     const user = await this.prisma.user.findUnique({
-      where: { phone: dto.phone },
+      where: identifier,
     });
 
     if (!user) throw new UnauthorizedException('Tài khoản không tồn tại!');
-
     const isMatch = await bcrypt.compare(dto.password, user.passwordHash);
-
     if (!isMatch) throw new BadRequestException('Mật khẩu không chính xác!');
 
+    // 1. Tạo bộ đôi Tokens
     const payload: JwtPayload = { sub: user.id, role: user.role };
-    const accessToken = this.jwtService.sign(payload);
-    return { accessToken };
+
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload, {
+        expiresIn: '15m',
+        secret: process.env.JWT_ACCESS_SECRET,
+      }),
+      this.jwtService.signAsync(payload, {
+        expiresIn: '7d',
+        secret: process.env.JWT_REFRESH_SECRET,
+      }),
+    ]);
+
+    // 2. LƯU REFRESH TOKEN VÀO REDIS
+    // Key: "rf_token:1", Value: refreshToken, TTL: 7 ngày (604800 giây)
+    await this.redisService.set(`rf_token:${user.id}`, refreshToken, 604800);
+
+    return {
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatarUrl: user.avatarUrl,
+      },
+    };
   }
 
   async register(dto: RegisterDto) {
@@ -63,8 +96,70 @@ export class AuthService {
     return { result, register: 'register success!' };
   }
 
-  logout(userId: string) {
-    return { userId, logout: 'called logout success!' };
+  async logout(userId: string) {
+    await this.redisService.del(`rf_token:${userId}`);
+    return { message: 'Đã đăng xuất thành công' };
+  }
+
+  async refreshTokens(refreshToken: string) {
+    //Verify Refresh Token
+    let payload: JwtPayload;
+    try {
+      payload = await this.jwtService.verifyAsync<JwtPayload>(refreshToken, {
+        secret: process.env.JWT_REFRESH_SECRET,
+      });
+    } catch (e) {
+      console.error('Error verifying refresh token:', e);
+      throw new UnauthorizedException(
+        'Refresh Token không hợp lệ hoặc đã hết hạn',
+      );
+    }
+    console.log('Payload from refresh token:', payload);
+
+    //Kiểm tra sự tồn tại của Token trong Redis
+    const userId = payload.sub;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const savedToken = await this.redisService.get(`rf_token:${userId}`);
+
+    if (!savedToken || savedToken !== refreshToken) {
+      // Nếu token gửi lên không khớp với Redis, có thể là token cũ đã bị lộ/dùng lại
+      throw new ForbiddenException('Access Denied - Token đã bị thu hồi');
+    }
+
+    //Tìm user trong DB để đảm bảo user vẫn tồn tại/không bị khóa
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) throw new UnauthorizedException('Người dùng không tồn tại');
+
+    // 4. Tạo cặp Token mới (Rotation)
+    const newPayload: JwtPayload = { sub: user.id, role: user.role };
+    const [newAccessToken, newRefreshToken] = await Promise.all([
+      this.jwtService.signAsync(newPayload, {
+        expiresIn: '15m',
+        secret: process.env.JWT_ACCESS_SECRET,
+      }),
+      this.jwtService.signAsync(newPayload, {
+        expiresIn: '7d',
+        secret: process.env.JWT_REFRESH_SECRET,
+      }),
+    ]);
+
+    // 5. Cập nhật lại Token mới vào Redis (Ghi đè cái cũ)
+    await this.redisService.set(`rf_token:${user.id}`, newRefreshToken, 604800);
+
+    return {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatarUrl: user.avatarUrl,
+      },
+    };
   }
 
   async getMe(userId: string) {
@@ -89,11 +184,6 @@ export class AuthService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...result } = user;
     return { result, getProfile: 'called getProfile success!' };
-  }
-
-  refreshToken(dto: RefreshTokenDto) {
-    // const { refreshToken } = dto;
-    return { dto, refreshToken: 'called refresh success!' };
   }
 
   async changePassword(userId: string, dto: ChangePasswordDto) {

@@ -9,20 +9,21 @@ export default function ProtectedRoute({
 }: {
   children: React.ReactNode;
 }) {
-  const { accessToken, loading } = useAuthStore();
+  const { accessToken, isAuthLoading } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
     // đợi AppInit chạy xong
-    if (loading) return;
+    console.log("ProtectedRoute check accessToken:", accessToken, "isAuthLoading:", isAuthLoading);
+    if (isAuthLoading) return;
 
     if (!accessToken) {
       router.replace("/login");
     }
-  }, [accessToken, loading, router]);
+  }, [accessToken, isAuthLoading, router]);
 
   // đang loading → chưa render gì
-  if (loading) return null;
+  if (isAuthLoading) return null;
 
   // chưa có token → không render
   if (!accessToken) return null;

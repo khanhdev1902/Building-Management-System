@@ -3,6 +3,7 @@ export const API_ENDPOINTS = {
   LOGIN: "/auth/login",
   LOGOUT: "/auth/logout",
   REGISTER: "/auth/register",
+  ME: "/auth/me",
   PROFILE: "/auth/profile",
   CART: "/cart",
   CART_ITEMS: (productVariantId: number) => `/cart/items/${productVariantId}`,

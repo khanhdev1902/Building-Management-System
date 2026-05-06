@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { authApi } from "../../../apis/auth.api";
 import { toast } from "sonner";
+import { useAuthStore } from "@/features/auth/stores/auth.store";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -49,6 +50,7 @@ export default function LoginForm() {
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const { setAccessToken, setUser } = useAuthStore.getState();
 
   const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
@@ -62,8 +64,13 @@ export default function LoginForm() {
       const req = await authApi.login(data);
       console.log(req);
 
-      // Giả sử đăng nhập thành công
-      // 1. Lưu token vào Cookie hoặc LocalStorage ở đây (nếu có)
+      const token = req.data.accessToken;
+      const user = req.data.user;
+      console.log("Đăng nhập thành công! Token:", token, "User:", user);
+
+      // lưu vào store
+      setAccessToken(token);
+      setUser(user);
 
       // 2. Chuyển hướng sang trang Dashboard
       router.push("/dashboard");
@@ -73,13 +80,13 @@ export default function LoginForm() {
     } catch (error: unknown) {
       console.error("Lỗi đăng nhập:", error);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const errorData = (error as any);
+      const errorData = error as any;
       console.log("Error data from API:", errorData);
 
       if (errorData && Array.isArray(errorData.message)) {
         // Nếu message là mảng (như cái JSON bạn gửi), nối chúng lại bằng dấu phẩy hoặc xuống dòng
         const fullMessage = errorData.message.join(". ");
-        toast.error('Lỗi đăng nhập!', { description: fullMessage });
+        toast.error("Lỗi đăng nhập!", { description: fullMessage });
       } else if (typeof errorData?.message === "string") {
         // Nếu chỉ có 1 message duy nhất
         toast.error(errorData.message);

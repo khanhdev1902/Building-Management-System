@@ -2,8 +2,11 @@ import { create } from "zustand";
 
 type User = {
   id: string;
-  email: string;
-  name?: string;
+  email: string | null;
+  role: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl: string | null;
 };
 
 type AuthState = {
@@ -20,14 +23,11 @@ type AuthState = {
 export const useAuthStore = create<AuthState>((set) => ({
   accessToken: null,
   user: null,
-  isAuthLoading: false,
+  isAuthLoading: true,
 
   setAccessToken: (token) => set({ accessToken: token }),
-
   setUser: (user) => set({ user }),
-
   setLoading: (loading) => set({ isAuthLoading: loading }),
-
   logout: () =>
     set({
       accessToken: null,

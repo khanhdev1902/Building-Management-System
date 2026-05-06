@@ -8,6 +8,14 @@ type RegisterRequest = LoginRequest & {
   firstName: string;
   lastName: string;
   role: string;
+  password: string;
 };
 
-export type { LoginRequest, RegisterRequest };
+type UserCurrent = {
+  firstName: string;
+  lastName: string;
+  role: string;
+  avatarUrl?: string;
+};
+
+export type { LoginRequest, RegisterRequest, UserCurrent };

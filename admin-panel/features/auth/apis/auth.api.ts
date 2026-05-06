@@ -18,5 +18,13 @@ const logout = () => apiHandler(http.post(API_ENDPOINTS.LOGOUT));
 const register = (data: RegisterRequest) =>
   apiHandler(http.post(API_ENDPOINTS.REGISTER, data));
 const getProfile = () => apiHandler(http.get(API_ENDPOINTS.PROFILE));
+const getMe = () => apiHandler(http.get(API_ENDPOINTS.ME));
 
-export const authApi = { login, register, getProfile, refreshToken, logout };
+export const authApi = {
+  login,
+  register,
+  getProfile,
+  refreshToken,
+  logout,
+  getMe,
+};
