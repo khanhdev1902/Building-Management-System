@@ -8,6 +8,9 @@ datasource db {
   provider = "postgresql"
 }
 
+// --- GENERATOR & DATASOURCE ---
+
+
 enum UserRole {
   ADMIN       // Quản trị viên hệ thống
   MANAGER     // Quản lý chung cư
@@ -15,21 +18,322 @@ enum UserRole {
   TENANT      // Người thuê (cư dân)
 }
 
+// --- 1. USER & ROLE SYSTEM ---
 model User {
   id           String   @id @default(uuid())
   email        String?   @unique
   passwordHash String
-  role         UserRole   @default(TENANT)
-  firstName    String?
-  lastName     String?
-  phone        String   @unique
+  role         UserRole   // e.g., Admin, Staff, Tenant
+  firstName    String
+  lastName     String
+  phone        String?  @unique
   avatarUrl    String?
-  faceId       String?  @unique
+  faceId       String?
   isActive     Boolean  @default(true)
-  
-  
-  updatedAt    DateTime @updatedAt @map("updateAt") 
+  updatedAt    DateTime @updatedAt
   createdAt    DateTime @default(now())
 
-  @@map("users")
+  // Relations
+  staffProfile   Staff?
+  tenantProfile  Tenant?
+  messages       Message[]
+  notifications  NotificationRecipient[]
+  auditLogs      AuditLog[]
+  conversationMembers ConversationMember[]
+}
+
+model Staff {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id])
+  position   String
+  workStatus String
+  salary     Decimal  @db.Decimal(12, 2)
+
+  attendances Attendance[]
+  invoices    Invoice[]
+}
+
+model Tenant {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+  citizenId     String   @unique
+  dateOfBirth   DateTime
+  occupation    String?
+  updatedAt     DateTime @updatedAt
+
+  contracts         Contract[]
+  roommates         Roommate[]
+  emergencyContacts EmergencyContact[]
+}
+
+enum RoomStatus {
+  AVAILABLE
+  OCCUPIED
+  MAINTENANCE
+}
+
+// --- 2. ROOM & PROPERTY MANAGEMENT ---
+model Room {
+  id           String   @id @default(uuid())
+  roomNumber   String   @unique
+  floor        Int
+  acreage      Float
+  roomPrice    Decimal  @db.Decimal(12, 2)
+  status       RoomStatus @default(AVAILABLE)
+  description  String?
+  maxOccupants Int
+  createdAt    DateTime @default(now())
+
+  contracts     Contract[]
+  meters        Meter[]
+  roomServices  RoomService[]
+  roomAmenities RoomAmenity[]
+  problems      Problem[]
+}
+
+model Service {
+  id        String   @id @default(uuid())
+  name      String
+  type      String
+  unitPrice Decimal  @db.Decimal(12, 2)
+  unit      String
+
+  roomServices RoomService[]
+}
+
+model RoomService {
+  roomId    String
+  room      Room    @relation(fields: [roomId], references: [id])
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  @@id([roomId, serviceId])
+}
+
+model Amenity {
+  id   String @id @default(uuid())
+  name String
+
+  roomAmenities RoomAmenity[]
+}
+
+model RoomAmenity {
+  amenityId String
+  amenity   Amenity @relation(fields: [amenityId], references: [id])
+  roomId    String
+  room      Room    @relation(fields: [roomId], references: [id])
+  quantity  Int
+  status    String
+
+  @@id([amenityId, roomId])
+}
+
+// --- 3. CONTRACTS & TENANTS ---
+model Contract {
+  id            String    @id @default(uuid())
+  roomId        String
+  room          Room      @relation(fields: [roomId], references: [id])
+  tenantId      String
+  tenant        Tenant    @relation(fields: [tenantId], references: [id])
+  startDate     DateTime
+  endDate       DateTime
+  rentalPrice   Decimal   @db.Decimal(12, 2)
+  deposit       Decimal   @db.Decimal(12, 2)
+  depositStatus String
+  status        String
+  reasonEnd     String?
+  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
+
+  invoices  Invoice[]
+  roommates Roommate[]
+}
+
+model Roommate {
+  id           String    @id @default(uuid())
+  contractId   String
+  contract     Contract  @relation(fields: [contractId], references: [id])
+  tenantId     String?
+  tenant       Tenant?   @relation(fields: [tenantId], references: [id])
+  fullName     String
+  citizenId    String
+  phone        String?
+  dateOfBirth  DateTime?
+  isActive     Boolean   @default(true)
+  faceId       String?
+  moveInDate   DateTime?
+  moveOutDate  DateTime?
+  note         String?
+}
+
+model EmergencyContact {
+  id           String @id @default(uuid())
+  tenantId     String
+  tenant       Tenant @relation(fields: [tenantId], references: [id])
+  fullName     String
+  phone        String
+  relationship String
+}
+
+// --- 4. BILLING & METERS ---
+model Meter {
+  id            String   @id @default(uuid())
+  roomId        String
+  room          Room     @relation(fields: [roomId], references: [id])
+  service       String   // e.g., Electric, Water
+  previousValue Float
+  currentValue  Float
+  recordedDate  DateTime
+  billingPeriod String
+  isBilled      Boolean  @default(false)
+  imageEvidence String?
+  createdAt     DateTime @default(now())
+}
+
+model Invoice {
+  id          String   @id @default(uuid())
+  contractId  String
+  contract    Contract @relation(fields: [contractId], references: [id])
+  tenantId    String
+  staffId     String
+  staff       Staff    @relation(fields: [staffId], references: [id])
+  date        DateTime @default(now())
+  deadline    DateTime
+  totalAmount Decimal  @db.Decimal(12, 2)
+  paidAmount  Decimal  @db.Decimal(12, 2)
+  balance     Decimal  @db.Decimal(12, 2)
+  status      String   // e.g., Paid, Overdue
+  overdueFee  Decimal  @db.Decimal(12, 2) @default(0)
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  items    InvoiceItem[]
+  payments Payment[]
+}
+
+model InvoiceItem {
+  id        String  @id @default(uuid())
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+  itemName  String
+  quantity  Float
+  unitPrice Decimal @db.Decimal(12, 2)
+  subTotal  Decimal @db.Decimal(12, 2)
+  note      String?
+}
+
+model Payment {
+  id            String   @id @default(uuid())
+  invoiceId     String
+  invoice       Invoice  @relation(fields: [invoiceId], references: [id])
+  paymentMethod String
+  status        String
+  totalAmount   Decimal  @db.Decimal(12, 2)
+  paidAmount    Decimal  @db.Decimal(12, 2)
+  paidAt        DateTime @default(now())
+}
+
+// --- 5. HR & OPERATIONS ---
+model Shift {
+  id        String   @id @default(uuid())
+  shiftName String
+  startTime String   // Store as "HH:mm"
+  endTime   String
+  baseSalary Decimal  @db.Decimal(12, 2)
+
+  attendances Attendance[]
+}
+
+model Attendance {
+  shiftId   String
+  shift     Shift    @relation(fields: [shiftId], references: [id])
+  staffId   String
+  staff     Staff    @relation(fields: [staffId], references: [id])
+  workDate  DateTime
+  actualIn  DateTime?
+  actualOut DateTime?
+  note      String?
+
+  @@id([shiftId, staffId, workDate])
+}
+
+model Problem {
+  id          String    @id @default(uuid())
+  roomId      String
+  room        Room      @relation(fields: [roomId], references: [id])
+  name        String
+  description String
+  imageUrl    String?
+  status      String
+  createdAt   DateTime  @default(now())
+  processedAt DateTime?
+}
+
+// --- 6. COMMUNICATION & AUDIT ---
+model Conversation {
+  id        String   @id @default(uuid())
+  name      String?
+  type      String   // e.g., private, group
+  createdAt DateTime @default(now())
+
+  messages Message[]
+  members  ConversationMember[]
+}
+
+model ConversationMember {
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  joinAt         DateTime     @default(now())
+
+  @@id([userId, conversationId])
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  content        String
+  sender         String
+  sentAt         DateTime     @default(now())
+  isSeen         Boolean      @default(false)
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  type      String
+  sentAt    DateTime @default(now())
+
+  recipients NotificationRecipient[]
+}
+
+model NotificationRecipient {
+  notificationId String
+  notification   Notification @relation(fields: [notificationId], references: [id])
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  isRead         Boolean      @default(false)
+  readAt         DateTime?
+
+  @@id([notificationId, userId])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String
+  recordId  String
+  oldValues Json?
+  newValues Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
 }
