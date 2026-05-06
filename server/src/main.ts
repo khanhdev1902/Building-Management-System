@@ -8,9 +8,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: ['https://danjin-bms.vercel.app', 'http://localhost:3000'],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    // credentials: true,
+    // methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    // allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   app.useGlobalPipes(
