@@ -32,6 +32,7 @@ export type UserMinAggregateOutputType = {
   firstName: string | null
   lastName: string | null
   phone: string | null
+  gender: string | null
   avatarUrl: string | null
   faceId: string | null
   isActive: boolean | null
@@ -47,6 +48,7 @@ export type UserMaxAggregateOutputType = {
   firstName: string | null
   lastName: string | null
   phone: string | null
+  gender: string | null
   avatarUrl: string | null
   faceId: string | null
   isActive: boolean | null
@@ -62,6 +64,7 @@ export type UserCountAggregateOutputType = {
   firstName: number
   lastName: number
   phone: number
+  gender: number
   avatarUrl: number
   faceId: number
   isActive: number
@@ -79,6 +82,7 @@ export type UserMinAggregateInputType = {
   firstName?: true
   lastName?: true
   phone?: true
+  gender?: true
   avatarUrl?: true
   faceId?: true
   isActive?: true
@@ -94,6 +98,7 @@ export type UserMaxAggregateInputType = {
   firstName?: true
   lastName?: true
   phone?: true
+  gender?: true
   avatarUrl?: true
   faceId?: true
   isActive?: true
@@ -109,6 +114,7 @@ export type UserCountAggregateInputType = {
   firstName?: true
   lastName?: true
   phone?: true
+  gender?: true
   avatarUrl?: true
   faceId?: true
   isActive?: true
@@ -197,6 +203,7 @@ export type UserGroupByOutputType = {
   firstName: string
   lastName: string
   phone: string | null
+  gender: string | null
   avatarUrl: string | null
   faceId: string | null
   isActive: boolean
@@ -233,6 +240,7 @@ export type UserWhereInput = {
   firstName?: Prisma.StringFilter<"User"> | string
   lastName?: Prisma.StringFilter<"User"> | string
   phone?: Prisma.StringNullableFilter<"User"> | string | null
+  gender?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   faceId?: Prisma.StringNullableFilter<"User"> | string | null
   isActive?: Prisma.BoolFilter<"User"> | boolean
@@ -254,6 +262,7 @@ export type UserOrderByWithRelationInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  gender?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   faceId?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -278,6 +287,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   firstName?: Prisma.StringFilter<"User"> | string
   lastName?: Prisma.StringFilter<"User"> | string
+  gender?: Prisma.StringNullableFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   faceId?: Prisma.StringNullableFilter<"User"> | string | null
   isActive?: Prisma.BoolFilter<"User"> | boolean
@@ -299,6 +309,7 @@ export type UserOrderByWithAggregationInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  gender?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   faceId?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -320,6 +331,7 @@ export type UserScalarWhereWithAggregatesInput = {
   firstName?: Prisma.StringWithAggregatesFilter<"User"> | string
   lastName?: Prisma.StringWithAggregatesFilter<"User"> | string
   phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  gender?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   faceId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
@@ -335,6 +347,7 @@ export type UserCreateInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -356,6 +369,7 @@ export type UserUncheckedCreateInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -377,6 +391,7 @@ export type UserUpdateInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -398,6 +413,7 @@ export type UserUncheckedUpdateInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -419,6 +435,7 @@ export type UserCreateManyInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -434,6 +451,7 @@ export type UserUpdateManyMutationInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -449,6 +467,7 @@ export type UserUncheckedUpdateManyInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -464,6 +483,7 @@ export type UserCountOrderByAggregateInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   faceId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -479,6 +499,7 @@ export type UserMaxOrderByAggregateInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   faceId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -494,6 +515,7 @@ export type UserMinOrderByAggregateInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   faceId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -618,6 +640,7 @@ export type UserCreateWithoutStaffProfileInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -638,6 +661,7 @@ export type UserUncheckedCreateWithoutStaffProfileInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -674,6 +698,7 @@ export type UserUpdateWithoutStaffProfileInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -694,6 +719,7 @@ export type UserUncheckedUpdateWithoutStaffProfileInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -714,6 +740,7 @@ export type UserCreateWithoutTenantProfileInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -734,6 +761,7 @@ export type UserUncheckedCreateWithoutTenantProfileInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -770,6 +798,7 @@ export type UserUpdateWithoutTenantProfileInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -790,6 +819,7 @@ export type UserUncheckedUpdateWithoutTenantProfileInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -810,6 +840,7 @@ export type UserCreateWithoutConversationMembersInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -830,6 +861,7 @@ export type UserUncheckedCreateWithoutConversationMembersInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -866,6 +898,7 @@ export type UserUpdateWithoutConversationMembersInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -886,6 +919,7 @@ export type UserUncheckedUpdateWithoutConversationMembersInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -906,6 +940,7 @@ export type UserCreateWithoutMessagesInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -926,6 +961,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -962,6 +998,7 @@ export type UserUpdateWithoutMessagesInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -982,6 +1019,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1002,6 +1040,7 @@ export type UserCreateWithoutNotificationsInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -1022,6 +1061,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -1058,6 +1098,7 @@ export type UserUpdateWithoutNotificationsInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1078,6 +1119,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1098,6 +1140,7 @@ export type UserCreateWithoutAuditLogsInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -1118,6 +1161,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   firstName: string
   lastName: string
   phone?: string | null
+  gender?: string | null
   avatarUrl?: string | null
   faceId?: string | null
   isActive?: boolean
@@ -1154,6 +1198,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1174,6 +1219,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1252,6 +1298,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   firstName?: boolean
   lastName?: boolean
   phone?: boolean
+  gender?: boolean
   avatarUrl?: boolean
   faceId?: boolean
   isActive?: boolean
@@ -1274,6 +1321,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   firstName?: boolean
   lastName?: boolean
   phone?: boolean
+  gender?: boolean
   avatarUrl?: boolean
   faceId?: boolean
   isActive?: boolean
@@ -1289,6 +1337,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   firstName?: boolean
   lastName?: boolean
   phone?: boolean
+  gender?: boolean
   avatarUrl?: boolean
   faceId?: boolean
   isActive?: boolean
@@ -1304,6 +1353,7 @@ export type UserSelectScalar = {
   firstName?: boolean
   lastName?: boolean
   phone?: boolean
+  gender?: boolean
   avatarUrl?: boolean
   faceId?: boolean
   isActive?: boolean
@@ -1311,7 +1361,7 @@ export type UserSelectScalar = {
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "firstName" | "lastName" | "phone" | "avatarUrl" | "faceId" | "isActive" | "updatedAt" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "firstName" | "lastName" | "phone" | "gender" | "avatarUrl" | "faceId" | "isActive" | "updatedAt" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   staffProfile?: boolean | Prisma.User$staffProfileArgs<ExtArgs>
   tenantProfile?: boolean | Prisma.User$tenantProfileArgs<ExtArgs>
@@ -1342,6 +1392,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     firstName: string
     lastName: string
     phone: string | null
+    gender: string | null
     avatarUrl: string | null
     faceId: string | null
     isActive: boolean
@@ -1783,6 +1834,7 @@ export interface UserFieldRefs {
   readonly firstName: Prisma.FieldRef<"User", 'String'>
   readonly lastName: Prisma.FieldRef<"User", 'String'>
   readonly phone: Prisma.FieldRef<"User", 'String'>
+  readonly gender: Prisma.FieldRef<"User", 'String'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
   readonly faceId: Prisma.FieldRef<"User", 'String'>
   readonly isActive: Prisma.FieldRef<"User", 'Boolean'>

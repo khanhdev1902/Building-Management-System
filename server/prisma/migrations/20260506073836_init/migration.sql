@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Tenant" ADD COLUMN     "isHost" BOOLEAN NOT NULL DEFAULT true;
+
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "role" SET DEFAULT 'TENANT';

@@ -2250,6 +2250,7 @@ export const UserScalarFieldEnum = {
   firstName: 'firstName',
   lastName: 'lastName',
   phone: 'phone',
+  gender: 'gender',
   avatarUrl: 'avatarUrl',
   faceId: 'faceId',
   isActive: 'isActive',
@@ -2274,8 +2275,10 @@ export type StaffScalarFieldEnum = (typeof StaffScalarFieldEnum)[keyof typeof St
 export const TenantScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  isHost: 'isHost',
   citizenId: 'citizenId',
   dateOfBirth: 'dateOfBirth',
+  permanentAddress: 'permanentAddress',
   occupation: 'occupation',
   updatedAt: 'updatedAt'
 } as const

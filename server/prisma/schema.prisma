@@ -27,6 +27,7 @@ model User {
   firstName    String
   lastName     String
   phone        String?  @unique
+  gender       String?
   avatarUrl    String?
   faceId       String?
   isActive     Boolean  @default(true)
@@ -58,8 +59,10 @@ model Tenant {
   id            String   @id @default(uuid())
   userId        String   @unique
   user          User     @relation(fields: [userId], references: [id])
+  isHost        Boolean  @default(true)
   citizenId     String   @unique
   dateOfBirth   DateTime
+  permanentAddress String?
   occupation    String?
   updatedAt     DateTime @updatedAt
 

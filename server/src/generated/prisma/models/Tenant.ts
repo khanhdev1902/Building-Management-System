@@ -27,8 +27,10 @@ export type AggregateTenant = {
 export type TenantMinAggregateOutputType = {
   id: string | null
   userId: string | null
+  isHost: boolean | null
   citizenId: string | null
   dateOfBirth: Date | null
+  permanentAddress: string | null
   occupation: string | null
   updatedAt: Date | null
 }
@@ -36,8 +38,10 @@ export type TenantMinAggregateOutputType = {
 export type TenantMaxAggregateOutputType = {
   id: string | null
   userId: string | null
+  isHost: boolean | null
   citizenId: string | null
   dateOfBirth: Date | null
+  permanentAddress: string | null
   occupation: string | null
   updatedAt: Date | null
 }
@@ -45,8 +49,10 @@ export type TenantMaxAggregateOutputType = {
 export type TenantCountAggregateOutputType = {
   id: number
   userId: number
+  isHost: number
   citizenId: number
   dateOfBirth: number
+  permanentAddress: number
   occupation: number
   updatedAt: number
   _all: number
@@ -56,8 +62,10 @@ export type TenantCountAggregateOutputType = {
 export type TenantMinAggregateInputType = {
   id?: true
   userId?: true
+  isHost?: true
   citizenId?: true
   dateOfBirth?: true
+  permanentAddress?: true
   occupation?: true
   updatedAt?: true
 }
@@ -65,8 +73,10 @@ export type TenantMinAggregateInputType = {
 export type TenantMaxAggregateInputType = {
   id?: true
   userId?: true
+  isHost?: true
   citizenId?: true
   dateOfBirth?: true
+  permanentAddress?: true
   occupation?: true
   updatedAt?: true
 }
@@ -74,8 +84,10 @@ export type TenantMaxAggregateInputType = {
 export type TenantCountAggregateInputType = {
   id?: true
   userId?: true
+  isHost?: true
   citizenId?: true
   dateOfBirth?: true
+  permanentAddress?: true
   occupation?: true
   updatedAt?: true
   _all?: true
@@ -156,8 +168,10 @@ export type TenantGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type TenantGroupByOutputType = {
   id: string
   userId: string
+  isHost: boolean
   citizenId: string
   dateOfBirth: Date
+  permanentAddress: string | null
   occupation: string | null
   updatedAt: Date
   _count: TenantCountAggregateOutputType | null
@@ -186,8 +200,10 @@ export type TenantWhereInput = {
   NOT?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
   id?: Prisma.StringFilter<"Tenant"> | string
   userId?: Prisma.StringFilter<"Tenant"> | string
+  isHost?: Prisma.BoolFilter<"Tenant"> | boolean
   citizenId?: Prisma.StringFilter<"Tenant"> | string
   dateOfBirth?: Prisma.DateTimeFilter<"Tenant"> | Date | string
+  permanentAddress?: Prisma.StringNullableFilter<"Tenant"> | string | null
   occupation?: Prisma.StringNullableFilter<"Tenant"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -199,8 +215,10 @@ export type TenantWhereInput = {
 export type TenantOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  isHost?: Prisma.SortOrder
   citizenId?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
+  permanentAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   occupation?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -216,7 +234,9 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
   OR?: Prisma.TenantWhereInput[]
   NOT?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
+  isHost?: Prisma.BoolFilter<"Tenant"> | boolean
   dateOfBirth?: Prisma.DateTimeFilter<"Tenant"> | Date | string
+  permanentAddress?: Prisma.StringNullableFilter<"Tenant"> | string | null
   occupation?: Prisma.StringNullableFilter<"Tenant"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -228,8 +248,10 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
 export type TenantOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  isHost?: Prisma.SortOrder
   citizenId?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
+  permanentAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   occupation?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TenantCountOrderByAggregateInput
@@ -243,16 +265,20 @@ export type TenantScalarWhereWithAggregatesInput = {
   NOT?: Prisma.TenantScalarWhereWithAggregatesInput | Prisma.TenantScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
+  isHost?: Prisma.BoolWithAggregatesFilter<"Tenant"> | boolean
   citizenId?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
   dateOfBirth?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
+  permanentAddress?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
   occupation?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
 }
 
 export type TenantCreateInput = {
   id?: string
+  isHost?: boolean
   citizenId: string
   dateOfBirth: Date | string
+  permanentAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTenantProfileInput
@@ -264,8 +290,10 @@ export type TenantCreateInput = {
 export type TenantUncheckedCreateInput = {
   id?: string
   userId: string
+  isHost?: boolean
   citizenId: string
   dateOfBirth: Date | string
+  permanentAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutTenantInput
@@ -275,8 +303,10 @@ export type TenantUncheckedCreateInput = {
 
 export type TenantUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTenantProfileNestedInput
@@ -288,8 +318,10 @@ export type TenantUpdateInput = {
 export type TenantUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutTenantNestedInput
@@ -300,16 +332,20 @@ export type TenantUncheckedUpdateInput = {
 export type TenantCreateManyInput = {
   id?: string
   userId: string
+  isHost?: boolean
   citizenId: string
   dateOfBirth: Date | string
+  permanentAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
 }
 
 export type TenantUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -317,8 +353,10 @@ export type TenantUpdateManyMutationInput = {
 export type TenantUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -331,8 +369,10 @@ export type TenantNullableScalarRelationFilter = {
 export type TenantCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  isHost?: Prisma.SortOrder
   citizenId?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
+  permanentAddress?: Prisma.SortOrder
   occupation?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -340,8 +380,10 @@ export type TenantCountOrderByAggregateInput = {
 export type TenantMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  isHost?: Prisma.SortOrder
   citizenId?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
+  permanentAddress?: Prisma.SortOrder
   occupation?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -349,8 +391,10 @@ export type TenantMaxOrderByAggregateInput = {
 export type TenantMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  isHost?: Prisma.SortOrder
   citizenId?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
+  permanentAddress?: Prisma.SortOrder
   occupation?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -438,8 +482,10 @@ export type TenantUpdateOneRequiredWithoutEmergencyContactsNestedInput = {
 
 export type TenantCreateWithoutUserInput = {
   id?: string
+  isHost?: boolean
   citizenId: string
   dateOfBirth: Date | string
+  permanentAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   contracts?: Prisma.ContractCreateNestedManyWithoutTenantInput
@@ -449,8 +495,10 @@ export type TenantCreateWithoutUserInput = {
 
 export type TenantUncheckedCreateWithoutUserInput = {
   id?: string
+  isHost?: boolean
   citizenId: string
   dateOfBirth: Date | string
+  permanentAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutTenantInput
@@ -476,8 +524,10 @@ export type TenantUpdateToOneWithWhereWithoutUserInput = {
 
 export type TenantUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.ContractUpdateManyWithoutTenantNestedInput
@@ -487,8 +537,10 @@ export type TenantUpdateWithoutUserInput = {
 
 export type TenantUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutTenantNestedInput
@@ -498,8 +550,10 @@ export type TenantUncheckedUpdateWithoutUserInput = {
 
 export type TenantCreateWithoutContractsInput = {
   id?: string
+  isHost?: boolean
   citizenId: string
   dateOfBirth: Date | string
+  permanentAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTenantProfileInput
@@ -510,8 +564,10 @@ export type TenantCreateWithoutContractsInput = {
 export type TenantUncheckedCreateWithoutContractsInput = {
   id?: string
   userId: string
+  isHost?: boolean
   citizenId: string
   dateOfBirth: Date | string
+  permanentAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   roommates?: Prisma.RoommateUncheckedCreateNestedManyWithoutTenantInput
@@ -536,8 +592,10 @@ export type TenantUpdateToOneWithWhereWithoutContractsInput = {
 
 export type TenantUpdateWithoutContractsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTenantProfileNestedInput
@@ -548,8 +606,10 @@ export type TenantUpdateWithoutContractsInput = {
 export type TenantUncheckedUpdateWithoutContractsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roommates?: Prisma.RoommateUncheckedUpdateManyWithoutTenantNestedInput
@@ -558,8 +618,10 @@ export type TenantUncheckedUpdateWithoutContractsInput = {
 
 export type TenantCreateWithoutRoommatesInput = {
   id?: string
+  isHost?: boolean
   citizenId: string
   dateOfBirth: Date | string
+  permanentAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTenantProfileInput
@@ -570,8 +632,10 @@ export type TenantCreateWithoutRoommatesInput = {
 export type TenantUncheckedCreateWithoutRoommatesInput = {
   id?: string
   userId: string
+  isHost?: boolean
   citizenId: string
   dateOfBirth: Date | string
+  permanentAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutTenantInput
@@ -596,8 +660,10 @@ export type TenantUpdateToOneWithWhereWithoutRoommatesInput = {
 
 export type TenantUpdateWithoutRoommatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTenantProfileNestedInput
@@ -608,8 +674,10 @@ export type TenantUpdateWithoutRoommatesInput = {
 export type TenantUncheckedUpdateWithoutRoommatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutTenantNestedInput
@@ -618,8 +686,10 @@ export type TenantUncheckedUpdateWithoutRoommatesInput = {
 
 export type TenantCreateWithoutEmergencyContactsInput = {
   id?: string
+  isHost?: boolean
   citizenId: string
   dateOfBirth: Date | string
+  permanentAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTenantProfileInput
@@ -630,8 +700,10 @@ export type TenantCreateWithoutEmergencyContactsInput = {
 export type TenantUncheckedCreateWithoutEmergencyContactsInput = {
   id?: string
   userId: string
+  isHost?: boolean
   citizenId: string
   dateOfBirth: Date | string
+  permanentAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutTenantInput
@@ -656,8 +728,10 @@ export type TenantUpdateToOneWithWhereWithoutEmergencyContactsInput = {
 
 export type TenantUpdateWithoutEmergencyContactsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTenantProfileNestedInput
@@ -668,8 +742,10 @@ export type TenantUpdateWithoutEmergencyContactsInput = {
 export type TenantUncheckedUpdateWithoutEmergencyContactsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutTenantNestedInput
@@ -728,8 +804,10 @@ export type TenantCountOutputTypeCountEmergencyContactsArgs<ExtArgs extends runt
 export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  isHost?: boolean
   citizenId?: boolean
   dateOfBirth?: boolean
+  permanentAddress?: boolean
   occupation?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -742,8 +820,10 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type TenantSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  isHost?: boolean
   citizenId?: boolean
   dateOfBirth?: boolean
+  permanentAddress?: boolean
   occupation?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -752,8 +832,10 @@ export type TenantSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type TenantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  isHost?: boolean
   citizenId?: boolean
   dateOfBirth?: boolean
+  permanentAddress?: boolean
   occupation?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -762,13 +844,15 @@ export type TenantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type TenantSelectScalar = {
   id?: boolean
   userId?: boolean
+  isHost?: boolean
   citizenId?: boolean
   dateOfBirth?: boolean
+  permanentAddress?: boolean
   occupation?: boolean
   updatedAt?: boolean
 }
 
-export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "citizenId" | "dateOfBirth" | "occupation" | "updatedAt", ExtArgs["result"]["tenant"]>
+export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "isHost" | "citizenId" | "dateOfBirth" | "permanentAddress" | "occupation" | "updatedAt", ExtArgs["result"]["tenant"]>
 export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   contracts?: boolean | Prisma.Tenant$contractsArgs<ExtArgs>
@@ -794,8 +878,10 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
+    isHost: boolean
     citizenId: string
     dateOfBirth: Date
+    permanentAddress: string | null
     occupation: string | null
     updatedAt: Date
   }, ExtArgs["result"]["tenant"]>
@@ -1227,8 +1313,10 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
 export interface TenantFieldRefs {
   readonly id: Prisma.FieldRef<"Tenant", 'String'>
   readonly userId: Prisma.FieldRef<"Tenant", 'String'>
+  readonly isHost: Prisma.FieldRef<"Tenant", 'Boolean'>
   readonly citizenId: Prisma.FieldRef<"Tenant", 'String'>
   readonly dateOfBirth: Prisma.FieldRef<"Tenant", 'DateTime'>
+  readonly permanentAddress: Prisma.FieldRef<"Tenant", 'String'>
   readonly occupation: Prisma.FieldRef<"Tenant", 'String'>
   readonly updatedAt: Prisma.FieldRef<"Tenant", 'DateTime'>
 }

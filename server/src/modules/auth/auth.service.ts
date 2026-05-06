@@ -178,12 +178,11 @@ export class AuthService {
   }
   async getProfile(userId: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
-
     if (!user) throw new NotFoundException('User not found');
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...result } = user;
-    return { result, getProfile: 'called getProfile success!' };
+    return result;
   }
 
   async changePassword(userId: string, dto: ChangePasswordDto) {

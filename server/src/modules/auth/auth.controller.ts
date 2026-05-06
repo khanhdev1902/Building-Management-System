@@ -116,7 +116,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@Req() req: RequestWithUser) {
-    return this.authService.getProfile(req.user.id);
+  async getProfile(@Req() req: RequestWithUser) {
+    const result = await this.authService.getProfile(req.user.id);
+    return ApiResponse.success(result, 'lấy thông tin hồ sơ thành công!', 200);
   }
 }
