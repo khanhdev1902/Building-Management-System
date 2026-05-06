@@ -7,10 +7,10 @@ import cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: ['https://danjin-bms.vercel.app', 'http://localhost:3000'],
-    // credentials: true,
-    // methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    // allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: ['http://localhost:3000', 'https://danjin-bms.vercel.app'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   app.useGlobalPipes(
