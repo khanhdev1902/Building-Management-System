@@ -128,3 +128,23 @@
     @apply font-sans;
   } */
 }
+
+/*--------- custom-scrollbar ---------------------------------*/
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a6894b;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a6894b;
+}
