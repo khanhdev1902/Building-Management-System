@@ -27,69 +27,87 @@ export type AggregateService = {
 }
 
 export type ServiceAvgAggregateOutputType = {
-  unitPrice: runtime.Decimal | null
+  price: runtime.Decimal | null
 }
 
 export type ServiceSumAggregateOutputType = {
-  unitPrice: runtime.Decimal | null
+  price: runtime.Decimal | null
 }
 
 export type ServiceMinAggregateOutputType = {
   id: string | null
   name: string | null
   type: string | null
-  unitPrice: runtime.Decimal | null
+  price: runtime.Decimal | null
   unit: string | null
+  status: string | null
+  iconKey: string | null
+  description: string | null
 }
 
 export type ServiceMaxAggregateOutputType = {
   id: string | null
   name: string | null
   type: string | null
-  unitPrice: runtime.Decimal | null
+  price: runtime.Decimal | null
   unit: string | null
+  status: string | null
+  iconKey: string | null
+  description: string | null
 }
 
 export type ServiceCountAggregateOutputType = {
   id: number
   name: number
   type: number
-  unitPrice: number
+  price: number
   unit: number
+  status: number
+  iconKey: number
+  description: number
   _all: number
 }
 
 
 export type ServiceAvgAggregateInputType = {
-  unitPrice?: true
+  price?: true
 }
 
 export type ServiceSumAggregateInputType = {
-  unitPrice?: true
+  price?: true
 }
 
 export type ServiceMinAggregateInputType = {
   id?: true
   name?: true
   type?: true
-  unitPrice?: true
+  price?: true
   unit?: true
+  status?: true
+  iconKey?: true
+  description?: true
 }
 
 export type ServiceMaxAggregateInputType = {
   id?: true
   name?: true
   type?: true
-  unitPrice?: true
+  price?: true
   unit?: true
+  status?: true
+  iconKey?: true
+  description?: true
 }
 
 export type ServiceCountAggregateInputType = {
   id?: true
   name?: true
   type?: true
-  unitPrice?: true
+  price?: true
   unit?: true
+  status?: true
+  iconKey?: true
+  description?: true
   _all?: true
 }
 
@@ -182,9 +200,12 @@ export type ServiceGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type ServiceGroupByOutputType = {
   id: string
   name: string
-  type: string
-  unitPrice: runtime.Decimal
+  type: string | null
+  price: runtime.Decimal
   unit: string
+  status: string
+  iconKey: string | null
+  description: string | null
   _count: ServiceCountAggregateOutputType | null
   _avg: ServiceAvgAggregateOutputType | null
   _sum: ServiceSumAggregateOutputType | null
@@ -213,18 +234,24 @@ export type ServiceWhereInput = {
   NOT?: Prisma.ServiceWhereInput | Prisma.ServiceWhereInput[]
   id?: Prisma.StringFilter<"Service"> | string
   name?: Prisma.StringFilter<"Service"> | string
-  type?: Prisma.StringFilter<"Service"> | string
-  unitPrice?: Prisma.DecimalFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: Prisma.StringNullableFilter<"Service"> | string | null
+  price?: Prisma.DecimalFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   unit?: Prisma.StringFilter<"Service"> | string
+  status?: Prisma.StringFilter<"Service"> | string
+  iconKey?: Prisma.StringNullableFilter<"Service"> | string | null
+  description?: Prisma.StringNullableFilter<"Service"> | string | null
   roomServices?: Prisma.RoomServiceListRelationFilter
 }
 
 export type ServiceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  unitPrice?: Prisma.SortOrder
+  type?: Prisma.SortOrderInput | Prisma.SortOrder
+  price?: Prisma.SortOrder
   unit?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  iconKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   roomServices?: Prisma.RoomServiceOrderByRelationAggregateInput
 }
 
@@ -234,18 +261,24 @@ export type ServiceWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ServiceWhereInput[]
   NOT?: Prisma.ServiceWhereInput | Prisma.ServiceWhereInput[]
   name?: Prisma.StringFilter<"Service"> | string
-  type?: Prisma.StringFilter<"Service"> | string
-  unitPrice?: Prisma.DecimalFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: Prisma.StringNullableFilter<"Service"> | string | null
+  price?: Prisma.DecimalFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   unit?: Prisma.StringFilter<"Service"> | string
+  status?: Prisma.StringFilter<"Service"> | string
+  iconKey?: Prisma.StringNullableFilter<"Service"> | string | null
+  description?: Prisma.StringNullableFilter<"Service"> | string | null
   roomServices?: Prisma.RoomServiceListRelationFilter
 }, "id">
 
 export type ServiceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  type?: Prisma.SortOrder
-  unitPrice?: Prisma.SortOrder
+  type?: Prisma.SortOrderInput | Prisma.SortOrder
+  price?: Prisma.SortOrder
   unit?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  iconKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ServiceCountOrderByAggregateInput
   _avg?: Prisma.ServiceAvgOrderByAggregateInput
   _max?: Prisma.ServiceMaxOrderByAggregateInput
@@ -259,101 +292,134 @@ export type ServiceScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ServiceScalarWhereWithAggregatesInput | Prisma.ServiceScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Service"> | string
   name?: Prisma.StringWithAggregatesFilter<"Service"> | string
-  type?: Prisma.StringWithAggregatesFilter<"Service"> | string
-  unitPrice?: Prisma.DecimalWithAggregatesFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: Prisma.StringNullableWithAggregatesFilter<"Service"> | string | null
+  price?: Prisma.DecimalWithAggregatesFilter<"Service"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   unit?: Prisma.StringWithAggregatesFilter<"Service"> | string
+  status?: Prisma.StringWithAggregatesFilter<"Service"> | string
+  iconKey?: Prisma.StringNullableWithAggregatesFilter<"Service"> | string | null
+  description?: Prisma.StringNullableWithAggregatesFilter<"Service"> | string | null
 }
 
 export type ServiceCreateInput = {
   id?: string
   name: string
-  type: string
-  unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: string | null
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
   unit: string
+  status: string
+  iconKey?: string | null
+  description?: string | null
   roomServices?: Prisma.RoomServiceCreateNestedManyWithoutServiceInput
 }
 
 export type ServiceUncheckedCreateInput = {
   id?: string
   name: string
-  type: string
-  unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: string | null
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
   unit: string
+  status: string
+  iconKey?: string | null
+  description?: string | null
   roomServices?: Prisma.RoomServiceUncheckedCreateNestedManyWithoutServiceInput
 }
 
 export type ServiceUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   unit?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  iconKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roomServices?: Prisma.RoomServiceUpdateManyWithoutServiceNestedInput
 }
 
 export type ServiceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   unit?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  iconKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   roomServices?: Prisma.RoomServiceUncheckedUpdateManyWithoutServiceNestedInput
 }
 
 export type ServiceCreateManyInput = {
   id?: string
   name: string
-  type: string
-  unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: string | null
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
   unit: string
+  status: string
+  iconKey?: string | null
+  description?: string | null
 }
 
 export type ServiceUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   unit?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  iconKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ServiceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   unit?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  iconKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ServiceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  unitPrice?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   unit?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  iconKey?: Prisma.SortOrder
+  description?: Prisma.SortOrder
 }
 
 export type ServiceAvgOrderByAggregateInput = {
-  unitPrice?: Prisma.SortOrder
+  price?: Prisma.SortOrder
 }
 
 export type ServiceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  unitPrice?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   unit?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  iconKey?: Prisma.SortOrder
+  description?: Prisma.SortOrder
 }
 
 export type ServiceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  unitPrice?: Prisma.SortOrder
+  price?: Prisma.SortOrder
   unit?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  iconKey?: Prisma.SortOrder
+  description?: Prisma.SortOrder
 }
 
 export type ServiceSumOrderByAggregateInput = {
-  unitPrice?: Prisma.SortOrder
+  price?: Prisma.SortOrder
 }
 
 export type ServiceScalarRelationFilter = {
@@ -378,17 +444,23 @@ export type ServiceUpdateOneRequiredWithoutRoomServicesNestedInput = {
 export type ServiceCreateWithoutRoomServicesInput = {
   id?: string
   name: string
-  type: string
-  unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: string | null
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
   unit: string
+  status: string
+  iconKey?: string | null
+  description?: string | null
 }
 
 export type ServiceUncheckedCreateWithoutRoomServicesInput = {
   id?: string
   name: string
-  type: string
-  unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: string | null
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string
   unit: string
+  status: string
+  iconKey?: string | null
+  description?: string | null
 }
 
 export type ServiceCreateOrConnectWithoutRoomServicesInput = {
@@ -410,17 +482,23 @@ export type ServiceUpdateToOneWithWhereWithoutRoomServicesInput = {
 export type ServiceUpdateWithoutRoomServicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   unit?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  iconKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ServiceUncheckedUpdateWithoutRoomServicesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   unit?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  iconKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -458,8 +536,11 @@ export type ServiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   name?: boolean
   type?: boolean
-  unitPrice?: boolean
+  price?: boolean
   unit?: boolean
+  status?: boolean
+  iconKey?: boolean
+  description?: boolean
   roomServices?: boolean | Prisma.Service$roomServicesArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["service"]>
@@ -468,27 +549,36 @@ export type ServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   name?: boolean
   type?: boolean
-  unitPrice?: boolean
+  price?: boolean
   unit?: boolean
+  status?: boolean
+  iconKey?: boolean
+  description?: boolean
 }, ExtArgs["result"]["service"]>
 
 export type ServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   type?: boolean
-  unitPrice?: boolean
+  price?: boolean
   unit?: boolean
+  status?: boolean
+  iconKey?: boolean
+  description?: boolean
 }, ExtArgs["result"]["service"]>
 
 export type ServiceSelectScalar = {
   id?: boolean
   name?: boolean
   type?: boolean
-  unitPrice?: boolean
+  price?: boolean
   unit?: boolean
+  status?: boolean
+  iconKey?: boolean
+  description?: boolean
 }
 
-export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "type" | "unitPrice" | "unit", ExtArgs["result"]["service"]>
+export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "type" | "price" | "unit" | "status" | "iconKey" | "description", ExtArgs["result"]["service"]>
 export type ServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   roomServices?: boolean | Prisma.Service$roomServicesArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceCountOutputTypeDefaultArgs<ExtArgs>
@@ -504,9 +594,12 @@ export type $ServicePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
-    type: string
-    unitPrice: runtime.Decimal
+    type: string | null
+    price: runtime.Decimal
     unit: string
+    status: string
+    iconKey: string | null
+    description: string | null
   }, ExtArgs["result"]["service"]>
   composites: {}
 }
@@ -934,8 +1027,11 @@ export interface ServiceFieldRefs {
   readonly id: Prisma.FieldRef<"Service", 'String'>
   readonly name: Prisma.FieldRef<"Service", 'String'>
   readonly type: Prisma.FieldRef<"Service", 'String'>
-  readonly unitPrice: Prisma.FieldRef<"Service", 'Decimal'>
+  readonly price: Prisma.FieldRef<"Service", 'Decimal'>
   readonly unit: Prisma.FieldRef<"Service", 'String'>
+  readonly status: Prisma.FieldRef<"Service", 'String'>
+  readonly iconKey: Prisma.FieldRef<"Service", 'String'>
+  readonly description: Prisma.FieldRef<"Service", 'String'>
 }
     
 

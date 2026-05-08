@@ -15,7 +15,7 @@ import { TabRequest } from "./components/tab-request";
 import { TenantStatsBar } from "./components/tenant-stats-bar";
 export default function TenantProfessionalDetail() {
   return (
-    <div className="max-w-7xl mx-auto p-8 space-y-6 bg-[#fafafa] min-h-screen font-sans text-slate-900">
+    <div className="max-w-7xl mx-auto space-y-6 bg-[#fafafa] min-h-screen font-sans text-slate-900">
       <TenantHeader
         name="Trần Bình An"
         id="RES-8802"

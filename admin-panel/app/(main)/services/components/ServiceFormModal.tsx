@@ -3,7 +3,22 @@
 
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Save, Info } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Save,
+  Home,
+  Car,
+  Wifi,
+  ShieldCheck,
+  Zap,
+  Droplets,
+  Trash2,
+  Wrench,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -16,13 +31,69 @@ import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import { Textarea } from "@/shared/components/ui/textarea";
+import { cn } from "@/shared/utils/cn";
+
+// 1. Schema Validation - Bổ sung status
+const serviceSchema = z.object({
+  name: z.string().min(2, "Tên dịch vụ phải có ít nhất 2 ký tự"),
+  price: z.coerce.number().min(0, "Giá tiền không được âm"),
+  unit: z.string().min(1, "Vui lòng nhập đơn vị tính"),
+  description: z
+    .string()
+    .max(200, "Mô tả không nên quá 200 ký tự")
+    .optional()
+    .or(z.literal("")),
+  iconKey: z.string().min(1),
+  status: z.string().min(1), // Thêm status vào đây
+});
+
+type ServiceFormValues = z.infer<typeof serviceSchema>;
 
 interface ServiceFormProps {
   isOpen: boolean;
   onClose: () => void;
-  initialData?: any; // Data khi sửa
-  onSave: (data: any) => void;
+  initialData?: any;
+  onSave: (data: ServiceFormValues) => void;
 }
+
+const ICON_OPTIONS = [
+  { key: "home", icon: Home },
+  { key: "car", icon: Car },
+  { key: "wifi", icon: Wifi },
+  { key: "security", icon: ShieldCheck },
+  { key: "electricity", icon: Zap },
+  { key: "water", icon: Droplets },
+  { key: "trash", icon: Trash2 },
+  { key: "repair", icon: Wrench },
+];
+
+// Định nghĩa các option cho status
+const STATUS_OPTIONS = [
+  {
+    key: "active",
+    label: "Hoạt động",
+    icon: CheckCircle2,
+    color: "text-emerald-500",
+    bg: "bg-emerald-50",
+    border: "border-emerald-200",
+  },
+  {
+    key: "warning",
+    label: "Cảnh báo",
+    icon: AlertCircle,
+    color: "text-amber-500",
+    bg: "bg-amber-50",
+    border: "border-amber-200",
+  },
+  {
+    key: "maintenance",
+    label: "Bảo trì",
+    icon: Clock,
+    color: "text-blue-500",
+    bg: "bg-blue-50",
+    border: "border-blue-200",
+  },
+];
 
 export const ServiceFormModal = ({
   isOpen,
@@ -30,130 +101,224 @@ export const ServiceFormModal = ({
   initialData,
   onSave,
 }: ServiceFormProps) => {
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<ServiceFormValues>({
+    resolver: zodResolver(serviceSchema),
+    defaultValues: {
+      name: "",
+      price: 0,
+      unit: "",
+      description: "",
+      iconKey: "home",
+      status: "active", // Default status
+    },
+  });
 
-  // Reset form mỗi khi mở/đóng hoặc đổi data (Sửa/Thêm)
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const currentIcon = watch("iconKey");
+  const currentStatus = watch("status");
+
   useEffect(() => {
-    if (initialData) {
-      reset(initialData);
-    } else {
-      reset({ name: "", price: "", unit: "", description: "" });
+    if (isOpen) {
+      if (initialData) {
+        reset({
+          name: initialData.name || "",
+          price: Number(initialData.price) || 0,
+          unit: initialData.unit || "",
+          description: initialData.description || "",
+          iconKey: initialData.iconKey || "home",
+          status: initialData.status || "active",
+        });
+      } else {
+        reset({
+          name: "",
+          price: 0,
+          unit: "",
+          description: "",
+          iconKey: "home",
+          status: "active",
+        });
+      }
     }
   }, [initialData, reset, isOpen]);
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: ServiceFormValues) => {
     onSave(data);
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-125 rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden bg-white/95 backdrop-blur-xl">
-        <DialogHeader className="p-8 pb-0">
-          <div className="flex justify-between items-center">
-            <div className="space-y-1">
-              <DialogTitle className="text-2xl font-black text-slate-900">
-                {initialData ? "Cập nhật dịch vụ" : "Thêm dịch vụ mới"}
-              </DialogTitle>
-              <DialogDescription className="text-slate-500 font-medium">
-                Điền thông tin để vận hành tiện ích tòa nhà.
-              </DialogDescription>
-            </div>
+      <DialogContent className="sm:max-w-125 p-0 overflow-hidden border-slate-200 shadow-2xl rounded-xl">
+        <DialogHeader className="px-6 pt-6 pb-4 bg-slate-50/50 border-b">
+          <div className="space-y-1 text-left">
+            <DialogTitle className="text-xl font-semibold text-slate-900">
+              {initialData ? "Chỉnh sửa dịch vụ" : "Thiết lập dịch vụ mới"}
+            </DialogTitle>
+            <DialogDescription className="text-slate-500 text-sm">
+              Cấu hình các thông số vận hành và phí dịch vụ tòa nhà.
+            </DialogDescription>
           </div>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="p-8 pt-6 space-y-6">
-          <div className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-6 space-y-6">
+          {/* Hàng 1: Icon và Status */}
+          <div className="grid grid-cols-2 gap-6">
+            {/* Chọn biểu tượng */}
+            <div className="space-y-3">
+              <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                Biểu tượng
+              </Label>
+              <div className="grid grid-cols-4 gap-2">
+                {ICON_OPTIONS.map((item) => (
+                  <button
+                    key={item.key}
+                    type="button"
+                    onClick={() => setValue("iconKey", item.key)}
+                    className={cn(
+                      "flex items-center justify-center h-10 w-10 rounded-lg border transition-all",
+                      currentIcon === item.key
+                        ? "bg-indigo-50 border-indigo-500 text-indigo-600 shadow-sm"
+                        : "bg-white border-slate-200 text-slate-400 hover:border-slate-300",
+                    )}
+                  >
+                    <item.icon className="w-5 h-5" />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Chọn Trạng thái */}
+            <div className="space-y-3">
+              <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                Trạng thái vận hành
+              </Label>
+              <div className="flex flex-col gap-2">
+                {STATUS_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.key}
+                    type="button"
+                    onClick={() => setValue("status", opt.key)}
+                    className={cn(
+                      "flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all",
+                      currentStatus === opt.key
+                        ? `${opt.bg} ${opt.border} ${opt.color} shadow-sm`
+                        : "bg-white border-slate-100 text-slate-400 hover:bg-slate-50",
+                    )}
+                  >
+                    <opt.icon className="w-3.5 h-3.5" />
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-4">
             {/* Tên dịch vụ */}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label
                 htmlFor="name"
-                className="text-xs font-bold uppercase tracking-widest text-slate-400"
+                className="text-[11px] font-bold uppercase tracking-wider text-slate-500"
               >
                 Tên dịch vụ
               </Label>
               <Input
                 id="name"
-                className="h-12 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white focus:ring-indigo-500 transition-all"
-                placeholder="Ví dụ: Internet Tốc độ cao"
-                {...register("name", { required: true })}
+                {...register("name")}
+                placeholder="Ví dụ: Internet (Cơ bản)"
+                className={cn(
+                  "h-10 border-slate-200 focus:border-indigo-500",
+                  errors.name && "border-red-500 focus:border-red-500",
+                )}
               />
+              {errors.name && (
+                <p className="text-[10px] font-medium text-red-500 italic">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               {/* Giá tiền */}
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label
                   htmlFor="price"
-                  className="text-xs font-bold uppercase tracking-widest text-slate-400"
+                  className="text-[11px] font-bold uppercase tracking-wider text-slate-500"
                 >
                   Đơn giá (VNĐ)
                 </Label>
                 <Input
                   id="price"
                   type="number"
-                  className="h-12 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white transition-all"
-                  placeholder="200.000"
-                  {...register("price", { required: true })}
+                  {...register("price")}
+                  className={cn(
+                    "h-10 border-slate-200",
+                    errors.price && "border-red-500",
+                  )}
                 />
               </div>
+
               {/* Đơn vị */}
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label
                   htmlFor="unit"
-                  className="text-xs font-bold uppercase tracking-widest text-slate-400"
+                  className="text-[11px] font-bold uppercase tracking-wider text-slate-500"
                 >
                   Đơn vị tính
                 </Label>
                 <Input
                   id="unit"
-                  className="h-12 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white transition-all"
+                  {...register("unit")}
                   placeholder="Tháng/Phòng"
-                  {...register("unit", { required: true })}
+                  className={cn(
+                    "h-10 border-slate-200",
+                    errors.unit && "border-red-500",
+                  )}
                 />
               </div>
             </div>
 
             {/* Mô tả */}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label
                 htmlFor="description"
-                className="text-xs font-bold uppercase tracking-widest text-slate-400"
+                className="text-[11px] font-bold uppercase tracking-wider text-slate-500"
               >
-                Mô tả chi tiết
+                Mô tả
               </Label>
               <Textarea
                 id="description"
-                className="min-h-25 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white transition-all resize-none"
-                placeholder="Mô tả quyền lợi hoặc ghi chú dịch vụ..."
                 {...register("description")}
+                className="min-h-16 border-slate-200 resize-none text-sm"
+                placeholder="Thông tin thêm về cách tính phí..."
               />
             </div>
           </div>
 
-          <div className="p-4 bg-indigo-50/50 rounded-2xl border border-indigo-100 flex gap-3 items-start">
-            <Info className="w-5 h-5 text-indigo-600 mt-0.5" />
-            <p className="text-[11px] text-indigo-700 leading-relaxed font-medium">
-              Thông tin này sẽ được hiển thị trực tiếp trên hóa đơn hàng tháng
-              của cư dân. Hãy kiểm tra kỹ đơn giá trước khi lưu.
-            </p>
-          </div>
-
-          <DialogFooter className="pt-2 gap-3">
+          {/* Footer actions */}
+          <DialogFooter className="pt-2 gap-2">
             <Button
               type="button"
-              variant="ghost"
+              variant="outline"
               onClick={onClose}
-              className="flex-1 rounded-2xl h-12 font-bold text-slate-500 hover:bg-slate-100"
+              className="flex-1 h-10 border-slate-200 text-slate-600 font-semibold"
             >
-              Hủy bỏ
+              Hủy
             </Button>
             <Button
               type="submit"
-              className="flex-1 rounded-2xl h-12 bg-slate-900 hover:bg-indigo-600 font-bold shadow-xl shadow-slate-200 transition-all"
+              disabled={isSubmitting}
+              className="flex-1 h-10 bg-slate-900 hover:bg-indigo-600 font-semibold text-white transition-all shadow-sm"
             >
               <Save className="w-4 h-4 mr-2" />
-              {initialData ? "Lưu thay đổi" : "Tạo dịch vụ"}
+              {initialData ? "Lưu thay đổi" : "Kích hoạt dịch vụ"}
             </Button>
           </DialogFooter>
         </form>

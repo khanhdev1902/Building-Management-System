@@ -250,7 +250,7 @@ export default function AdminLayout({
               </header>
 
               {/* CONTENT AREA */}
-              <div className="flex-1 p-8">
+              <div className="flex-1 p-4">
                 <div className="mx-auto max-w-7xl h-full">{children}</div>
               </div>
             </main>

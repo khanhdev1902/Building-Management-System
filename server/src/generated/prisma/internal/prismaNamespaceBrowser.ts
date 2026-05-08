@@ -156,8 +156,11 @@ export const ServiceScalarFieldEnum = {
   id: 'id',
   name: 'name',
   type: 'type',
-  unitPrice: 'unitPrice',
-  unit: 'unit'
+  price: 'price',
+  unit: 'unit',
+  status: 'status',
+  iconKey: 'iconKey',
+  description: 'description'
 } as const
 
 export type ServiceScalarFieldEnum = (typeof ServiceScalarFieldEnum)[keyof typeof ServiceScalarFieldEnum]
