@@ -36,7 +36,7 @@ import { cn } from "@/shared/utils/cn";
 // 1. Schema Validation - Bổ sung status
 const serviceSchema = z.object({
   name: z.string().min(2, "Tên dịch vụ phải có ít nhất 2 ký tự"),
-  price: z.coerce.number().min(0, "Giá tiền không được âm"),
+  price: z.number().min(0, "Giá tiền không được âm"),
   unit: z.string().min(1, "Vui lòng nhập đơn vị tính"),
   description: z
     .string()
