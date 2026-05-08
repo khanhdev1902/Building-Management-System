@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
 import { Card, CardContent } from "@/shared/components/ui/card";
-import { Home, DoorOpen, Layers, Wrench, ArrowUpRight } from "lucide-react";
+import { Home, DoorOpen, Layers, Wrench } from "lucide-react";
 
 interface StatCardProps {
   label: string;
@@ -70,7 +71,7 @@ const QuickStatCard = ({
 
         {/* 3. Hiệu ứng trang trí góc - Chỉ xuất hiện khi hover */}
         <div
-          className={`absolute top-0 right-0 w-12 h-12 bg-gradient-to-br from-transparent to-slate-50/50 opacity-0 group-hover:opacity-100 transition-opacity`}
+          className={`absolute top-0 right-0 w-12 h-12 bg-linear-to-br from-transparent to-slate-50/50 opacity-0 group-hover:opacity-100 transition-opacity`}
         />
       </CardContent>
     </Card>

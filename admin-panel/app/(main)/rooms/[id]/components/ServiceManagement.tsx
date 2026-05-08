@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
@@ -8,8 +9,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ArrowRight,
-  Zap,
-  Droplets,
   Settings2,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
@@ -205,9 +204,12 @@ export const ServiceManagement = ({ fixedServices = [] }: any) => {
                 >
                   <div className="flex items-center gap-3">
                     <div className="h-9 w-9 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-colors">
-                      {React.cloneElement(service.icon as React.ReactElement, {
-                        size: 18,
-                      })}
+                      {React.cloneElement(
+                        service.icon as React.ReactElement<{ size?: number }>,
+                        {
+                          size: 18,
+                        },
+                      )}
                     </div>
                     <div>
                       <p className="text-[13px] font-semibold text-slate-700">
