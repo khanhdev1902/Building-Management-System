@@ -17,8 +17,9 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 import { INITIAL_ROOMS } from "./constants/room-data";
+import { roomApi } from "./apis/room.api";
 
-const ITEMS_PER_PAGE = 8; // Mỗi trang hiện 8 card cho đẹp Grid
+const ITEMS_PER_PAGE = 8;
 
 export default function RoomsPage() {
   const [rooms, setRooms] = useState(INITIAL_ROOMS);
@@ -45,18 +46,18 @@ export default function RoomsPage() {
     const result = rooms.filter((room) => {
       const s = searchTerm.toLowerCase();
       const matchesSearch =
-        room.name.toLowerCase().includes(s) ||
+        room.roomNumber.toLowerCase().includes(s) ||
         (room.tenant?.name.toLowerCase().includes(s) ?? false);
       const matchesStatus =
         statusFilter === "all" || room.status === statusFilter;
-      const matchesFloor = floorFilter === "all" || room.floor === floorFilter;
+      const matchesFloor = floorFilter === "all" || room.floor.toString() === floorFilter;
       return matchesSearch && matchesStatus && matchesFloor;
     });
 
     return result.sort((a, b) => {
-      if (sortBy === "price-up") return a.price - b.price;
-      if (sortBy === "price-down") return b.price - a.price;
-      if (sortBy === "area-down") return b.area - a.area;
+      if (sortBy === "price-up") return a.roomPrice - b.roomPrice;
+      if (sortBy === "price-down") return b.roomPrice - a.roomPrice;
+      if (sortBy === "area-down") return b.acreage - a.acreage;
       // Mặc định là newest dựa trên ID hoặc vị trí trong mảng
       return 0;
     });
@@ -72,13 +73,13 @@ export default function RoomsPage() {
   const stats = useMemo(
     () => ({
       total: rooms.length,
-      available: rooms.filter((r) => r.status === "available").length,
-      occupied: rooms.filter((r) => r.status === "occupied").length,
-      maintenance: rooms.filter((r) => r.status === "maintenance").length,
+      available: rooms.filter((r) => r.status === "AVAILABLE").length,
+      occupied: rooms.filter((r) => r.status === "OCCUPIED").length,
+      maintenance: rooms.filter((r) => r.status === "MAINTENANCE").length,
       occupancyRate:
         rooms.length > 0
           ? (
-              (rooms.filter((r) => r.status === "occupied").length /
+              (rooms.filter((r) => r.status === "OCCUPIED").length /
                 rooms.length) *
               100
             ).toFixed(0)
@@ -88,11 +89,11 @@ export default function RoomsPage() {
   );
 
   // 1. Cập nhật hàm Create để khớp với data structure của Dialog mới
-  const handleCreateRoom = (formData: any) => {
+  const handleCreateRoom = async (formData: any) => {
     const newRoom = {
       ...formData, // Chứa name, floor, price, area, type, services (object), amenities (array), description
       id: Math.random().toString(36).substr(2, 9),
-      status: "available",
+      status: "AVAILABLE",
       tenant: null,
       // Đảm bảo có lastReading khởi tạo để không bị lỗi UI Card
       lastReading: { electric: 0, water: 0 },
@@ -100,6 +101,8 @@ export default function RoomsPage() {
 
     setRooms([newRoom, ...rooms]);
     // Hiệu ứng tạo xong thì nhảy về trang 1 cho người ta thấy hàng mới
+    console.log("Created Room:", newRoom);
+    await roomApi.createRoom(newRoom);
     setCurrentPage(1);
   };
 
@@ -127,7 +130,6 @@ export default function RoomsPage() {
             </p>
           </div>
 
-          {/* Dialog mới tích hợp ở đây */}
           <RoomDialog mode="create" onSubmit={handleCreateRoom} />
         </div>
 
@@ -177,7 +179,7 @@ export default function RoomsPage() {
       {/* 3. Rooms Grid với Skeleton Loading */}
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {isLoading
-          ? Array.from({ length: 4 }).map((_, i) => (
+          ? Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
                 className="h-70 w-full bg-slate-200 animate-pulse rounded-2xl border border-slate-100"
@@ -188,7 +190,6 @@ export default function RoomsPage() {
             ))}
       </div>
 
-      {/* 4. Pagination UI - Design chuyên nghiệp */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 pt-8">
           <Button
@@ -226,7 +227,7 @@ export default function RoomsPage() {
         </div>
       )}
 
-      {/* 5. Empty State */}
+
       {!isLoading && filteredAndSortedRooms.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-slate-300">
           <FilterX className="w-16 h-16 opacity-10 mb-4" />

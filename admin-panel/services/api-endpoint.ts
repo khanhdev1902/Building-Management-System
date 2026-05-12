@@ -16,4 +16,6 @@ export const API_ENDPOINTS = {
   PAYMENT_ORDERCODE: (orderCode: string) => `/payment/${orderCode}`,
   SERVICES: "/services",
   SERVICE_DETAIL: (id: string) => `/services/${id}`,
+  ROOMS: "/rooms",
+  ROOM_DETAIL: (id: string) => `/rooms/${id}`,
 } as const;

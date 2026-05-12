@@ -17,13 +17,13 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
-import { Card, CardContent } from "@/shared/components/ui/card";
 import { RoomHeader } from "./components/RoomHeader";
 import { ServiceManagement } from "./components/ServiceManagement";
 import { OverviewTab } from "./components/OverviewTab";
 import { ResidentTab } from "./components/ResidentTab";
 
 export default function RoomDetailPage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [room, setRoom] = useState({
     roomNumber: "A.101",
     type: "Studio Deluxe",
@@ -169,6 +169,7 @@ function TabTrigger({
   label,
 }: {
   value: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: any;
   label: string;
 }) {

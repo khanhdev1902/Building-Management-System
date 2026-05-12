@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -8,9 +7,10 @@ import {
   Zap,
   Droplets,
   LayoutGrid,
-  ListPlus,
   ShieldCheck,
   Pencil,
+  Info,
+  CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
@@ -36,17 +36,14 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
-import { Badge } from "@/shared/components/ui/badge";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { Textarea } from "@/shared/components/ui/textarea";
-
-// --- Mockup Data ---
-const LIST_SERVICES = [
-  { id: "wifi", name: "Internet Cáp Quang", price: 100000, unit: "tháng" },
-  { id: "cleaning", name: "Dọn vệ sinh", price: 50000, unit: "lần" },
-  { id: "parking", name: "Gửi xe máy", price: 150000, unit: "xe" },
-  { id: "management", name: "Phí quản lý", price: 100000, unit: "phòng" },
-];
+import { serviceApi } from "../../services/apis/service.api";
+import { ServiceResponse } from "../../services/types/service.type";
+import { roomSchema } from "../schemas/room.schema";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 const AVAILABLE_AMENITIES = [
   "Điều hòa",
@@ -59,10 +56,13 @@ const AVAILABLE_AMENITIES = [
   "Bếp từ",
 ];
 
+type RoomFormValues = z.infer<typeof roomSchema>;
+type RoomSubmitPayload = Omit<RoomFormValues, "otherServices">;
+
 interface RoomDialogProps {
   mode?: "create" | "update";
-  initialData?: any;
-  onSubmit: (data: any) => void;
+  initialData?: Partial<RoomFormValues>;
+  onSubmit: (data: RoomSubmitPayload) => void;
   trigger?: React.ReactNode;
 }
 
@@ -73,83 +73,91 @@ export function RoomDialog({
   trigger,
 }: RoomDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState<any>({
-    name: "",
-    floor: "1",
-    price: "",
-    area: "",
-    type: "Studio",
-    status: "available",
-    description: "",
-    services: { electricity: 3500, water: 100000 },
-    otherServices: [], // Danh sách ID các dịch vụ chọn thêm
-    amenities: [],
+  const [lstServices, setLstServices] = useState<ServiceResponse[]>([]);
+
+  const form = useForm<RoomFormValues>({
+    resolver: zodResolver(roomSchema),
+    defaultValues: {
+      roomNumber: "",
+      floor: 1,
+      roomPrice: 0,
+      acreage: 0,
+      maxOccupants: 0,
+      type: "Studio",
+      status: "AVAILABLE",
+      description: "",
+      amenities: [],
+      otherServices: [],
+      services: { electricity: 3500, water: 100000 },
+    },
   });
 
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = form;
+
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const selectedAmenities = watch("amenities") || [];
+  const selectedOtherServices = watch("otherServices") || [];
+
   useEffect(() => {
-    if (mode === "update" && initialData && isOpen) {
-      setFormData({
-        ...initialData,
-        price: initialData.price?.toString() || "",
-        area: initialData.area?.toString() || "",
-        otherServices: initialData.services
+    const fetchServices = async () => {
+      try {
+        const res = await serviceApi.getAllServices();
+        setLstServices(res.data);
+      } catch (error) {
+        console.error("Lỗi lấy dịch vụ:", error);
+      }
+    };
+    if (isOpen) fetchServices();
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
+      if (mode === "update" && initialData) {
+        const otherServiceIds = initialData.services
           ? Object.keys(initialData.services).filter(
               (k) => k !== "electricity" && k !== "water",
             )
-          : [],
-      });
-    } else if (mode === "create" && isOpen) {
-      setFormData({
-        name: "",
-        floor: "1",
-        price: "",
-        area: "",
-        type: "Studio",
-        status: "available",
-        description: "",
-        services: { electricity: 3500, water: 100000 },
-        otherServices: [],
-        amenities: [],
-      });
+          : [];
+
+        reset({
+          ...initialData,
+          otherServices: otherServiceIds,
+        });
+      } else {
+        reset({
+          roomNumber: "",
+          floor: 1,
+          roomPrice: 0,
+          acreage: 0,
+          maxOccupants: 0,
+          type: "Studio",
+          status: "AVAILABLE",
+          description: "",
+          amenities: [],
+          otherServices: [],
+          services: { electricity: 3500, water: 100000 },
+        });
+      }
     }
-  }, [initialData, mode, isOpen]);
+  }, [isOpen, initialData, mode, reset]);
 
-  const toggleAmenity = (amenity: string) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      amenities: prev.amenities.includes(amenity)
-        ? prev.amenities.filter((a: string) => a !== amenity)
-        : [...prev.amenities, amenity],
-    }));
-  };
-
-  const toggleService = (serviceId: string) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      otherServices: prev.otherServices.includes(serviceId)
-        ? prev.otherServices.filter((s: string) => s !== serviceId)
-        : [...prev.otherServices, serviceId],
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Logic gộp services cố định và services đã chọn thành 1 object
-    const finalServices = { ...formData.services };
-    formData.otherServices.forEach((sId: string) => {
-      const s = LIST_SERVICES.find((item) => item.id === sId);
+  const handleFinalSubmit = (data: RoomFormValues) => {
+    const finalServices = { ...data.services };
+    data.otherServices.forEach((sId) => {
+      const s = lstServices.find((item) => item.id === sId);
       if (s) finalServices[sId] = s.price;
     });
 
-    const submissionData = {
-      ...formData,
-      price: Number(formData.price),
-      area: Number(formData.area),
-      services: finalServices,
-    };
-    delete submissionData.otherServices;
-
-    onSubmit(submissionData);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { otherServices, ...submissionData } = data;
+    onSubmit({ ...submissionData, services: finalServices });
     setIsOpen(false);
   };
 
@@ -157,255 +165,307 @@ export function RoomDialog({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button className="rounded-xl cursor-pointer py-4 bg-slate-900 hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
-            <Plus className="mr-1 h-4 w-4" /> Tạo mới
+          <Button className="rounded-lg bg-slate-900 hover:bg-slate-800 shadow-md transition-all active:scale-95 px-5">
+            <Plus className="mr-2 h-4 w-4" /> Thêm căn hộ
           </Button>
         )}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-150 p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
-        <DialogHeader className="p-6 bg-slate-900 text-white">
-          <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-            {mode === "create" ? (
-              <LayoutGrid className="w-6 h-6" />
-            ) : (
-              <Pencil className="w-6 h-6" />
-            )}
-            {mode === "create" ? "Khởi tạo căn hộ" : "Cập nhật thiết lập"}
+      <DialogContent className="sm:max-w-160 p-0 overflow-hidden border-slate-200 rounded-xl shadow-2xl">
+        {/* Header tinh giản, chuyên nghiệp */}
+        <DialogHeader className="px-6 py-4 border-b bg-white">
+          <DialogTitle className="text-lg font-bold text-slate-800 flex items-center gap-2">
+            <div className="p-1.5 bg-slate-100 rounded-md">
+              {mode === "create" ? (
+                <LayoutGrid className="w-4 h-4 text-slate-600" />
+              ) : (
+                <Pencil className="w-4 h-4 text-slate-600" />
+              )}
+            </div>
+            {mode === "create" ? "Khởi tạo căn hộ mới" : "Cập nhật thông tin"}
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(handleFinalSubmit)}>
           <Tabs defaultValue="general" className="w-full">
-            <TabsList className="w-full justify-start rounded-none border-b bg-slate-50/50 p-0 h-12">
+            <TabsList className="w-full justify-start rounded-none border-b bg-slate-50/50 px-4 h-11 gap-2">
               <TabsTrigger
                 value="general"
-                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-slate-900 data-[state=active]:bg-transparent px-6 font-bold text-xs uppercase tracking-widest"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-slate-900 data-[state=active]:bg-transparent px-4 text-xs font-bold uppercase tracking-tight text-slate-500 data-[state=active]:text-slate-900 transition-all"
               >
-                Thông tin
+                Thông tin chung
               </TabsTrigger>
               <TabsTrigger
                 value="services"
-                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-slate-900 data-[state=active]:bg-transparent px-6 font-bold text-xs uppercase tracking-widest"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-slate-900 data-[state=active]:bg-transparent px-4 text-xs font-bold uppercase tracking-tight text-slate-500 data-[state=active]:text-slate-900 transition-all"
               >
-                Dịch vụ
+                Dịch vụ vận hành
               </TabsTrigger>
               <TabsTrigger
                 value="amenities"
-                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-slate-900 data-[state=active]:bg-transparent px-6 font-bold text-xs uppercase tracking-widest"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-slate-900 data-[state=active]:bg-transparent px-4 text-xs font-bold uppercase tracking-tight text-slate-500 data-[state=active]:text-slate-900 transition-all"
               >
-                Tiện ích
+                Trang thiết bị
               </TabsTrigger>
             </TabsList>
 
-            <div className="p-6 max-h-[60vh] overflow-y-auto">
-              {/* Tab 1: Thông tin chung */}
-              <TabsContent value="general" className="space-y-4 mt-0">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="col-span-2 space-y-2">
-                    <Label className="text-[11px] font-black uppercase text-slate-400">
+            <div className="px-6 py-5 max-h-[60vh] overflow-y-auto bg-white">
+              {/* TAB 1: THÔNG TIN CHUNG */}
+              <TabsContent value="general" className="space-y-5 mt-0">
+                <div className="grid grid-cols-6 gap-4">
+                  <div className="col-span-3 space-y-1.5">
+                    <Label className="text-[11px] font-bold text-slate-500 uppercase">
                       Tên / Số phòng
                     </Label>
                     <Input
-                      className="rounded-xl bg-slate-50 border-slate-200 focus:bg-white transition-all"
+                      {...register("roomNumber")}
                       placeholder="VD: P.402"
-                      required
-                      value={formData.name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
-                      }
+                      className="rounded-lg border-slate-200 focus:ring-slate-900"
                     />
+                    {errors.roomNumber && (
+                      <p className="text-red-500 text-[10px] italic">
+                        {errors.roomNumber.message}
+                      </p>
+                    )}
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-[11px] font-black uppercase text-slate-400">
-                      Tầng
+
+                  <div className="col-span-3 space-y-1.5">
+                    <Label className="text-[11px] font-bold text-slate-500 uppercase">
+                      Loại hình
                     </Label>
                     <Select
-                      value={formData.floor}
-                      onValueChange={(v) =>
-                        setFormData({ ...formData, floor: v })
-                      }
+                      value={watch("type")}
+                      onValueChange={(v) => setValue("type", v)}
                     >
-                      <SelectTrigger className="rounded-xl bg-slate-50">
+                      <SelectTrigger className="rounded-lg border-slate-200 focus:ring-slate-900">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {["1", "2", "3", "4", "5", "6"].map((f) => (
-                          <SelectItem key={f} value={f}>
-                            Tầng {f}
+                        {["Studio", "1 Phòng ngủ", "2 Phòng ngủ", "3 Phòng ngủ"].map((t) => (
+                          <SelectItem key={t} value={t}>
+                            {t}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                    {errors.type && (
+                      <p className="text-red-500 text-[10px] italic">
+                        {errors.type.message}
+                      </p>
+                    )}
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-[11px] font-black uppercase text-slate-400">
-                      Loại phòng
+
+                  <div className="col-span-2 space-y-1.5">
+                    <Label className="text-[11px] font-bold text-slate-500 uppercase">
+                      Tầng
                     </Label>
-                    <Select
-                      value={formData.type}
-                      onValueChange={(v) =>
-                        setFormData({ ...formData, type: v })
-                      }
-                    >
-                      <SelectTrigger className="rounded-xl bg-slate-50">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Studio">Studio</SelectItem>
-                        <SelectItem value="1PN">1 Phòng ngủ</SelectItem>
-                        <SelectItem value="2PN">2 Phòng ngủ</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      type="number"
+                      {...register("floor", { valueAsNumber: true })}
+                      className="rounded-lg border-slate-200"
+                    />
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-[11px] font-black uppercase text-slate-400">
+
+                  <div className="col-span-2 space-y-1.5">
+                    <Label className="text-[11px] font-bold text-slate-500 uppercase">
                       Diện tích (m²)
                     </Label>
                     <Input
                       type="number"
-                      className="rounded-xl bg-slate-50"
-                      required
-                      value={formData.area}
-                      onChange={(e) =>
-                        setFormData({ ...formData, area: e.target.value })
-                      }
+                      {...register("acreage", { valueAsNumber: true })}
+                      className="rounded-lg border-slate-200"
                     />
+                    {errors.acreage && (
+                      <p className="text-red-500 text-[10px] italic">
+                        {errors.acreage.message}
+                      </p>
+                    )}
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-[11px] font-black uppercase text-slate-400">
-                      Giá thuê (VNĐ)
+
+                  <div className="col-span-2 space-y-1.5">
+                    <Label className="text-[11px] font-bold text-slate-500 uppercase">
+                      Sức chứa (Người)
                     </Label>
                     <Input
                       type="number"
-                      className="rounded-xl bg-slate-50 font-bold text-indigo-600"
-                      required
-                      value={formData.price}
-                      onChange={(e) =>
-                        setFormData({ ...formData, price: e.target.value })
-                      }
+                      {...register("maxOccupants", { valueAsNumber: true })}
+                      className="rounded-lg border-slate-200"
                     />
+                    {errors.maxOccupants && (
+                      <p className="text-red-500 text-[10px] italic">
+                        {errors.maxOccupants.message}
+                      </p>
+                    )}
                   </div>
-                  <div className="col-span-2 space-y-2">
-                    <Label className="text-[11px] font-black uppercase text-slate-400">
-                      Mô tả ngắn
+
+                  <div className="col-span-6 space-y-1.5 p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                    <Label className="text-[11px] font-bold text-slate-500 uppercase">
+                      Giá thuê niêm yết (VNĐ / Tháng)
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        {...register("roomPrice", { valueAsNumber: true })}
+                        className="rounded-lg border-slate-200 text-lg font-bold text-indigo-700 bg-white"
+                      />
+                      <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400 text-xs font-medium">
+                        VNĐ
+                      </div>
+                    </div>
+                    {errors.roomPrice && (
+                      <p className="text-red-500 text-[10px] italic">
+                        {errors.roomPrice.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="col-span-6 space-y-1.5">
+                    <Label className="text-[11px] font-bold text-slate-500 uppercase">
+                      Ghi chú / Mô tả
                     </Label>
                     <Textarea
-                      className="rounded-xl bg-slate-50 border-slate-200"
-                      rows={2}
-                      value={formData.description}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          description: e.target.value,
-                        })
-                      }
+                      {...register("description")}
+                      className="rounded-lg border-slate-200 min-h-20 resize-none"
+                      placeholder="Nhập đặc điểm nổi bật của phòng..."
                     />
                   </div>
                 </div>
               </TabsContent>
 
-              {/* Tab 2: Dịch vụ */}
+              {/* TAB 2: DỊCH VỤ */}
               <TabsContent value="services" className="space-y-6 mt-0">
-                <div className="space-y-3">
-                  <h4 className="text-[10px] font-black uppercase text-indigo-500 flex items-center gap-2">
-                    <ShieldCheck className="w-3 h-3" /> Dịch vụ mặc định (Cố
-                    định)
-                  </h4>
+                <div className="p-4 rounded-xl border bg-slate-50/50 space-y-3">
+                  <div className="flex items-center gap-2 text-indigo-600">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span className="text-[11px] font-bold uppercase tracking-wider">
+                      Định mức cố định
+                    </span>
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                    <div className="bg-white p-3 rounded-lg border border-slate-200 flex justify-between items-center shadow-sm">
                       <div className="flex items-center gap-2">
-                        <Zap className="w-4 h-4 text-amber-500" />
-                        <span className="text-sm font-bold text-slate-700">
+                        <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
+                        <span className="text-xs font-semibold text-slate-600">
                           Giá điện
                         </span>
                       </div>
-                      <span className="text-xs font-black text-slate-900">
-                        3.500đ / số
-                      </span>
+                      <span className="text-sm font-bold">3.500đ / số</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                    <div className="bg-white p-3 rounded-lg border border-slate-200 flex justify-between items-center shadow-sm">
                       <div className="flex items-center gap-2">
-                        <Droplets className="w-4 h-4 text-blue-500" />
-                        <span className="text-sm font-bold text-slate-700">
+                        <Droplets className="w-4 h-4 text-blue-500 fill-blue-500" />
+                        <span className="text-xs font-semibold text-slate-600">
                           Giá nước
                         </span>
                       </div>
-                      <span className="text-xs font-black text-slate-900">
-                        100.000đ / người
-                      </span>
+                      <span className="text-sm font-bold">100.000đ / m3</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <h4 className="text-[10px] font-black uppercase text-indigo-500 flex items-center gap-2">
-                    <ListPlus className="w-3 h-3" /> Chọn dịch vụ bổ sung
-                  </h4>
+                  <Label className="text-[11px] font-bold text-slate-500 uppercase flex items-center gap-2">
+                    <Info className="w-3 h-3" /> Các dịch vụ đi kèm khác
+                  </Label>
                   <div className="grid grid-cols-1 gap-2">
-                    {LIST_SERVICES.map((s) => (
-                      <div
-                        key={s.id}
-                        className={`flex items-center justify-between p-4 rounded-2xl border transition-all cursor-pointer ${formData.otherServices.includes(s.id) ? "border-indigo-500 bg-indigo-50/50 shadow-sm" : "border-slate-100 bg-white hover:border-slate-300"}`}
-                        onClick={() => toggleService(s.id)}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Checkbox
-                            checked={formData.otherServices.includes(s.id)}
-                            onCheckedChange={() => toggleService(s.id)}
-                          />
-                          <div>
-                            <p className="text-sm font-bold text-slate-800">
-                              {s.name}
-                            </p>
-                            <p className="text-[10px] text-slate-400">
-                              Đơn giá: {s.price.toLocaleString()}đ / {s.unit}
-                            </p>
+                    {lstServices
+                      .filter((s) => s.name !== "Điện" && s.name !== "Nước")
+                      .map((s) => (
+                        <label
+                          key={s.id}
+                          className={`group flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${
+                            selectedOtherServices.includes(s.id)
+                              ? "border-slate-900 bg-slate-900 text-white"
+                              : "border-slate-200 bg-white hover:border-slate-400"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Checkbox
+                              checked={selectedOtherServices.includes(s.id)}
+                              onCheckedChange={(checked) => {
+                                const current = selectedOtherServices;
+                                setValue(
+                                  "otherServices",
+                                  checked
+                                    ? [...current, s.id]
+                                    : current.filter((id) => id !== s.id),
+                                );
+                              }}
+                              className={
+                                selectedOtherServices.includes(s.id)
+                                  ? "border-white data-[state=checked]:bg-white data-[state=checked]:text-slate-900"
+                                  : ""
+                              }
+                            />
+                            <div>
+                              <p className="text-sm font-bold">{s.name}</p>
+                              <p
+                                className={`text-[10px] ${selectedOtherServices.includes(s.id) ? "text-slate-400" : "text-slate-500"}`}
+                              >
+                                {s.price.toLocaleString()}đ / {s.unit}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        <Badge variant="outline" className="bg-white">
-                          {s.price.toLocaleString()}đ
-                        </Badge>
-                      </div>
-                    ))}
+                          {selectedOtherServices.includes(s.id) && (
+                            <CheckCircle2 className="w-4 h-4 text-white" />
+                          )}
+                        </label>
+                      ))}
                   </div>
                 </div>
               </TabsContent>
 
-              {/* Tab 3: Tiện ích */}
+              {/* TAB 3: TIỆN ÍCH */}
               <TabsContent value="amenities" className="mt-0">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   {AVAILABLE_AMENITIES.map((item) => (
-                    <div
+                    <label
                       key={item}
-                      onClick={() => toggleAmenity(item)}
-                      className={`flex items-center gap-3 p-4 rounded-2xl border transition-all cursor-pointer ${formData.amenities.includes(item) ? "bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-200" : "bg-slate-50 border-slate-100 text-slate-600 hover:border-slate-300"}`}
+                      className={`flex items-center gap-2.5 p-3 rounded-lg border transition-all cursor-pointer shadow-sm ${
+                        selectedAmenities.includes(item)
+                          ? "bg-slate-900 border-slate-900 text-white"
+                          : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                      }`}
                     >
                       <Checkbox
-                        checked={formData.amenities.includes(item)}
-                        onCheckedChange={() => toggleAmenity(item)}
+                        checked={selectedAmenities.includes(item)}
+                        onCheckedChange={(checked) => {
+                          const current = selectedAmenities;
+                          setValue(
+                            "amenities",
+                            checked
+                              ? [...current, item]
+                              : current.filter((i) => i !== item),
+                          );
+                        }}
                         className={
-                          formData.amenities.includes(item)
+                          selectedAmenities.includes(item)
                             ? "border-white data-[state=checked]:bg-white data-[state=checked]:text-slate-900"
                             : ""
                         }
                       />
-                      <span className="text-sm font-bold">{item}</span>
-                    </div>
+                      <span className="text-[13px] font-medium">{item}</span>
+                    </label>
                   ))}
                 </div>
               </TabsContent>
             </div>
 
-            <DialogFooter className="p-6 bg-slate-50/80 border-t">
+            <DialogFooter className="p-8 bg-slate-50 border-t flex-row justify-end gap-2">
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="rounded-lg border-slate-200 text-slate-600 font-semibold"
+              >
+                Hủy bỏ
+              </Button>
               <Button
                 type="submit"
-                className="w-full bg-slate-900 hover:bg-slate-800 h-12 rounded-2xl font-bold text-sm transition-all active:scale-[0.98]"
+                className="bg-slate-900 hover:bg-slate-800 rounded-lg px-8 font-bold shadow-lg"
               >
                 <Save className="mr-2 h-4 w-4" />
-                {mode === "update"
-                  ? "Lưu thay đổi thiết lập"
-                  : "Khởi tạo dữ liệu căn hộ"}
+                {mode === "update" ? "Lưu thay đổi" : "Tạo căn hộ"}
               </Button>
             </DialogFooter>
           </Tabs>

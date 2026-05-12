@@ -16,6 +16,8 @@ export class RoomController {
 
   @Post()
   create(@Body() createRoomDto: CreateRoomDto) {
+    console.log('Received CreateRoomDto:', createRoomDto);
+    return;
     return this.roomService.create(createRoomDto);
   }
 

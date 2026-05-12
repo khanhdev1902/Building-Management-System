@@ -29,12 +29,13 @@ import {
 import { StatusBadge } from "./status-badge";
 import { RoomDialog } from "./room-dialog";
 import { Badge } from "@/shared/components/ui/badge";
+import { RoomResponse } from "../types/room.type";
 
 export function RoomCard({
   room,
   onUpdate,
 }: {
-  room: any;
+  room: RoomResponse;
   onUpdate: (data: any) => void;
 }) {
   return (
@@ -47,7 +48,7 @@ export function RoomCard({
         <div className="flex items-start justify-between min-h-13">
           <div className="space-y-1.5">
             <h3 className="text-xl font-extrabold text-slate-800 tracking-tight leading-tight group-hover:text-indigo-600 transition-colors">
-              {room.name}
+              {room.roomNumber}
             </h3>
             <div className="flex gap-1.5">
               <Badge
@@ -62,7 +63,7 @@ export function RoomCard({
                 className="bg-slate-50/50 text-slate-500 border-slate-200/60 text-[9px] px-1.5 py-0 rounded-md h-5 font-bold"
               >
                 <Maximize2 className="w-2.5 h-2.5 mr-1 text-slate-400" />{" "}
-                {room.area}m²
+                {room.acreage}m²
               </Badge>
             </div>
           </div>
@@ -84,7 +85,7 @@ export function RoomCard({
               </span>
             </div>
             <span className="font-extrabold text-slate-900 text-sm tabular-nums tracking-tight">
-              {room.price?.toLocaleString("vi-VN")}đ
+              {room.roomPrice?.toLocaleString("vi-VN")}đ
             </span>
           </div>
 

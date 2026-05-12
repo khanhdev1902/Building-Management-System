@@ -36,7 +36,10 @@ import { cn } from "@/shared/utils/cn";
 // 1. Schema Validation - Bổ sung status
 const serviceSchema = z.object({
   name: z.string().min(2, "Tên dịch vụ phải có ít nhất 2 ký tự"),
-  price: z.number().min(0, "Giá tiền không được âm"),
+  price: z
+    .number()
+    .min(1, "Giá phải lớn hơn 0")
+    .max(100000000, "Giá quá cao"),
   unit: z.string().min(1, "Vui lòng nhập đơn vị tính"),
   description: z
     .string()
@@ -257,12 +260,17 @@ export const ServiceFormModal = ({
                 <Input
                   id="price"
                   type="number"
-                  {...register("price")}
+                  {...register("price", { valueAsNumber: true })}
                   className={cn(
                     "h-10 border-slate-200",
                     errors.price && "border-red-500",
                   )}
                 />
+                {errors.price && (
+                  <p className="text-[10px] font-medium text-red-500 italic">
+                    {errors.price.message}
+                  </p>
+                )}
               </div>
 
               {/* Đơn vị */}
@@ -282,6 +290,11 @@ export const ServiceFormModal = ({
                     errors.unit && "border-red-500",
                   )}
                 />
+                {errors.unit && (
+                  <p className="text-[10px] font-medium text-red-500 italic">
+                    {errors.unit.message}
+                  </p>
+                )}
               </div>
             </div>
 
