@@ -1,0 +1,121 @@
+import {
+  LayoutDashboard,
+  Building2,
+  UserCheck,
+  Bell,
+  MessageSquare,
+  Wrench,
+  Users,
+  Receipt,
+  Zap,
+  Settings,
+  ShieldCheck,
+  History,
+  CreditCard,
+  BarChart3, // Thống kê
+  Wallet, // Chi phí
+  Clock, // Ca làm việc
+  Banknote, // Doanh thu
+} from "lucide-react";
+
+export const navigation = {
+  // 1. QUẢN TRỊ CHIẾN LƯỢC
+  analytics: [
+    { title: "Tổng quan Dashboard", icon: LayoutDashboard, url: "/admin/dashboard" },
+    {
+      title: "Báo cáo & Thống kê",
+      icon: BarChart3,
+      children: [
+        {
+          title: "Doanh thu",
+          icon: Banknote,
+          url: "/admin/reports/revenue",
+        },
+        { title: "Chi phí vận hành", icon: Wallet, url: "/admin/reports/expenses" },
+        { title: "Tỷ lệ lấp đầy & Biến động", url: "/admin/reports/occupancy" },
+        { title: "Báo cáo kỹ thuật/Bảo trì", url: "/admin/reports/maintenance" }, //Theo dõi sức khỏe tòa nhà
+      ],
+    },
+  ],
+
+  // 2. VẬN HÀNH & HẠ TẦNG
+  operation: [
+    {
+      title: "Quản lý hạ tầng",
+      icon: Building2,
+      children: [
+        // { title: "Sơ đồ tòa nhà", url: "/admin/buildings" },
+        { title: "Dịch vụ", url: "/admin/services" },
+        { title: "Căn hộ", url: "/admin/rooms" },
+        { title: "Tài sản & Thiết bị", url: "/admin/assets" }, //Quản lý thiết bị chung
+        { title: "Chỉ số điện nước", icon: Zap, url: "/admin/utilities" },
+      ],
+    },
+    {
+      title: "Cư dân & Hợp đồng",
+      icon: UserCheck,
+      children: [
+        { title: "Danh sách cư dân", url: "/admin/tenants" },
+        { title: "Hợp đồng", url: "/admin/contracts" },
+        // { title: "Quản lý thẻ (Xe/Thang máy)", url: "/admin/cards" },
+        // { title: "Quản lý gửi xe", url: "/admin/parking" },
+      ],
+    },
+  ],
+
+  // 3. DỊCH VỤ KHÁCH HÀNG (Interaction)
+  services: [
+    {
+      title: "Kênh tương tác",
+      icon: MessageSquare,
+      children: [
+        { title: "Nhóm chat nội bộ", icon: MessageSquare, url: "/admin/chats" },
+        { title: "Bảng tin thông báo", icon: Bell, url: "/admin/notifications" },
+        { title: "Yêu cầu sửa chữa", icon: Wrench, url: "/admin/maintenance" },
+        //{ title: "Đặt lịch tiện ích (BBQ/Gym)", url: "/admin/amenities" }, //Mới
+        //{ title: "Phản hồi & Khiếu nại", url: "/admin/feedback" }, //Cư dân phàn nàn
+      ],
+    },
+    {
+      title: "Tài chính cư dân",
+      icon: Receipt,
+      children: [
+        {
+          title: "Hóa đơn tháng",
+          url: "/admin/invoices",
+          permission: "invoice.view",
+        },
+        //{ title: "Đối soát cổng thanh toán", url: "/finance/gateways" },
+      ],
+    },
+  ],
+
+  // 4. NHÂN SỰ & NỘI BỘ
+  management: [
+    {
+      title: "Nhân sự & Công việc",
+      icon: Users,
+      children: [
+        { title: "Danh sách nhân viên", url: "/admin/staffs" },
+        { title: "Lịch trực kỹ thuật/BV", icon: Clock, url: "/admin/staffs/shifts" },
+        { title: "Quản lý kho vật tư", url: "/admin/inventory" },
+      ],
+    },
+    {
+      title: "Kế toán & Tài chính",
+      icon: CreditCard,
+      children: [
+        { title: "Phiếu thu", url: "/admin/finance/income" },
+        { title: "Phiếu chi", url: "/admin/finance/outcome" },
+        { title: "Sổ quỹ tiền mặt/NH", url: "/admin/finance/transactions" },
+      ],
+    },
+  ],
+
+  // 5. CẤU HÌNH
+  system: [
+    { title: "Cài đặt chung", icon: Settings, url: "/admin/settings" },
+    { title: "Phân quyền (RBAC)", icon: ShieldCheck, url: "/admin/roles" },
+    { title: "Log hệ thống", icon: History, url: "/admin/logs" },
+  ],
+};

@@ -5,6 +5,8 @@ import {
   IsNotEmpty,
   Min,
   IsEnum,
+  IsObject,
+  IsArray,
 } from 'class-validator';
 
 import { Type } from 'class-transformer';
@@ -16,17 +18,17 @@ export class CreateRoomDto {
   roomNumber!: string;
 
   @Type(() => Number)
-  @IsNumber()
+  @IsNumber({}, { message: 'Tầng phải là số' })
   @Min(0, { message: 'Tầng không hợp lệ' })
   floor!: number;
 
   @Type(() => Number)
-  @IsNumber()
+  @IsNumber({}, { message: 'Diện tích phải là số' })
   @Min(0, { message: 'Diện tích không hợp lệ' })
   acreage!: number;
 
   @Type(() => Number)
-  @IsNumber()
+  @IsNumber({}, { message: 'Giá phòng phải là số' })
   @Min(0, { message: 'Giá phòng không hợp lệ' })
   roomPrice!: number;
 
@@ -41,11 +43,25 @@ export class CreateRoomDto {
   description?: string;
 
   @Type(() => Number)
-  @IsNumber()
+  @IsNumber({}, { message: 'Số người tối đa phải là số' })
   @Min(1, { message: 'Số người tối đa phải lớn hơn 0' })
   maxOccupants!: number;
 
   @IsString()
   @IsOptional()
   type?: string;
+
+  // amenities
+  @IsArray({
+    message: 'Tiện ích phải là mảng',
+  })
+  @IsOptional()
+  amenities?: string[];
+
+  // services
+  @IsObject({
+    message: 'Dịch vụ không hợp lệ',
+  })
+  @IsOptional()
+  services?: Record<string, number>;
 }
