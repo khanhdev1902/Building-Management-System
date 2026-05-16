@@ -72,8 +72,11 @@ export default function LoginForm() {
       setAccessToken(token);
       setUser(user);
 
-      // 2. Chuyển hướng sang trang Dashboard
-      router.push("/admin/dashboard");
+      if (user.role === "ADMIN") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/");
+      }
 
       // Hoặc dùng router.replace("/dashboard") nếu không muốn user
       // nhấn nút Back quay lại trang Login sau khi đã đăng nhập

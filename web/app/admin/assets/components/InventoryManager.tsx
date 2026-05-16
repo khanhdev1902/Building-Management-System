@@ -1,16 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import {
-  Filter,
   Search,
   ChevronLeft,
   ChevronRight,
   MoreHorizontal,
-  ArrowUpDown,
   History,
+  LayoutGrid,
+  FilterX,
+  Trash2,
+  ChevronsUpDown,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -18,202 +20,252 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select";
+import { RAW_DATA } from "../data";
 
-// Tạo dữ liệu giả lập lớn để test phân trang
-const MOCK_DATA = Array.from({ length: 25 }, (_, i) => ({
-  id: `DK-992-X${i + 1}`,
-  name: i % 2 === 0 ? "Daikin Inverter 1.5 HP" : "LG Dual Cool 1.0 HP",
-  room: `P.${100 + i}`,
-  status: i % 3 === 0 ? "Bảo trì" : "Ổn định",
-  category: i % 2 === 0 ? "Điện lạnh" : "Gia dụng",
-}));
+// Status Style Mapping - Nhìn chuyên nghiệp và phẳng hơn
+const statusStyles: Record<string, string> = {
+  "Ổn định": "bg-emerald-50 text-emerald-600 border-emerald-100",
+  "Bảo trì": "bg-amber-50 text-amber-600 border-amber-100",
+  "Lỗi kỹ thuật": "bg-red-50 text-red-600 border-red-100",
+};
 
 export function InventoryManager() {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7;
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [roomFilter, setRoomFilter] = useState("all");
+  const itemsPerPage = 8;
 
-  const totalPages = Math.ceil(MOCK_DATA.length / itemsPerPage);
+  const rooms = useMemo(
+    () => ["all", ...new Set(RAW_DATA.map((d) => d.room))],
+    [],
+  );
+
+  const filteredData = useMemo(() => {
+    return RAW_DATA.filter((item) => {
+      const matchSearch =
+        item.name.toLowerCase().includes(search.toLowerCase()) ||
+        item.id.toLowerCase().includes(search.toLowerCase());
+      const matchStatus =
+        statusFilter === "all" || item.status === statusFilter;
+      const matchRoom = roomFilter === "all" || item.room === roomFilter;
+      return matchSearch && matchStatus && matchRoom;
+    });
+  }, [search, statusFilter, roomFilter]);
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentData = MOCK_DATA.slice(startIndex, startIndex + itemsPerPage);
+  const currentData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+
+  const resetFilters = () => {
+    setSearch("");
+    setStatusFilter("all");
+    setRoomFilter("all");
+    setCurrentPage(1);
+  };
 
   return (
-    <div className="space-y-6">
-      {/* Search & Filter Bar: Làm phẳng và sắc nét hơn */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="relative flex-1 max-w-md group">
+    <div className="bg-white border border-slate-200 flex flex-col min-h-[600px] rounded-sm">
+      {/* 1. Header Filter - Tối giản & Phẳng */}
+      <div className="flex flex-col md:flex-row items-center gap-2 p-3 border-b border-slate-100 bg-slate-50/30">
+        <div className="relative flex-1 min-w-[300px]">
           <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-zinc-900 transition-colors"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
             size={14}
           />
           <Input
-            className="pl-9 h-10 bg-transparent border-zinc-200 rounded-none border-b focus-visible:ring-0 focus-visible:border-zinc-900 transition-all placeholder:text-zinc-300 text-sm"
-            placeholder="Tìm kiếm thực thể thiết bị..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="pl-9 h-9 bg-white border-slate-200 rounded-md text-xs font-medium focus-visible:ring-1 focus-visible:ring-slate-400 transition-all placeholder:text-slate-400"
+            placeholder="Tìm theo ID hoặc tên thiết bị..."
           />
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="h-10 rounded-none border-zinc-200 px-4 text-[11px] font-bold uppercase tracking-widest hover:bg-zinc-50"
-          >
-            <Filter size={14} className="mr-2" /> Lọc trạng thái
-          </Button>
-          <Button
-            variant="outline"
-            className="h-10 rounded-none border-zinc-200 px-4 text-[11px] font-bold uppercase tracking-widest hover:bg-zinc-50"
-          >
-            Xuất báo cáo
-          </Button>
+
+        <div className="flex items-center gap-2">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="h-9 w-[150px] text-[11px] font-bold uppercase tracking-tight border-slate-200 bg-white">
+              <SelectValue placeholder="Trạng thái" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all" className="text-xs">
+                MỌI TRẠNG THÁI
+              </SelectItem>
+              <SelectItem value="Ổn định" className="text-xs">
+                ỔN ĐỊNH
+              </SelectItem>
+              <SelectItem value="Bảo trì" className="text-xs">
+                BẢO TRÌ
+              </SelectItem>
+              <SelectItem value="Lỗi kỹ thuật" className="text-xs">
+                LỖI KỸ THUẬT
+              </SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={roomFilter} onValueChange={setRoomFilter}>
+            <SelectTrigger className="h-9 w-[130px] text-[11px] font-bold uppercase tracking-tight border-slate-200 bg-white">
+              <SelectValue placeholder="Phòng" />
+            </SelectTrigger>
+            <SelectContent>
+              {rooms.map((r) => (
+                <SelectItem key={r} value={r} className="text-xs uppercase">
+                  {r === "all" ? "Tất cả phòng" : `Phòng ${r}`}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {(search || statusFilter !== "all" || roomFilter !== "all") && (
+            <Button
+              onClick={resetFilters}
+              variant="ghost"
+              className="h-9 w-9 p-0 text-slate-400 hover:text-red-500 transition-colors"
+            >
+              <Trash2 size={16} />
+            </Button>
+          )}
         </div>
       </div>
 
-      {/* Table Section: Phẳng hóa hoàn toàn */}
-      <div className="border border-zinc-100 bg-white">
+      {/* 2. Table Section - Phẳng & Thoáng */}
+      <div className="overflow-x-auto flex-1">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-zinc-50/50 border-b border-zinc-100">
-              <th className="p-4 text-[10px] font-black uppercase text-zinc-400 tracking-[0.15em] pl-8">
-                Mã định danh (S/N)
+            <tr className="bg-slate-50/50 border-b border-slate-100">
+              <th className="py-3 px-6 text-[10px] font-bold uppercase text-slate-500 tracking-widest">
+                Serial
               </th>
-              <th className="p-4 text-[10px] font-black uppercase text-zinc-400 tracking-[0.15em]">
-                Thiết bị{" "}
-                <ArrowUpDown size={10} className="inline ml-1 opacity-50" />
+              <th className="py-3 px-6 text-[10px] font-bold uppercase text-slate-500 tracking-widest">
+                Thiết bị
               </th>
-              <th className="p-4 text-[10px] font-black uppercase text-zinc-400 tracking-[0.15em]">
-                Vị trí lắp đặt
+              <th className="py-3 px-6 text-[10px] font-bold uppercase text-slate-500 tracking-widest text-center">
+                Vị trí
               </th>
-              <th className="p-4 text-[10px] font-black uppercase text-zinc-400 tracking-[0.15em]">
-                Phân loại
+              <th className="py-3 px-6 text-[10px] font-bold uppercase text-slate-500 tracking-widest text-center">
+                Trạng thái
               </th>
-              <th className="p-4 text-[10px] font-black uppercase text-zinc-400 tracking-[0.15em] text-right">
-                Tình trạng
+              <th className="py-3 px-6 text-[10px] font-bold uppercase text-slate-500 tracking-widest text-right">
+                Thao tác
               </th>
-              <th className="w-12 pr-8"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-50">
-            {currentData.map((item) => (
-              <TableRow key={item.id} item={item} />
-            ))}
+          <tbody className="divide-y divide-slate-50">
+            {currentData.length > 0 ? (
+              currentData.map((item) => (
+                <tr
+                  key={item.id}
+                  className="hover:bg-slate-50/80 transition-colors group"
+                >
+                  <td className="py-4 px-6 font-mono text-[11px] text-slate-400">
+                    #{item.id}
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="flex flex-col">
+                      <span className="text-[13px] font-semibold text-slate-900 leading-tight">
+                        {item.name}
+                      </span>
+                      <span className="text-[10px] text-slate-400 uppercase font-medium">
+                        {item.category}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    <span className="inline-block px-2 py-0.5 bg-white border border-slate-200 text-slate-600 text-[10px] font-bold rounded">
+                      {item.room}
+                    </span>
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="flex justify-center">
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${statusStyles[item.status]}`}
+                      >
+                        {item.status}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6 text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <MoreHorizontal
+                            size={14}
+                            className="text-slate-400"
+                          />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        className="w-40 border-slate-100 shadow-md rounded-md"
+                      >
+                        <DropdownMenuItem className="text-xs font-medium gap-2 py-2 cursor-pointer">
+                          <History size={14} /> Lịch sử
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-xs font-medium gap-2 py-2 cursor-pointer">
+                          <LayoutGrid size={14} /> Chi tiết
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="py-32 text-center">
+                  <div className="flex flex-col items-center gap-3 opacity-40">
+                    <FilterX size={40} strokeWidth={1} />
+                    <p className="text-[11px] font-bold uppercase tracking-widest">
+                      Không tìm thấy thiết bị
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
+      </div>
 
-        {/* Custom Pagination: Phong cách Industrial */}
-        <div className="px-8 py-4 bg-white border-t border-zinc-100 flex items-center justify-between">
-          <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-            Hiển thị {startIndex + 1}-
-            {Math.min(startIndex + itemsPerPage, MOCK_DATA.length)} /{" "}
-            {MOCK_DATA.length} thiết bị
-          </p>
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-1">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`w-6 h-6 text-[10px] font-mono transition-all ${
-                    currentPage === i + 1
-                      ? "bg-zinc-900 text-white"
-                      : "text-zinc-400 hover:text-zinc-900"
-                  }`}
-                >
-                  {(i + 1).toString().padStart(2, "0")}
-                </button>
-              ))}
-            </div>
-            <div className="flex gap-1 border-l border-zinc-100 pl-6">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-8 h-8 rounded-none hover:bg-zinc-50"
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((prev) => prev - 1)}
-              >
-                <ChevronLeft size={14} />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-8 h-8 rounded-none hover:bg-zinc-50"
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((prev) => prev + 1)}
-              >
-                <ChevronRight size={14} />
-              </Button>
-            </div>
+      {/* 3. Footer - Gọn gàng */}
+      <div className="px-6 py-3 border-t border-slate-100 flex items-center justify-between bg-white">
+        <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">
+          Hiển thị{" "}
+          <span className="text-slate-900 font-bold">{currentData.length}</span>{" "}
+          / {filteredData.length} kết quả
+        </p>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            className="h-8 px-3 text-[10px] font-bold uppercase border-slate-200 hover:bg-slate-50"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeft size={14} className="mr-1" /> Trước
+          </Button>
+          <div className="text-[11px] font-bold w-8 text-center text-slate-600">
+            {currentPage}
           </div>
+          <Button
+            variant="outline"
+            className="h-8 px-3 text-[10px] font-bold uppercase border-slate-200 hover:bg-slate-50"
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+          >
+            Sau <ChevronRight size={14} className="ml-1" />
+          </Button>
         </div>
       </div>
     </div>
-  );
-}
-
-// Sub-component TableRow để code gọn hơn
-function TableRow({ item }: { item: any }) {
-  return (
-    <tr className="hover:bg-zinc-50/50 transition-colors group">
-      <td className="p-4 pl-8 font-mono text-[11px] font-bold text-zinc-400">
-        {item.id}
-      </td>
-      <td className="p-4">
-        <div className="space-y-0.5">
-          <p className="font-bold text-zinc-900 text-xs">{item.name}</p>
-          <p className="text-[9px] text-zinc-300 font-medium uppercase tracking-tight">
-            Model Architecture 2026
-          </p>
-        </div>
-      </td>
-      <td className="p-4">
-        <span className="inline-flex items-center px-2 py-0.5 border border-zinc-200 text-zinc-600 text-[9px] font-black uppercase tracking-tighter">
-          {item.room}
-        </span>
-      </td>
-      <td className="p-4 text-[11px] font-medium text-zinc-500">
-        {item.category}
-      </td>
-      <td className="p-4 text-right">
-        <div className="flex items-center justify-end gap-2">
-          <span
-            className={`text-[10px] font-bold uppercase tracking-tight ${
-              item.status === "Ổn định" ? "text-emerald-600" : "text-amber-600"
-            }`}
-          >
-            {item.status}
-          </span>
-          <div
-            className={`w-1 h-1 rounded-full ${
-              item.status === "Ổn định"
-                ? "bg-emerald-500"
-                : "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"
-            }`}
-          />
-        </div>
-      </td>
-      <td className="p-4 pr-8 text-right">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="w-8 h-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              <MoreHorizontal size={14} className="text-zinc-400" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="rounded-none border-zinc-200 shadow-xl w-48 p-1"
-          >
-            <DropdownMenuItem className="text-[10px] font-bold uppercase tracking-widest py-2.5 cursor-pointer">
-              <History size={12} className="mr-2" /> Xem nhật ký
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-[10px] font-bold uppercase tracking-widest py-2.5 cursor-pointer">
-              Điều chuyển vị trí
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-[10px] font-bold uppercase tracking-widest py-2.5 cursor-pointer text-red-600">
-              Báo lỗi kỹ thuật
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </td>
-    </tr>
   );
 }

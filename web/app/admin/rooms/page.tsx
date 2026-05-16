@@ -114,7 +114,7 @@ export default function RoomsPage() {
   };
 
   return (
-    <div className=" space-y-8 bg-slate-50/50 min-h-screen">
+    <div className=" space-y-8 bg-slate-50/50 min-h-screen p-4">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="space-y-1">
