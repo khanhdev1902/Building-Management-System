@@ -50,7 +50,7 @@ export const UtilityHeader = ({
             </span>
           </div>
 
-          <div className="w-[3px] h-[3px] bg-slate-200 rounded-full" />
+          <div className="w-0.75 h-0.75 bg-slate-200 rounded-full" />
 
           <div className="flex items-center gap-1.5 text-xs text-slate-500">
             <Clock3 className="w-3.5 h-3.5 text-slate-400 stroke-[1.5]" />

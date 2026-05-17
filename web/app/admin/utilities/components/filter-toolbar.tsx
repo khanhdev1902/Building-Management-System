@@ -94,7 +94,7 @@ export const FilterToolbar = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-[210px] rounded-xl p-1.5 shadow-lg border border-slate-200 bg-white"
+            className="w-52.5 rounded-xl p-1.5 shadow-lg border border-slate-200 bg-white"
           >
             <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 py-1.5">
               Sơ đồ tầng tòa nhà
@@ -106,7 +106,7 @@ export const FilterToolbar = ({
               Hiển thị tất cả tầng
             </DropdownMenuItem>
             <DropdownMenuSeparator className="my-1 border-slate-100" />
-            <ScrollArea className="h-[240px] pr-1">
+            <ScrollArea className="h-60 pr-1">
               <div className="grid grid-cols-3 gap-1 p-0.5">
                 {floors.map((f) => (
                   <button
@@ -133,7 +133,7 @@ export const FilterToolbar = ({
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className={`h-10 rounded-lg border text-xs font-semibold px-3 gap-2 min-w-[130px] justify-between transition-all bg-white shadow-2xs ${
+              className={`h-10 rounded-lg border text-xs font-semibold px-3 gap-2 min-w-32.5 justify-between transition-all bg-white shadow-2xs ${
                 activeStatus !== "all"
                   ? "border-indigo-200 bg-indigo-50/30 text-indigo-700 hover:bg-indigo-50/50 hover:border-indigo-300"
                   : "border-slate-200 text-slate-600 hover:bg-slate-50/50"
@@ -156,7 +156,7 @@ export const FilterToolbar = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-[160px] rounded-lg p-1 shadow-lg border border-slate-200 bg-white"
+            className="w-40 rounded-lg p-1 shadow-lg border border-slate-200 bg-white"
           >
             <DropdownMenuItem
               onClick={() => setActiveStatus("all")}
@@ -190,7 +190,7 @@ export const FilterToolbar = ({
             className="h-10 px-2.5 text-rose-600 hover:text-rose-700 hover:bg-rose-50/60 rounded-lg transition-colors border border-dashed border-rose-200 bg-rose-50/10 text-xs font-medium shrink-0 flex items-center gap-1"
             title="Xóa tất cả bộ lọc hiện tại"
           >
-            <RotateCcw className="w-3.5 h-3.5 stroke-[2]" />
+            <RotateCcw className="w-3.5 h-3.5 stroke-2" />
             <span className="hidden sm:inline uppercase tracking-wider text-[10px] font-bold">
               Xóa lọc
             </span>

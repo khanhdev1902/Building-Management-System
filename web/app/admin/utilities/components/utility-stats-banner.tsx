@@ -63,7 +63,7 @@ export const UtilityStatsBanner = ({
       {stats.map((s, i) => (
         <Card
           key={i}
-          className="group relative border border-slate-200/80 bg-white p-4 rounded-xl transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_12px_24px_-8px_rgba(15,23,42,0.04)] overflow-hidden flex flex-col justify-between min-h-[115px]"
+          className="group relative border border-slate-200/80 bg-white p-4 rounded-xl transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_12px_24px_-8px_rgba(15,23,42,0.04)] overflow-hidden flex flex-col justify-between min-h-28.75"
         >
           {/* Lớp phủ sáng mờ radial dịu mắt */}
           <div className="absolute inset-0 bg-radial from-slate-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -99,7 +99,7 @@ export const UtilityStatsBanner = ({
             {/* Tuyến ba: Thanh vạch phân đoạn LED đặc trưng (Đã giảm số vạch xuống 16 cho đỡ rối) */}
             {s.progressRatio !== null ? (
               <div className="pt-1">
-                <div className="flex gap-0.5 h-[3px] w-full">
+                <div className="flex gap-0.5 h-0.75 w-full">
                   {[...Array(s.vacts)].map((_, idx) => (
                     <div
                       key={idx}
@@ -125,7 +125,7 @@ export const UtilityStatsBanner = ({
       ))}
 
       {/* 4. Thẻ Doanh Thu: Đã được đưa về chuẩn "Máu trắng" SaaS Enterprise */}
-      <Card className="group relative border border-slate-200/80 bg-white p-4 rounded-xl transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_12px_24px_-8px_rgba(15,23,42,0.04)] overflow-hidden flex flex-col justify-between min-h-[115px]">
+      <Card className="group relative border border-slate-200/80 bg-white p-4 rounded-xl transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_12px_24px_-8px_rgba(15,23,42,0.04)] overflow-hidden flex flex-col justify-between min-h-28.75">
         <div className="absolute inset-0 bg-radial from-indigo-50/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
         <div className="relative z-10 flex flex-col justify-between h-full w-full space-y-3">
@@ -157,7 +157,7 @@ export const UtilityStatsBanner = ({
 
           {/* Tuyến ba: Đồng bộ thanh tiến độ vạch LED màu Indigo sang trọng */}
           <div className="pt-1">
-            <div className="flex gap-0.5 h-[3px] w-full">
+            <div className="flex gap-0.5 h-0.75 w-full">
               {[...Array(16)].map((_, i) => (
                 <div
                   key={i}

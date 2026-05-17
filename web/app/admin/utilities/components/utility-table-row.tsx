@@ -83,7 +83,7 @@ export const UtilityTableRow = ({
           }`}
         >
           {/* Chỉ số cũ phẳng */}
-          <div className="flex flex-col min-w-[32px] select-none opacity-60">
+          <div className="flex flex-col min-w-8 select-none opacity-60">
             <span className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider">
               Cũ
             </span>
@@ -129,7 +129,7 @@ export const UtilityTableRow = ({
                 : "bg-slate-50/50 border-slate-200/60 focus-within:bg-white focus-within:border-slate-400"
           }`}
         >
-          <div className="flex flex-col min-w-[32px] select-none opacity-60">
+          <div className="flex flex-col min-w-8 select-none opacity-60">
             <span className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider">
               Cũ
             </span>
@@ -192,7 +192,7 @@ export const UtilityTableRow = ({
                 onClick={() => setIsLocked(false)}
                 className="h-7 px-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50/60 rounded-md text-xs font-medium transition-colors"
               >
-                <X className="w-3 h-3 mr-1 stroke-[2]" /> Mở khóa
+                <X className="w-3 h-3 mr-1 stroke-2" /> Mở khóa
               </Button>
             ) : (
               <Button

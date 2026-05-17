@@ -135,7 +135,7 @@ export default function TenantsPage() {
             Xuất Excel
           </Button>
           <Button className="h-9 px-3.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium rounded-lg shadow-2xs flex gap-1.5 active:scale-[0.99]">
-            <UserPlus className="h-4 w-4 stroke-[2]" />
+            <UserPlus className="h-4 w-4 stroke-2" />
             Thêm cư dân mới
           </Button>
         </div>
@@ -185,7 +185,7 @@ export default function TenantsPage() {
             <div
               key={stat.key}
               onClick={() => setStatusFilter(stat.key)}
-              className={`p-4 bg-white border rounded-xl transition-all duration-300 cursor-pointer select-none flex items-center justify-between min-h-[76px] shadow-[0_1px_2px_rgba(0,0,0,0.01)] ${
+              className={`p-4 bg-white border rounded-xl transition-all duration-300 cursor-pointer select-none flex items-center justify-between min-h-19 shadow-[0_1px_2px_rgba(0,0,0,0.01)] ${
                 isSelected ? stat.activeStyle : stat.style
               }`}
             >
@@ -221,7 +221,7 @@ export default function TenantsPage() {
       </div>
 
       {/* 4. Table UI Danh sách tinh xảo */}
-      <div className="rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.01),0_12px_24px_-4px_rgba(15,23,42,0.03)] bg-white overflow-hidden flex flex-col min-h-[400px]">
+      <div className="rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.01),0_12px_24px_-4px_rgba(15,23,42,0.03)] bg-white overflow-hidden flex flex-col min-h-100">
         <Table>
           <TableHeader className="bg-slate-50/40 border-b border-slate-100/80 select-none">
             <TableRow className="hover:bg-transparent">

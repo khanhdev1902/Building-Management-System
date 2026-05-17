@@ -122,7 +122,7 @@ export default function ContractsPage() {
             Xuất file báo cáo
           </Button>
           <Button className="h-9 px-3.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium rounded-lg shadow-2xs flex gap-1.5 active:scale-[0.99]">
-            <Plus className="h-4 w-4 stroke-[2]" />
+            <Plus className="h-4 w-4 stroke-2" />
             Khởi tạo hợp đồng
           </Button>
         </div>
@@ -158,7 +158,7 @@ export default function ContractsPage() {
         ].map((stat, i) => (
           <div
             key={i}
-            className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.01)] flex items-center justify-between min-h-[76px]"
+            className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.01)] flex items-center justify-between min-h-19"
           >
             <div className="space-y-0.5">
               <p className="text-xs font-medium text-slate-400">{stat.label}</p>
@@ -215,7 +215,7 @@ export default function ContractsPage() {
       </div>
 
       {/* 4. Data Table UI phẳng tràn viền */}
-      <div className="rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.01),0_12px_24px_-4px_rgba(15,23,42,0.03)] bg-white overflow-hidden flex flex-col min-h-[420px]">
+      <div className="rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.01),0_12px_24px_-4px_rgba(15,23,42,0.03)] bg-white overflow-hidden flex flex-col min-h-105">
         <Table>
           <TableHeader className="bg-slate-50/40 border-b border-slate-100/80 select-none">
             <TableRow className="hover:bg-transparent">
@@ -294,14 +294,14 @@ export default function ContractsPage() {
                         <span className="font-semibold text-slate-800 text-xs tracking-tight truncate mb-0.5">
                           {item.tenant}
                         </span>
-                        <PaymentStatusBadge status={item.paymentStatus} />
+                        <PaymentStatusBadge status={item.paymentStatus ?? ""} />
                       </div>
                     </div>
                   </TableCell>
 
                   {/* Thời hạn chu kỳ & Thanh tiến độ thời gian thực tế */}
                   <TableCell className="py-3.5">
-                    <div className="flex flex-col gap-1.5 max-w-[150px]">
+                    <div className="flex flex-col gap-1.5 max-w-37.5">
                       <div className="flex items-center justify-between text-[11px] font-medium font-mono text-slate-600">
                         <span>
                           {item.startDate.split("-").reverse().join("/")}
@@ -314,7 +314,7 @@ export default function ContractsPage() {
 
                       {/* Thanh progress động dựa trên mốc thời gian thực */}
                       <div
-                        className="w-full h-[2px] bg-slate-100 rounded-full overflow-hidden relative"
+                        className="w-full h-0.5 bg-slate-100 rounded-full overflow-hidden relative"
                         title={`Đã trôi qua ${timeProgress}%`}
                       >
                         <div
@@ -347,7 +347,7 @@ export default function ContractsPage() {
 
                   {/* Tình trạng hợp đồng */}
                   <TableCell className="text-center py-3.5">
-                    <StatusBadge status={item.status} />
+                    <StatusBadge status={item.status ?? ""} />
                   </TableCell>
 
                   {/* Cụm nút hành động dẹt gọn hàng dọc */}
