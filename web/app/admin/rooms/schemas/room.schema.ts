@@ -41,6 +41,6 @@ export const roomSchema = z.object({
   status: z.enum(["AVAILABLE", "OCCUPIED", "MAINTENANCE"]),
   description: z.string().max(500, "Mô tả quá dài").optional(),
   amenities: z.array(z.string()),
-  otherServices: z.array(z.string()),
-  services: z.record(z.string(), z.number()),
+  // otherServices: z.array(z.string()),
+  serviceIds: z.array(z.string()),
 });

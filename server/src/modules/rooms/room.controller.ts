@@ -9,21 +9,23 @@ import {
 } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto, UpdateRoomDto } from './dto';
+import { ApiResponse } from 'src/common/responses/api-response';
 
 @Controller('rooms')
 export class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
   @Post()
-  create(@Body() createRoomDto: CreateRoomDto) {
+  async create(@Body() createRoomDto: CreateRoomDto) {
     console.log('Received CreateRoomDto:', createRoomDto);
-    return;
-    return this.roomService.create(createRoomDto);
+    const newRoom = await this.roomService.create(createRoomDto);
+    return ApiResponse.success(newRoom, 'Tạo phòng mới thành công!', 201);
   }
 
   @Get()
-  findAll() {
-    return this.roomService.findAll();
+  async findAll() {
+    const rooms = await this.roomService.findAll();
+    return ApiResponse.success(rooms, 'Lấy danh sách phòng thành công !', 200);
   }
 
   @Get(':id')

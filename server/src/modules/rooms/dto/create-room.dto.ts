@@ -5,7 +5,6 @@ import {
   IsNotEmpty,
   Min,
   IsEnum,
-  IsObject,
   IsArray,
 } from 'class-validator';
 
@@ -59,9 +58,6 @@ export class CreateRoomDto {
   amenities?: string[];
 
   // services
-  @IsObject({
-    message: 'Dịch vụ không hợp lệ',
-  })
   @IsOptional()
-  services?: Record<string, number>;
+  serviceIds?: string[];
 }

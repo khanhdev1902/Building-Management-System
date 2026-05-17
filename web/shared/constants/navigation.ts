@@ -46,8 +46,8 @@ export const navigation = {
       children: [
         // { title: "Sơ đồ tòa nhà", url: "/admin/buildings" },
         { title: "Dịch vụ", url: "/admin/services" },
-        { title: "Căn hộ", url: "/admin/rooms" },
         { title: "Tài sản & Thiết bị", url: "/admin/assets" }, //Quản lý thiết bị chung
+        { title: "Danh sách phòng", url: "/admin/rooms" },
         { title: "Chỉ số điện nước", icon: Zap, url: "/admin/utilities" },
       ],
     },

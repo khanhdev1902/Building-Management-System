@@ -11,76 +11,89 @@ const STATS = [
     value: "12",
     sub: "+2 mới",
     icon: LayoutGrid,
-    color: "text-indigo-600",
-    bg: "bg-indigo-50",
+    statusType: "primary",
+    hoverStyle:
+      "group-hover:text-indigo-600 group-hover:bg-indigo-50 group-hover:border-indigo-100",
+    badgeStyle: "text-indigo-700 bg-indigo-50/60 border-indigo-100/50",
   },
   {
-    label: "Vận hành",
+    label: "Tỷ lệ vận hành",
     value: "98.5%",
     sub: "Ổn định",
     icon: Activity,
-    color: "text-emerald-600",
-    bg: "bg-emerald-50",
+    statusType: "success",
+    hoverStyle:
+      "group-hover:text-emerald-600 group-hover:bg-emerald-50 group-hover:border-emerald-100",
+    badgeStyle: "text-emerald-700 bg-emerald-50/60 border-emerald-100/50",
   },
   {
-    label: "Doanh thu",
+    label: "Doanh thu tháng",
     value: "24.5M",
     sub: "Dự kiến",
     icon: TrendingUp,
-    color: "text-blue-600",
-    bg: "bg-blue-50",
+    statusType: "info",
+    hoverStyle:
+      "group-hover:text-blue-600 group-hover:bg-blue-50 group-hover:border-blue-100",
+    badgeStyle: "text-blue-700 bg-blue-50/60 border-blue-100/50",
   },
 ];
 
 export const ServiceHeader = ({ onAdd }: ServiceHeaderProps) => (
-  <div className="space-y-6 mb-6">
-    {/* Header Top: Title & Action gộp làm một để giảm padding */}
-    <div className="flex items-center justify-between">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-          Dịch vụ <span className="text-slate-300 font-normal">/</span> Tiện ích
+  <div className="space-y-5 mb-2">
+    {/* 1. Header Top: Thiết kế thanh lịch, tinh giản tiêu đề */}
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="space-y-0.5">
+        <h1 className="text-xl font-bold tracking-tight text-slate-900">
+          Danh mục Dịch vụ & Tiện ích
         </h1>
         <p className="text-xs text-slate-500 font-medium">
-          Thiết lập danh mục chi phí vận hành tòa nhà.
+          Cấu hình và thiết lập các gói chi phí vận hành, tiện ích nội khu tòa
+          nhà.
         </p>
       </div>
 
       <Button
         onClick={onAdd}
-        className="bg-slate-900 hover:bg-indigo-600 text-white rounded-lg h-9 px-4 shadow-sm transition-all font-semibold text-xs flex items-center gap-2"
+        className="bg-slate-900 hover:bg-slate-800 text-white rounded-lg h-9 px-3.5 shadow-2xs transition-all font-medium text-xs flex items-center gap-1.5 self-start sm:self-center"
       >
-        <Plus className="h-4 w-4 stroke-[3px]" />
-        Tạo mới
+        <Plus className="h-4 w-4 stroke-2" />
+        Tạo dịch vụ mới
       </Button>
     </div>
 
-    {/* Stats Row: Nhỏ gọn hơn, không chiếm diện tích */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+    {/* 2. Stats Row: Phẳng hoàn toàn, nén chặt thông tin kiểu Enterprise */}
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
       {STATS.map((stat, i) => (
         <div
           key={i}
-          className="group flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-200/60 shadow-sm transition-all hover:border-indigo-100"
+          className="group relative flex items-center justify-between p-3.5 bg-white rounded-xl border border-slate-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.01)] hover:border-slate-300 transition-all duration-300 select-none overflow-hidden"
         >
-          <div
-            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${stat.bg} ${stat.color}`}
-          >
-            <stat.icon className="h-5 w-5 stroke-[2px]" />
-          </div>
-          <div className="min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 leading-none mb-1">
-              {stat.label}
-            </p>
-            <div className="flex items-baseline gap-2">
-              <span className="text-base font-bold text-slate-900 leading-none">
+          {/* Cụm Text bên trái: Đưa số liệu lớn lên trước */}
+          <div className="space-y-1 min-w-0">
+            <p className="text-xs font-medium text-slate-400">{stat.label}</p>
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold text-slate-900 tracking-tight font-sans">
                 {stat.value}
               </span>
+
+              {/* Badge xu hướng tinh gọn thay thế cho text thô */}
               <span
-                className={`text-[9px] font-bold ${stat.color} leading-none`}
+                className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold border ${stat.badgeStyle}`}
               >
                 {stat.sub}
               </span>
             </div>
           </div>
+
+          {/* Icon bên phải: Chuyển màu động vô cùng mượt mà khi hover */}
+          <div
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-50 border border-slate-100 text-slate-400 transition-all duration-300 ${stat.hoverStyle}`}
+          >
+            <stat.icon className="h-4 w-4 stroke-[1.5]" />
+          </div>
+
+          {/* Hiệu ứng viền ngầm tinh tế dưới đáy card */}
+          <div className="absolute bottom-0 left-3 right-3 h-px bg-slate-100 group-hover:bg-slate-200 transition-colors" />
         </div>
       ))}
     </div>

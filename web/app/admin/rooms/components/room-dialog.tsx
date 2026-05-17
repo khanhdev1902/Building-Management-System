@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  Plus,
   Save,
   Zap,
   Droplets,
@@ -44,20 +43,11 @@ import { roomSchema } from "../schemas/room.schema";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
-const AVAILABLE_AMENITIES = [
-  "Điều hòa",
-  "Nóng lạnh",
-  "Giường",
-  "Tủ quần áo",
-  "Tủ lạnh",
-  "Máy giặt",
-  "Ban công",
-  "Bếp từ",
-];
+import { assetApi } from "../../assets/apis/asset.api";
+import { AssetCategory } from "../../assets/types/asset.type";
 
 type RoomFormValues = z.infer<typeof roomSchema>;
-type RoomSubmitPayload = Omit<RoomFormValues, "otherServices">;
+type RoomSubmitPayload = RoomFormValues;
 
 interface RoomDialogProps {
   mode?: "create" | "update";
@@ -74,6 +64,9 @@ export function RoomDialog({
 }: RoomDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [lstServices, setLstServices] = useState<ServiceResponse[]>([]);
+  const [lstAssets, setLstAssets] = useState<AssetCategory[]>([]);
+  const electric = lstServices.find((s) => s.name === "Điện");
+  const water = lstServices.find((s) => s.name === "Nước");
 
   const form = useForm<RoomFormValues>({
     resolver: zodResolver(roomSchema),
@@ -87,8 +80,7 @@ export function RoomDialog({
       status: "AVAILABLE",
       description: "",
       amenities: [],
-      otherServices: [],
-      services: { electricity: 3500, water: 100000 },
+      serviceIds: [],
     },
   });
 
@@ -103,32 +95,28 @@ export function RoomDialog({
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const selectedAmenities = watch("amenities") || [];
-  const selectedOtherServices = watch("otherServices") || [];
+  const selectedServiceIds = watch("serviceIds") || [];
 
   useEffect(() => {
-    const fetchServices = async () => {
+    const fetchData = async () => {
       try {
-        const res = await serviceApi.getAllServices();
-        setLstServices(res.data);
+        const resService = await serviceApi.getAllServices();
+        const resAsset = await assetApi.getAllAssets();
+        setLstServices(resService.data);
+        setLstAssets(resAsset.data.assets);
+        console.log(resAsset.data);
       } catch (error) {
-        console.error("Lỗi lấy dịch vụ:", error);
+        console.error("Lỗi lấy Data:", error);
       }
     };
-    if (isOpen) fetchServices();
+    if (isOpen) fetchData();
   }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
       if (mode === "update" && initialData) {
-        const otherServiceIds = initialData.services
-          ? Object.keys(initialData.services).filter(
-              (k) => k !== "electricity" && k !== "water",
-            )
-          : [];
-
         reset({
           ...initialData,
-          otherServices: otherServiceIds,
         });
       } else {
         reset({
@@ -141,24 +129,25 @@ export function RoomDialog({
           status: "AVAILABLE",
           description: "",
           amenities: [],
-          otherServices: [],
-          services: { electricity: 3500, water: 100000 },
+          serviceIds: [],
         });
       }
     }
   }, [isOpen, initialData, mode, reset]);
 
   const handleFinalSubmit = (data: RoomFormValues) => {
-    const finalServices = { ...data.services };
-    data.otherServices.forEach((sId) => {
-      const s = lstServices.find((item) => item.id === sId);
-      if (s) finalServices[sId] = s.price;
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { otherServices, ...submissionData } = data;
-    console.log("Dữ liệu gửi đi:", { ...submissionData, services: finalServices });
-    onSubmit({ ...submissionData, services: finalServices });
+    const defaultServiceIds = [electric?.id, water?.id].filter(
+      Boolean,
+    ) as string[];
+    const finalServiceIds = [
+      ...new Set([...defaultServiceIds, ...data.serviceIds]),
+    ];
+    const payload = {
+      ...data,
+      serviceIds: finalServiceIds,
+    };
+    console.log("Dữ liệu gửi đi:", payload);
+    onSubmit(payload);
     setIsOpen(false);
   };
 
@@ -166,8 +155,8 @@ export function RoomDialog({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button className="rounded-lg bg-slate-900 hover:bg-slate-800 shadow-md transition-all active:scale-95 px-5">
-            <Plus className="mr-2 h-4 w-4" /> Thêm căn hộ
+          <Button className="rounded-lg bg-slate-900 hover:bg-slate-800 shadow-md transition-all active:scale-95 p-4 cursor-pointer">
+            + Tạo phòng
           </Button>
         )}
       </DialogTrigger>
@@ -242,7 +231,12 @@ export function RoomDialog({
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {["Studio", "1 Phòng ngủ", "2 Phòng ngủ", "3 Phòng ngủ"].map((t) => (
+                        {[
+                          "Studio",
+                          "1 Phòng ngủ",
+                          "2 Phòng ngủ",
+                          "3 Phòng ngủ",
+                        ].map((t) => (
                           <SelectItem key={t} value={t}>
                             {t}
                           </SelectItem>
@@ -350,7 +344,10 @@ export function RoomDialog({
                           Giá điện
                         </span>
                       </div>
-                      <span className="text-sm font-bold">3.500đ / số</span>
+                      <span className="text-sm font-bold">
+                        {Number(electric?.price ?? 0)?.toLocaleString("vi-VN")}
+                        đ/ số
+                      </span>
                     </div>
                     <div className="bg-white p-3 rounded-lg border border-slate-200 flex justify-between items-center shadow-sm">
                       <div className="flex items-center gap-2">
@@ -359,7 +356,10 @@ export function RoomDialog({
                           Giá nước
                         </span>
                       </div>
-                      <span className="text-sm font-bold">100.000đ / m3</span>
+                      <span className="text-sm font-bold">
+                        {Number(water?.price ?? 0)?.toLocaleString("vi-VN")}đ/
+                        m3
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -375,25 +375,25 @@ export function RoomDialog({
                         <label
                           key={s.id}
                           className={`group flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${
-                            selectedOtherServices.includes(s.id)
+                            selectedServiceIds.includes(s.id)
                               ? "border-slate-900 bg-slate-900 text-white"
                               : "border-slate-200 bg-white hover:border-slate-400"
                           }`}
                         >
                           <div className="flex items-center gap-3">
                             <Checkbox
-                              checked={selectedOtherServices.includes(s.id)}
+                              checked={selectedServiceIds.includes(s.id)}
                               onCheckedChange={(checked) => {
-                                const current = selectedOtherServices;
+                                const current = selectedServiceIds;
                                 setValue(
-                                  "otherServices",
+                                  "serviceIds",
                                   checked
                                     ? [...current, s.id]
                                     : current.filter((id) => id !== s.id),
                                 );
                               }}
                               className={
-                                selectedOtherServices.includes(s.id)
+                                selectedServiceIds.includes(s.id)
                                   ? "border-white data-[state=checked]:bg-white data-[state=checked]:text-slate-900"
                                   : ""
                               }
@@ -401,13 +401,14 @@ export function RoomDialog({
                             <div>
                               <p className="text-sm font-bold">{s.name}</p>
                               <p
-                                className={`text-[10px] ${selectedOtherServices.includes(s.id) ? "text-slate-400" : "text-slate-500"}`}
+                                className={`text-[10px] ${selectedServiceIds.includes(s.id) ? "text-slate-400" : "text-slate-500"}`}
                               >
-                                {s.price.toLocaleString()}đ / {s.unit}
+                                {Number(s.price ?? 0).toLocaleString("vi-VN")}đ
+                                / {s.unit}
                               </p>
                             </div>
                           </div>
-                          {selectedOtherServices.includes(s.id) && (
+                          {selectedServiceIds.includes(s.id) && (
                             <CheckCircle2 className="w-4 h-4 text-white" />
                           )}
                         </label>
@@ -419,33 +420,35 @@ export function RoomDialog({
               {/* TAB 3: TIỆN ÍCH */}
               <TabsContent value="amenities" className="mt-0">
                 <div className="grid grid-cols-3 gap-3">
-                  {AVAILABLE_AMENITIES.map((item) => (
+                  {lstAssets.map((item) => (
                     <label
-                      key={item}
+                      key={item.id}
                       className={`flex items-center gap-2.5 p-3 rounded-lg border transition-all cursor-pointer shadow-sm ${
-                        selectedAmenities.includes(item)
+                        selectedAmenities.includes(item.id)
                           ? "bg-slate-900 border-slate-900 text-white"
                           : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
                       }`}
                     >
                       <Checkbox
-                        checked={selectedAmenities.includes(item)}
+                        checked={selectedAmenities.includes(item.id)}
                         onCheckedChange={(checked) => {
                           const current = selectedAmenities;
                           setValue(
                             "amenities",
                             checked
-                              ? [...current, item]
-                              : current.filter((i) => i !== item),
+                              ? [...current, item.id]
+                              : current.filter((i) => i !== item.id),
                           );
                         }}
                         className={
-                          selectedAmenities.includes(item)
+                          selectedAmenities.includes(item.id)
                             ? "border-white data-[state=checked]:bg-white data-[state=checked]:text-slate-900"
                             : ""
                         }
                       />
-                      <span className="text-[13px] font-medium">{item}</span>
+                      <span className="text-[13px] font-medium">
+                        {item.name}
+                      </span>
                     </label>
                   ))}
                 </div>

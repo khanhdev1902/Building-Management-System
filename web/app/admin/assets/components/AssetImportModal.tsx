@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { X, Check, Package, Hash, Type, Save } from "lucide-react";
+import { X, Check, Package, Save } from "lucide-react";
 
 interface AssetImportModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (name: string, quantity: number) => void;
-  initialData?: { name: string; quantity: number } | null; // Thêm prop này
+  initialData?: { name: string; quantity: number } | null;
 }
 
 export const AssetImportModal = ({
@@ -37,75 +37,94 @@ export const AssetImportModal = ({
   const isEdit = !!initialData;
 
   return (
-    <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Lớp nền mờ Glassmorphism cao cấp hơn */}
       <div
-        className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-slate-900/30 backdrop-blur-sm animate-in fade-in duration-300"
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-md bg-white rounded-xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] border border-slate-200 overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-          <div className="flex items-center gap-2.5">
+      {/* Khung nội dung chính bo góc mềm mại đồng bộ hệ thống */}
+      <div className="relative w-full max-w-sm bg-white rounded-xl shadow-[0_20px_50px_-12px_rgba(15,23,42,0.12)] border border-slate-200/80 overflow-hidden animate-in fade-in zoom-in-95 duration-200 ease-out">
+        {/* 1. Header Modal tinh tế */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50/40">
+          <div className="flex items-center gap-2">
             <div
-              className={`p-1.5 rounded transition-colors ${isEdit ? "bg-amber-500" : "bg-slate-900"} text-white`}
+              className={`p-1.5 rounded-lg text-white shadow-2xs ${
+                isEdit ? "bg-amber-500" : "bg-slate-900"
+              }`}
             >
-              <Package size={16} />
+              <Package size={14} className="stroke-[1.8]" />
             </div>
-            <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-widest">
-              {isEdit ? "Cập nhật thông tin lô" : "Nhập lô thiết bị mới"}
+            <h3 className="text-sm font-semibold text-slate-900">
+              {isEdit ? "Cập nhật danh mục" : "Nhập lô thiết bị mới"}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 hover:bg-slate-200 rounded text-slate-400 hover:text-slate-900"
+            className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 
-        <div className="p-6 space-y-5">
+        {/* 2. Form điền thông tin dẹt, lì */}
+        <div className="p-5 space-y-4">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-black text-slate-800 uppercase tracking-widest flex items-center gap-1.5">
-              <Type size={12} /> Tên loại tài sản
+            <label className="text-xs font-medium text-slate-500">
+              Tên loại tài sản / Thiết bị
             </label>
             <input
               autoFocus
               type="text"
+              placeholder="Ví dụ: Điều hòa Daikin 12000BTU..."
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-md text-sm font-semibold text-slate-900 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all"
+              className="w-full h-9 px-3 bg-slate-50/50 border border-slate-200 focus:bg-white text-slate-800 rounded-lg text-xs font-medium focus:outline-none focus:border-slate-400 focus:ring-0 transition-all placeholder:text-slate-400 placeholder:font-normal"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-black text-slate-800 uppercase tracking-widest flex items-center gap-1.5">
-              <Hash size={12} /> Số lượng
+            <label className="text-xs font-medium text-slate-500">
+              Số lượng nhập kho
             </label>
             <input
               type="number"
+              min={1}
               value={quantity}
               onChange={(e) => setQuantity(Number(e.target.value))}
-              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-md text-sm font-black text-slate-900 focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all"
+              className="w-full h-9 px-3 bg-slate-50/50 border border-slate-200 focus:bg-white text-slate-800 rounded-lg text-xs font-semibold font-mono focus:outline-none focus:border-slate-400 focus:ring-0 transition-all"
             />
           </div>
         </div>
 
-        <div className="px-6 py-4 bg-slate-50/80 border-t border-slate-100 flex justify-end gap-3">
+        {/* 3. Khối điều khiển hành động dẹt phẳng */}
+        <div className="px-5 py-3.5 bg-slate-50/60 border-t border-slate-100 flex justify-end items-center gap-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-[11px] font-black text-slate-400 hover:text-slate-900 uppercase tracking-widest"
+            className="h-8 px-3.5 text-xs font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
           >
-            Hủy
+            Hủy bỏ
           </button>
+
           <button
+            disabled={!name.trim() || quantity < 1}
             onClick={() => {
               onConfirm(name, quantity);
               onClose();
             }}
-            className={`px-5 py-2 ${isEdit ? "bg-amber-600 hover:bg-amber-700" : "bg-slate-900 hover:bg-slate-800"} text-white rounded font-black text-[11px] uppercase tracking-widest transition-all flex items-center gap-2`}
+            className={`h-8 px-4 text-xs font-medium text-white rounded-lg transition-all shadow-2xs flex items-center gap-1.5 active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none ${
+              isEdit
+                ? "bg-amber-600 hover:bg-amber-700"
+                : "bg-slate-900 hover:bg-slate-800"
+            }`}
           >
-            {isEdit ? <Save size={14} /> : <Check size={14} />}
-            {isEdit ? "Lưu thay đổi" : "Hoàn tất nhập kho"}
+            {isEdit ? (
+              <Save size={13} />
+            ) : (
+              <Check size={13} className="stroke-[2.5]" />
+            )}
+            <span>{isEdit ? "Lưu thay đổi" : "Hoàn tất"}</span>
           </button>
         </div>
       </div>

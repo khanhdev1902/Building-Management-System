@@ -109,28 +109,33 @@ export default function AdminLayout({
     <ProtectedRoute>
       <TooltipProvider delayDuration={0}>
         <SidebarProvider>
-          <div className="flex min-h-screen w-full bg-[#f8fafc] dark:bg-background">
+          <div className="flex min-h-screen w-full bg-slate-50/40 antialiased selection:bg-indigo-50">
             <SidebarWrapper />
 
-            <main className="flex flex-1 flex-col transition-all duration-300 ease-in-out">
-              {/* HEADER CẢI TIẾN */}
-              <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b bg-white/80 px-6 backdrop-blur-md dark:bg-background/80">
-                <div className="flex items-center gap-4">
-                  <SidebarTrigger className="hover:bg-accent transition-colors" />
-                  <Separator orientation="vertical" className="h-6" />
+            <main className="flex flex-1 flex-col min-w-0 transition-all duration-300">
+              {/* 1. HEADER CẢI TIẾN: Sắc nét, nén chiều cao về h-14 đồng bộ Nav Sidebar */}
+              <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center justify-between border-b border-slate-200/60 bg-white/80 px-6 backdrop-blur-md select-none shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
+                {/* Cụm điều hướng Breadcrumb bên trái */}
+                <div className="flex items-center gap-3">
+                  <SidebarTrigger className="h-8 w-8 text-slate-500 hover:bg-slate-100 hover:text-slate-900 rounded-lg transition-colors" />
+                  <Separator
+                    orientation="vertical"
+                    className="h-4 bg-slate-200"
+                  />
+
                   <Breadcrumb className="hidden sm:block">
                     <BreadcrumbList>
                       <BreadcrumbItem>
                         <BreadcrumbLink
                           href="/dashboard"
-                          className="transition-colors hover:text-primary"
+                          className="text-xs font-medium text-slate-500 transition-colors hover:text-slate-900"
                         >
                           Danjin
                         </BreadcrumbLink>
                       </BreadcrumbItem>
-                      <BreadcrumbSeparator />
+                      <BreadcrumbSeparator className="text-slate-300 scale-80" />
                       <BreadcrumbItem>
-                        <BreadcrumbPage className="font-semibold text-foreground">
+                        <BreadcrumbPage className="text-xs font-semibold text-slate-800 tracking-tight">
                           Quản lý hệ thống
                         </BreadcrumbPage>
                       </BreadcrumbItem>
@@ -138,63 +143,79 @@ export default function AdminLayout({
                   </Breadcrumb>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  {/* THANH TÌM KIẾM CHUYÊN NGHIỆP */}
+                {/* Cụm công cụ tương tác bên phải */}
+                <div className="flex items-center gap-3.5">
+                  {/* THANH TÌM KIẾM CHUYÊN NGHIỆP: Đã tăng tương phản, bọc viền mảnh hạt cát */}
                   <div className="hidden md:flex items-center">
                     <Popover open={openSearch} onOpenChange={setOpenSearch}>
                       <PopoverTrigger asChild>
-                        <button className="flex items-center gap-2 px-3 py-1.5 w-64 text-sm text-muted-foreground bg-muted/50 border rounded-full hover:bg-muted transition-all border-transparent hover:border-input focus:outline-none">
-                          <Search className="h-4 w-4" />
-                          <span className="flex-1 text-left text-xs">
+                        <button className="flex items-center gap-2 px-3 h-8.5 w-60 text-slate-400 bg-slate-50/50 border border-slate-200/70 rounded-lg hover:bg-white hover:border-slate-300 transition-all focus:outline-none cursor-pointer">
+                          <Search className="h-3.5 w-3.5 stroke-[1.8]" />
+                          <span className="flex-1 text-left text-xs font-medium text-slate-400">
                             Tìm kiếm nhanh...
                           </span>
-                          <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-                            <span className="text-xs">⌘</span>K
+                          <kbd className="pointer-events-none hidden h-4.5 select-none items-center gap-0.5 rounded border border-slate-200 bg-white px-1.5 font-mono text-[9px] font-medium text-slate-400 shadow-2xs sm:flex">
+                            <span className="text-[10px]">⌘</span>K
                           </kbd>
                         </button>
                       </PopoverTrigger>
+
                       <PopoverContent
-                        className="p-0 w-112.5 overflow-hidden rounded-xl shadow-2xl border-none"
+                        className="p-0 w-105 overflow-hidden rounded-xl shadow-xl border border-slate-200/80 bg-white"
                         align="end"
+                        sideOffset={6}
                       >
-                        <Command className="rounded-none border-none">
-                          <div className="flex items-center border-b px-3">
+                        <Command className="rounded-none border-none bg-white">
+                          <div className="flex items-center border-b border-slate-100 px-3 bg-slate-50/30">
                             <Select
                               value={searchType}
                               // eslint-disable-next-line @typescript-eslint/no-explicit-any
                               onValueChange={(val: any) => setSearchType(val)}
                             >
-                              <SelectTrigger className="w-27.5 border-none shadow-none focus:ring-0 text-[11px] h-8 uppercase font-bold tracking-wider text-primary">
+                              <SelectTrigger className="w-24 border-none shadow-none focus:ring-0 text-xs h-9 font-semibold text-slate-700 bg-transparent p-0 hover:text-slate-900">
                                 <SelectValue />
                               </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="room">Phòng</SelectItem>
-                                <SelectItem value="tenant">Cư dân</SelectItem>
-                                <SelectItem value="contract">
-                                  Hợp đồng
+                              <SelectContent className="rounded-lg border-slate-200">
+                                <SelectItem value="room" className="text-xs">
+                                  Phòng căn hộ
                                 </SelectItem>
-                                <SelectItem value="staff">Nhân viên</SelectItem>
+                                <SelectItem value="tenant" className="text-xs">
+                                  Cư dân thuê
+                                </SelectItem>
+                                <SelectItem
+                                  value="contract"
+                                  className="text-xs"
+                                >
+                                  Hợp đồng pháp lý
+                                </SelectItem>
+                                <SelectItem value="staff" className="text-xs">
+                                  Nhân sự ca trực
+                                </SelectItem>
                               </SelectContent>
                             </Select>
+
                             <Separator
                               orientation="vertical"
-                              className="h-4 mx-2"
+                              className="h-3.5 bg-slate-200 mx-2"
                             />
+
                             <Input
-                              placeholder="Nhập từ khóa tìm kiếm..."
-                              className="border-none focus-visible:ring-0 h-11 text-sm bg-transparent"
+                              placeholder="Nhập số phòng, tên cư dân, mã hợp đồng..."
+                              className="border-none focus-visible:ring-0 h-10 text-xs font-medium text-slate-800 bg-transparent placeholder:text-slate-400"
                               value={searchValue}
                               onChange={(e) => setSearchValue(e.target.value)}
                             />
                           </div>
-                          <CommandList className="max-h-87.5">
-                            <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
-                              Không tìm thấy kết quả.
+
+                          <CommandList className="max-h-72 p-1">
+                            <CommandEmpty className="py-8 text-center text-xs text-slate-400 font-medium">
+                              Không tìm thấy kết quả trùng khớp.
                             </CommandEmpty>
+
                             <CommandGroup
                               heading={
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
-                                  Kết quả gợi ý
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 px-1">
+                                  Thực thể gợi ý hệ thống
                                 </span>
                               }
                             >
@@ -202,16 +223,16 @@ export default function AdminLayout({
                                 <CommandItem
                                   key={item.id}
                                   onSelect={() => setOpenSearch(false)}
-                                  className="flex items-center gap-3 p-3 rounded-md mx-2 my-1 cursor-pointer"
+                                  className="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer focus:bg-slate-50"
                                 >
-                                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
-                                    <item.icon className="h-4 w-4" />
+                                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-50 border border-slate-100 text-slate-500">
+                                    <item.icon className="h-4 w-4 stroke-[1.75]" />
                                   </div>
-                                  <div className="flex flex-col">
-                                    <span className="text-sm font-semibold">
+                                  <div className="flex flex-col min-w-0">
+                                    <span className="text-xs font-semibold text-slate-800 truncate">
                                       {item.title}
                                     </span>
-                                    <span className="text-[11px] text-muted-foreground">
+                                    <span className="text-[10px] text-slate-400 font-medium font-mono mt-0.5">
                                       {item.sub}
                                     </span>
                                   </div>
@@ -224,34 +245,45 @@ export default function AdminLayout({
                     </Popover>
                   </div>
 
+                  {/* Cụm Nút chức năng phụ hữu dụng */}
                   <div className="flex items-center gap-1">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="rounded-full relative hover:bg-red-50 hover:text-red-500 transition-colors"
+                      // SỬA: Thay đổi hiệu ứng hover từ màu đỏ giật gân sang màu xám mịn đồng bộ thanh lịch
+                      className="h-8 w-8 rounded-lg relative hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
                     >
-                      <Bell className="h-4.5 w-4.5" />
-                      <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-600 ring-2 ring-white animate-pulse"></span>
+                      <Bell className="h-4 w-4 stroke-[1.75]" />
+                      {/* Chấm đỏ thông báo nhỏ gọn, tĩnh lặng bám sát nút */}
+                      <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-rose-500 ring-1 ring-white"></span>
                     </Button>
+
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="rounded-full text-muted-foreground hover:bg-primary/5 hover:text-primary"
+                      className="h-8 w-8 rounded-lg text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors"
                     >
-                      <HelpCircle className="h-4.5 w-4.5" />
+                      <HelpCircle className="h-4 w-4 stroke-[1.75]" />
                     </Button>
                   </div>
 
-                  <Separator orientation="vertical" className="h-6" />
-                  <div className="pl-2">
+                  <Separator
+                    orientation="vertical"
+                    className="h-4 bg-slate-200"
+                  />
+
+                  {/* Khối đồng hồ điện tử thời gian thực */}
+                  <div className="pl-1 text-slate-700">
                     <Clock />
                   </div>
                 </div>
               </header>
 
-              {/* CONTENT AREA */}
-              <div className="flex-1">
-                <div className="mx-auto max-w-7xl h-full">{children}</div>
+              {/* 2. AREA NỘI DUNG: Tràn viền phẳng thoáng đãng */}
+              <div className="flex-1 w-full overflow-y-auto">
+                <div className="mx-auto max-w-7xl h-full w-full">
+                  {children}
+                </div>
               </div>
             </main>
           </div>

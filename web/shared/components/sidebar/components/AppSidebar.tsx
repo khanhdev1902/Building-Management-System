@@ -1,28 +1,28 @@
 "use client";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarSeparator,
-} from "@/shared/components/ui/sidebar";
+
+import React from "react";
+import { Sidebar, SidebarContent } from "@/shared/components/ui/sidebar";
 import { navigation } from "@/shared/constants/navigation";
 import { SidebarFooterUser } from "@/features/auth/components/SideBarFooterUser";
 import SidebarNavHeader from "./SidebarNavHeader";
 import { SidebarNavGroup } from "./SidebarNavGroup";
 
 export default function AppSidebar() {
-  // const mounted = useMounted();
-  // if (!mounted) return null;
-
   return (
-    <Sidebar variant="sidebar" collapsible="icon">
+    <Sidebar
+      variant="sidebar"
+      collapsible="icon"
+      className="border-r border-slate-200/60 bg-white"
+    >
+      {/* Header: Chứa Workspace Switcher (Danjin CCMN) */}
       <SidebarNavHeader />
 
-      <SidebarContent className="">
+      {/* KHẮC PHỤC: Nén chặt padding và khoảng cách space-y để menu liền mạch, tinh tế */}
+      <SidebarContent className="px-2 py-2 space-y-1 scrollbar-none select-none">
         {/* 1. Nhóm Phân tích - Dành cho chủ nhà/Manager xem số liệu */}
         <SidebarNavGroup
           label="Báo cáo chiến lược"
           navItems={navigation.analytics}
-          className=""
         />
 
         {/* 2. Nhóm Hạ tầng & Cư dân - Core của quản lý chung cư */}
@@ -31,8 +31,7 @@ export default function AppSidebar() {
           navItems={navigation.operation}
         />
 
-        {/* 3. Nhóm Tương tác & Tài chính Cư dân - Dành cho Lễ tân/CSKH */}
-        {/* Chúng ta thêm group này vì đây là nơi phát sinh nhiều tác vụ hàng ngày nhất */}
+        {/* 3. Nhóm Tương tác & Tài chỉnh Cư dân - Dành cho Lễ tân/CSKH */}
         <SidebarNavGroup
           label="Dịch vụ cư dân"
           navItems={navigation.services}
@@ -44,16 +43,18 @@ export default function AppSidebar() {
           navItems={navigation.management}
         />
 
-        {/* 5. Nhóm Hệ thống - Cấu hình và Log (đẩy xuống cuối cùng) */}
+        {/* 5. Nhóm Hệ thống - Đẩy xuống cuối cùng tinh tế, thêm khoảng đệm pt-4 */}
         <SidebarNavGroup
           label="Thiết lập hệ thống"
           navItems={navigation.system}
-          className="mt-auto mb-4"
+          className="mt-auto pt-4 pb-2"
         />
       </SidebarContent>
 
-      <SidebarSeparator />
-      <SidebarFooterUser />
+      {/* KHẮC PHỤC: Đập bỏ SidebarSeparator cứng nhắc, để Footer kết nối phẳng mịn */}
+      <div className="border-t border-slate-100 p-2 bg-white">
+        <SidebarFooterUser />
+      </div>
     </Sidebar>
   );
 }

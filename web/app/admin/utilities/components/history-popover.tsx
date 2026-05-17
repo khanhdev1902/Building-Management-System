@@ -1,4 +1,6 @@
 "use client";
+
+import React from "react";
 import { History } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -6,12 +8,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
-import { Separator } from "@/shared/components/ui/separator";
 
-// Mock history data internal hoặc truyền từ props
+// Mock history data mẫu chuẩn hóa cấu trúc
 const MOCK_HISTORY = [
-  { month: "02/2026", index: 1250, usage: 140, amount: "490.000" },
-  { month: "01/2026", index: 1110, usage: 135, amount: "472.500" },
+  { month: "Kỳ 02/2026", index: 1250, usage: 140, amount: "490.000" },
+  { month: "Kỳ 01/2026", index: 1110, usage: 135, amount: "472.500" },
 ];
 
 export const HistoryPopover = ({
@@ -26,37 +27,54 @@ export const HistoryPopover = ({
       <Button
         variant="ghost"
         size="icon"
-        className="h-7 w-7 text-slate-300 hover:text-indigo-600 transition-all"
+        className="h-7 w-7 text-slate-400 hover:text-slate-800 hover:bg-slate-100/80 rounded-md transition-colors shrink-0"
       >
-        <History className="w-3.5 h-3.5" />
+        <History className="w-3.5 h-3.5 stroke-[1.75]" />
       </Button>
     </PopoverTrigger>
+
     <PopoverContent
-      className="w-72 p-0 rounded-2xl overflow-hidden border-none shadow-2xl"
+      className="w-64 p-0 rounded-xl border border-slate-200/80 bg-white/95 backdrop-blur-md shadow-[0_12px_32px_-8px_rgba(15,23,42,0.12)] overflow-hidden"
       align="end"
+      sideOffset={6}
     >
-      <div className="bg-slate-900 p-3 text-white">
-        <h4 className="font-bold text-xs">{label}</h4>
-        <p className="text-[9px] text-slate-400 uppercase mt-1 tracking-wider">
-          3 kỳ gần nhất
+      {/* 1. Header Popover: Tinh giản, loại bỏ mảng đen thô cứng */}
+      <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/50">
+        <h4 className="font-semibold text-xs text-slate-800 tracking-tight">
+          {label}
+        </h4>
+        <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400 mt-0.5">
+          Lịch sử 2 kỳ gần nhất
         </p>
       </div>
-      <div className="p-3 space-y-3 bg-white">
+
+      {/* 2. Danh sách dữ liệu phẳng, thoáng đãng không dùng Separator cắt vụn */}
+      <div className="p-4 space-y-3.5">
         {MOCK_HISTORY.map((h, i) => (
-          <div key={i} className="text-[10px]">
-            <div className="flex justify-between font-bold">
-              <span className="text-slate-400">{h.month}</span>
-              <span className="text-indigo-600">
-                +{h.usage} {unit}
+          <div key={i} className="flex flex-col space-y-1 text-xs">
+            {/* Hàng 1: Tháng & Khối lượng tiêu thụ */}
+            <div className="flex justify-between items-baseline w-full">
+              <span className="text-slate-400 font-medium text-[11px]">
+                {h.month}
+              </span>
+              <span className="font-bold text-indigo-600 font-mono">
+                +{h.usage}{" "}
+                <span className="text-[10px] font-medium text-slate-400 font-sans">
+                  {unit}
+                </span>
               </span>
             </div>
-            <div className="flex justify-between text-[9px] mt-0.5">
-              <span className="italic text-slate-400">Chỉ số: {h.index}</span>
-              <span className="text-emerald-600 font-bold">{h.amount}đ</span>
+
+            {/* Hàng 2: Chỉ số chốt & Số tiền tương ứng */}
+            <div className="flex justify-between items-center w-full text-[11px]">
+              <span className="text-slate-400 font-mono">
+                Chỉ số chốt:{" "}
+                <span className="text-slate-600 font-medium">{h.index}</span>
+              </span>
+              <span className="font-semibold text-slate-700 font-mono">
+                {h.amount}đ
+              </span>
             </div>
-            {i < MOCK_HISTORY.length - 1 && (
-              <Separator className="mt-2 opacity-50" />
-            )}
           </div>
         ))}
       </div>

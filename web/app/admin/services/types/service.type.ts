@@ -5,7 +5,7 @@ export interface ServiceResponse {
   price: number;
   unit: string;
   status: string;
-  iconKey?: string;
+  iconKey: string;
   description?: string;
   createdAt?: string;
   updatedAt?: string;

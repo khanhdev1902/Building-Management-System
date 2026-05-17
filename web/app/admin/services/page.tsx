@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useState, useMemo, useEffect } from "react";
 import { ServiceCard } from "./components/ServiceCard";
@@ -9,8 +9,6 @@ import { ServiceFormModal } from "./components/ServiceFormModal";
 import {
   ChevronLeft,
   ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
   Inbox,
   Loader2,
   RefreshCw,
@@ -85,10 +83,10 @@ export default function ServicesPage() {
     try {
       if (editingService) {
         await serviceApi.updateService(editingService.id, data);
-        toast.success("Cập nhật thành công");
+        toast.success("Cập nhật dịch vụ thành công");
       } else {
         await serviceApi.createService(data);
-        toast.success("Thêm mới thành công");
+        toast.success("Thêm mới dịch vụ thành công");
       }
       fetchServices();
       setIsModalOpen(false);
@@ -98,149 +96,139 @@ export default function ServicesPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in duration-500 p-4">
-      {/* 1. Top Header Section */}
+    <div className="max-w-7xl mx-auto space-y-6 p-6 min-h-screen bg-slate-50/20 antialiased selection:bg-indigo-50">
+      {/* 1. Tuyến đầu: Header chính của trang */}
       <ServiceHeader onAdd={handleAddNew} />
 
-      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
-        {/* 2. Toolbar & Filter Section */}
-        <div className="p-4 border-b border-slate-100 bg-slate-50/30">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div>
-              <h2 className="text-sm font-black uppercase tracking-widest text-slate-900">
-                Danh mục dịch vụ
-              </h2>
-              <p className="text-[11px] text-slate-500 font-medium">
-                Vận hành và cấu hình các gói tiện ích tòa nhà
-              </p>
-            </div>
+      {/* 2. Tuyến hai: Khối điều khiển Toolbar (Đã phá bỏ hộp bọc ngoài thô cứng) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
+        <div className="space-y-0.5">
+          <h2 className="text-sm font-semibold text-slate-800 tracking-tight">
+            Danh mục dịch vụ tiện ích
+          </h2>
+          <p className="text-xs text-slate-400">
+            Tổng số{" "}
+            <span className="font-semibold text-slate-700 font-mono">
+              {filteredServices.length}
+            </span>{" "}
+            gói dịch vụ đang mở vận hành
+          </p>
+        </div>
 
-            <div className="flex items-center gap-2">
-              <ServiceToolbar
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                statusFilter={statusFilter}
-                setStatusFilter={setStatusFilter}
-              />
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-9 w-9 border-slate-200 text-slate-400 hover:text-slate-900"
-                onClick={fetchServices}
-              >
-                <RefreshCw
-                  size={14}
-                  className={isLoading ? "animate-spin" : ""}
-                />
-              </Button>
-            </div>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex-1 sm:flex-none">
+            <ServiceToolbar
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              statusFilter={statusFilter}
+              setStatusFilter={setStatusFilter}
+            />
           </div>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-10 w-10 border-slate-200 bg-white text-slate-400 hover:text-slate-800 rounded-xl transition-all shadow-2xs shrink-0"
+            onClick={fetchServices}
+          >
+            <RefreshCw
+              size={14}
+              className={isLoading ? "animate-spin" : "text-slate-500"}
+            />
+          </Button>
         </div>
+      </div>
 
-        {/* 3. Main Content Area */}
-        <div className="p-4 min-h-[450px]">
-          {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-32">
-              <Loader2 className="w-6 h-6 animate-spin text-slate-400 mb-3" />
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                Đang đồng bộ dữ liệu...
-              </p>
-            </div>
-          ) : paginatedServices.length > 0 ? (
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-              {paginatedServices.map((service) => (
-                <ServiceCard
-                  key={service.id}
-                  service={service as any}
-                  onEdit={() => handleEdit(service)}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-24 bg-slate-50/50 rounded-lg border border-dashed border-slate-200">
-              <Inbox
-                className="w-8 h-8 text-slate-200 mb-3"
-                strokeWidth={1.5}
+      {/* 3. Khu vực chính hiển thị nội dung */}
+      <div className="pt-2">
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-40 border border-slate-100 bg-white/50 backdrop-blur-xs rounded-2xl">
+            <Loader2 className="w-5 h-5 animate-spin text-slate-400 mb-2.5 stroke-[1.5]" />
+            <p className="text-xs font-medium text-slate-400 tracking-normal">
+              Đang đồng bộ danh mục dịch vụ...
+            </p>
+          </div>
+        ) : paginatedServices.length > 0 ? (
+          /* Grid hiển thị thoáng đãng, không bị gò bó trong khung bao cứng */
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            {paginatedServices.map((service) => (
+              <ServiceCard
+                key={service.id}
+                service={service as any}
+                onEdit={() => handleEdit(service)}
               />
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
-                Không có dịch vụ nào được tìm thấy
-              </p>
-              <Button
-                variant="link"
-                className="mt-1 text-[10px] text-indigo-600 uppercase font-black tracking-tight"
-                onClick={() => {
-                  setSearchTerm("");
-                  setStatusFilter("all");
-                }}
-              >
-                Thiết lập lại bộ lọc
-              </Button>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-slate-200 max-w-xl mx-auto shadow-2xs">
+            <div className="p-3 bg-slate-50 rounded-full border border-slate-100 text-slate-300 mb-3.5">
+              <Inbox className="w-5 h-5 stroke-[1.5]" />
             </div>
-          )}
-        </div>
-
-        {/* 4. Pagination - Tối giản kiểu SaaS */}
-        {!isLoading && totalPages > 1 && (
-          <div className="px-4 py-3 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
-            <div className="hidden sm:block">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                Hiển thị {paginatedServices.length} / {filteredServices.length}{" "}
-                kết quả
-              </p>
-            </div>
-
-            <div className="flex items-center gap-1.5 ml-auto">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-slate-400 hover:bg-white hover:shadow-sm"
-                onClick={() => setCurrentPage(1)}
-                disabled={currentPage === 1}
-              >
-                <ChevronsLeft size={14} />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-slate-400 hover:bg-white hover:shadow-sm"
-                onClick={() => setCurrentPage((p) => p - 1)}
-                disabled={currentPage === 1}
-              >
-                <ChevronLeft size={14} />
-              </Button>
-
-              <div className="flex items-center gap-1 px-2">
-                <span className="text-[11px] font-black text-slate-900 bg-white border border-slate-200 px-2 py-1 rounded">
-                  {currentPage.toString().padStart(2, "0")}
-                </span>
-                <span className="text-[10px] font-bold text-slate-300">/</span>
-                <span className="text-[11px] font-bold text-slate-400">
-                  {totalPages.toString().padStart(2, "0")}
-                </span>
-              </div>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-slate-400 hover:bg-white hover:shadow-sm"
-                onClick={() => setCurrentPage((p) => p + 1)}
-                disabled={currentPage === totalPages}
-              >
-                <ChevronRight size={14} />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-slate-400 hover:bg-white hover:shadow-sm"
-                onClick={() => setCurrentPage(totalPages)}
-                disabled={currentPage === totalPages}
-              >
-                <ChevronsRight size={14} />
-              </Button>
-            </div>
+            <h3 className="text-sm font-semibold text-slate-900 mb-0.5">
+              Không tìm thấy dịch vụ
+            </h3>
+            <p className="text-xs text-slate-400 max-w-xs text-center mb-4">
+              Không tìm thấy kết quả nào khớp với bộ lọc hoặc từ khóa hiện tại.
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-lg text-xs font-medium border-slate-200 shadow-2xs"
+              onClick={() => {
+                setSearchTerm("");
+                setStatusFilter("all");
+              }}
+            >
+              Đặt lại cấu hình lọc
+            </Button>
           </div>
         )}
       </div>
+
+      {/* 4. Khối phân trang chuẩn Modern Enterprise Workspace */}
+      {!isLoading && totalPages > 1 && (
+        <div className="flex items-center justify-between border-t border-slate-200/60 pt-5 mt-4">
+          <p className="text-xs font-medium text-slate-400">
+            Hiển thị{" "}
+            <span className="text-slate-800 font-semibold font-mono">
+              {paginatedServices.length}
+            </span>{" "}
+            trên {filteredServices.length} kết quả
+          </p>
+
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-medium text-slate-500">
+              Trang{" "}
+              <span className="text-slate-900 font-semibold font-mono">
+                {currentPage}
+              </span>{" "}
+              / {totalPages}
+            </span>
+
+            <div className="flex items-center gap-1.5">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 rounded-lg border-slate-200 text-slate-600 bg-white hover:bg-slate-50 transition-all disabled:opacity-40"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft size={14} className="stroke-[1.8]" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 rounded-lg border-slate-200 text-slate-600 bg-white hover:bg-slate-50 transition-all disabled:opacity-40"
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+              >
+                <ChevronRight size={14} className="stroke-[1.8]" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ServiceFormModal
         isOpen={isModalOpen}

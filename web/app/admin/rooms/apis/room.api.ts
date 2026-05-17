@@ -7,14 +7,13 @@ import {
   RoomResponse,
 } from "../types/room.type";
 
-const getAllRooms = () =>
-  apiHandler<RoomResponse[]>(http.get(API_ENDPOINTS.ROOMS));
+const getAllRooms = () => apiHandler(http.get(API_ENDPOINTS.ROOMS));
 
 const getRoomById = (id: string) =>
   apiHandler<RoomResponse>(http.get(API_ENDPOINTS.ROOM_DETAIL(id)));
 
 const createRoom = (data: CreateRoomRequest) =>
-  apiHandler<RoomResponse>(http.post(API_ENDPOINTS.ROOMS, data));
+  apiHandler(http.post(API_ENDPOINTS.ROOMS, data));
 
 const updateRoom = (id: string, data: UpdateRoomRequest) =>
   apiHandler<RoomResponse>(http.patch(API_ENDPOINTS.ROOM_DETAIL(id), data));

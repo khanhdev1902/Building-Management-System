@@ -2,8 +2,8 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent } from "@/shared/components/ui/card";
-import { Home, DoorOpen, Layers, Wrench } from "lucide-react";
+import { Card } from "@/shared/components/ui/card";
+import { Home, DoorOpen, Layers, Wrench, ArrowUpRight } from "lucide-react";
 
 interface StatCardProps {
   label: string;
@@ -11,7 +11,8 @@ interface StatCardProps {
   icon: React.ElementType;
   trend?: string;
   trendLabel?: string;
-  color: "indigo" | "emerald" | "blue" | "orange";
+  // Giữ lại hệ màu cũ nhưng map sang style mới sang trọng hơn
+  statusType: "primary" | "success" | "info" | "warning";
 }
 
 const QuickStatCard = ({
@@ -20,94 +21,104 @@ const QuickStatCard = ({
   icon: Icon,
   trend,
   trendLabel,
-  color,
+  statusType,
 }: StatCardProps) => {
-  // Bảng màu chuyên nghiệp: Chỉ dùng màu nhấn cho Icon và Text, nền giữ trắng/xám cực nhẹ
-  const colors = {
-    indigo: "text-indigo-600 bg-indigo-50 border-indigo-100",
-    emerald: "text-emerald-600 bg-emerald-50 border-emerald-100",
-    blue: "text-blue-600 bg-blue-50 border-blue-100",
-    orange: "text-orange-600 bg-orange-50 border-orange-100",
+  // Định nghĩa màu sắc tối giản, chuyên nghiệp (Chỉ nhấn bằng 1 chấm nhỏ hoặc màu chữ trend)
+  const statusStyles = {
+    primary: { dot: "bg-indigo-500", trend: "text-indigo-600 bg-indigo-50/50" },
+    success: {
+      dot: "bg-emerald-500",
+      trend: "text-emerald-600 bg-emerald-50/50",
+    },
+    info: { dot: "bg-blue-500", trend: "text-blue-600 bg-blue-50/50" },
+    warning: { dot: "bg-amber-500", trend: "text-amber-600 bg-amber-50/50" },
   };
 
+  const currentStyle = statusStyles[statusType];
+
   return (
-    <Card className="group relative border-slate-200/60 shadow-none hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 rounded-xl bg-white overflow-hidden border">
-      <CardContent className="p-4 flex items-center gap-4">
-        {/* 1. Icon Box - Thiết kế tinh tế, không quá to */}
-        <div
-          className={`shrink-0 p-2.5 rounded-lg border ${colors[color]} group-hover:scale-110 transition-transform duration-300`}
-        >
-          <Icon className="w-5 h-5" />
+    <Card className="group relative border-slate-200/80 bg-white p-3 shadow-[0_1px_3px_rgba(0,0,0,0.02),0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_24px_-4px_rgba(0,0,0,0.04),0_4px_12px_-2px_rgba(0,0,0,0.02)] transition-all duration-300 rounded-xl overflow-hidden flex flex-col justify-between min-h-32">
+      {/* Top Row: Icon & Chấm trạng thái tinh tế */}
+      <div className="flex items-center justify-between w-full mb-3">
+        <div className="p-2 rounded-lg bg-slate-50 border border-slate-100 text-slate-600 group-hover:text-slate-900 group-hover:bg-slate-100/80 transition-colors duration-300">
+          <Icon className="w-4 h-4 stroke-[1.75]" />
         </div>
 
-        {/* 2. Content Section */}
-        <div className="flex flex-col min-w-0 flex-1">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1.5">
-            {label}
-          </p>
+        {/* Chấm chỉ báo trạng thái nhỏ gọn, chuyên nghiệp thay vì bọc cả mảng màu lớn */}
+        <div className="flex items-center gap-1.5">
+          <span className={`h-1.5 w-1.5 rounded-full ${currentStyle.dot}`} />
+          <span className="text-[11px] font-medium text-slate-400 capitalize">
+            Active
+          </span>
+        </div>
+      </div>
 
-          <div className="flex items-baseline gap-2">
-            <h4 className="text-xl font-extrabold text-slate-900 tracking-tight tabular-nums">
-              {value}
-            </h4>
+      {/* Bottom Row: Số liệu lớn nằm trên, label nằm dưới theo chuẩn Dashboard B2B */}
+      <div className="space-y-1">
+        <div className="flex items-baseline justify-between gap-2">
+          <h4 className="text-2xl font-semibold text-slate-900 tracking-tight tabular-nums font-mono">
+            {value}
+          </h4>
 
-            {/* Trend Indicator - Nhỏ gọn như ảnh mẫu */}
-            {trend && (
-              <div className="flex items-center gap-0.5 animate-in fade-in slide-in-from-left-2 duration-500">
-                <span
-                  className={`text-[10px] font-black ${color === "emerald" ? "text-emerald-500" : "text-blue-600"}`}
-                >
-                  {trend}
+          {/* Xu hướng thiết kế tối giản */}
+          {trend && (
+            <div
+              className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium border border-transparent ${currentStyle.trend}`}
+            >
+              {trend.startsWith("+") && (
+                <ArrowUpRight className="w-2.5 h-2.5 inline" />
+              )}
+              <span>{trend}</span>
+              {trendLabel && (
+                <span className="text-slate-400 font-normal ml-0.5">
+                  {trendLabel}
                 </span>
-                {trendLabel && (
-                  <span className="text-[10px] font-medium text-slate-400">
-                    {trendLabel}
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* 3. Hiệu ứng trang trí góc - Chỉ xuất hiện khi hover */}
-        <div
-          className={`absolute top-0 right-0 w-12 h-12 bg-linear-to-br from-transparent to-slate-50/50 opacity-0 group-hover:opacity-100 transition-opacity`}
-        />
-      </CardContent>
+        <p className="text-xs font-medium text-slate-500 tracking-normal">
+          {label}
+        </p>
+      </div>
+
+      {/* Hiệu ứng chiều sâu ngầm (Subtle Linear Line ở top khi hover) */}
+      <div className="absolute top-0 left-0 right-0 h-0.5 bg-slate-900 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
     </Card>
   );
 };
 
 export function RoomStats({ stats }: { stats: any }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
       <QuickStatCard
-        label="Tổng số phòng"
+        label="Tổng số căn hộ quản lý"
         value={stats.total}
         icon={Home}
-        color="indigo"
+        statusType="primary"
       />
       <QuickStatCard
-        label="Phòng trống"
+        label="Căn hộ trống hiện tại"
         value={stats.available}
         icon={DoorOpen}
         trend="+2"
-        trendLabel="mới"
-        color="emerald"
+        trendLabel="tuần này"
+        statusType="success"
       />
       <QuickStatCard
-        label="Tỉ lệ lấp đầy"
+        label="Tỷ lệ lấp đầy bình quân"
         value={`${stats.occupancyRate}%`}
         icon={Layers}
         trend="Ổn định"
-        color="blue"
+        statusType="info"
       />
       <QuickStatCard
-        label="Cần bảo trì"
+        label="Yêu cầu bảo trì tồn đọng"
         value={stats.maintenance}
         icon={Wrench}
         trend="Dự kiến"
-        color="orange"
+        statusType="warning"
       />
     </div>
   );

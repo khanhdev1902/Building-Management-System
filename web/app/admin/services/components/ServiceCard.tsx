@@ -34,6 +34,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/shared/components/ui/sheet";
+import { ServiceResponse } from "../types/service.type";
 
 const ICON_MAP: Record<string, React.ElementType> = {
   home: Home,
@@ -51,125 +52,150 @@ export const ServiceCard = ({
   service,
   onEdit,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  service: any;
+  service: ServiceResponse;
   onEdit: () => void;
 }) => {
   const IconComponent = ICON_MAP[service.iconKey] || ICON_MAP.default;
 
-  const getStatusColor = (status: string) => {
+  const getStatusStyle = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-emerald-500";
+        return {
+          dot: "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.4)]",
+          text: "text-emerald-700 bg-emerald-50/50 border-emerald-100/50",
+          label: "Đang chạy",
+        };
       case "warning":
-        return "bg-amber-500";
+        return {
+          dot: "bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.4)]",
+          text: "text-amber-700 bg-amber-50/50 border-amber-100/50",
+          label: "Bảo trì",
+        };
       default:
-        return "bg-slate-400";
+        return {
+          dot: "bg-slate-400",
+          text: "text-slate-600 bg-slate-50 border-slate-200/60",
+          label: "Tạm ngưng",
+        };
     }
   };
 
+  const currentStatus = getStatusStyle(service.status);
+
   return (
-    <Card className="group relative border-slate-200 bg-white p-4 rounded-2xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] hover:border-slate-300">
-      {/* Top Section: Icon & Actions */}
-      <div className="flex justify-between items-start mb-4">
-        <div className="relative">
-          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 transition-colors duration-300 group-hover:border-slate-200">
-            <IconComponent className="w-6 h-6 text-slate-500 transition-transform duration-500 group-hover:scale-110" />
+    <Card className="group relative border border-slate-200/80 bg-white p-4.5 rounded-xl transition-all duration-300 ease-out select-none flex flex-col justify-between min-h-47.5 shadow-[0_1px_2px_rgba(0,0,0,0.01)] hover:-translate-y-0.5 hover:border-slate-300/90 hover:shadow-[0_12px_24px_-4px_rgba(15,23,42,0.05),0_4px_12px_-2px_rgba(15,23,42,0.02)]">
+      <div>
+        {/* 1. Tuyến đầu: Icon box & Hệ thống điều khiển điều hướng */}
+        <div className="flex justify-between items-start mb-3.5">
+          <div className="p-2 rounded-lg bg-slate-50 border border-slate-100/80 text-slate-500 transition-all duration-300 group-hover:text-slate-800 group-hover:bg-slate-100/60">
+            <IconComponent className="w-4 h-4 stroke-[1.75] transition-transform duration-500 group-hover:scale-105" />
           </div>
-          <span
-            className={`absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white ${getStatusColor(service.status)} ${service.status === "active" ? "animate-pulse" : ""}`}
-          />
-        </div>
 
-        <div className="flex items-center gap-1">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-slate-400 hover:text-slate-900 rounded-full transition-colors"
-              >
-                <Info className="h-4 w-4" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Chi tiết dịch vụ</SheetTitle>
-              </SheetHeader>
-            </SheetContent>
-          </Sheet>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-slate-400 hover:text-slate-900 rounded-full"
-              >
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="w-48 p-1.5 rounded-xl shadow-xl border-slate-100"
+          <div className="flex items-center gap-1">
+            {/* Badge trạng thái phẳng thay vì dấu chấm to nổi lơ lửng */}
+            <span
+              className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold border ${currentStatus.text}`}
             >
-              <DropdownMenuItem
-                onClick={onEdit}
-                className="gap-2 rounded-lg cursor-pointer py-2.5"
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${currentStatus.dot}`}
+              />
+              {currentStatus.label}
+            </span>
+
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-slate-400 hover:text-slate-700 rounded-md transition-colors"
+                >
+                  <Info className="h-3.5 w-3.5 stroke-[1.75]" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="bg-white/95 backdrop-blur-md border-l border-slate-200">
+                <SheetHeader>
+                  <SheetTitle className="text-base font-bold text-slate-900">
+                    Chi tiết dịch vụ tiện ích
+                  </SheetTitle>
+                </SheetHeader>
+                {/* Thêm thông tin chi tiết cấu hình tại đây */}
+              </SheetContent>
+            </Sheet>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-slate-400 hover:text-slate-700 rounded-md"
+                >
+                  <MoreVertical className="h-3.5 w-3.5 stroke-[1.75]" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="w-44 p-1 rounded-lg shadow-md border border-slate-200/70 bg-white"
               >
-                <Edit3 className="w-4 h-4" /> Chỉnh sửa
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2 rounded-lg cursor-pointer py-2.5">
-                <History className="w-4 h-4" /> Nhật ký
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="gap-2 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer py-2.5">
-                <PauseCircle className="w-4 h-4" /> Tạm dừng
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuItem
+                  onClick={onEdit}
+                  className="gap-2 rounded cursor-pointer py-2 text-slate-600 focus:bg-slate-50 focus:text-slate-900 text-xs font-medium"
+                >
+                  <Edit3 className="w-3.5 h-3.5 text-slate-400" /> Chỉnh sửa cấu
+                  hình
+                </DropdownMenuItem>
+                <DropdownMenuItem className="gap-2 rounded cursor-pointer py-2 text-slate-600 focus:bg-slate-50 focus:text-slate-900 text-xs font-medium">
+                  <History className="w-3.5 h-3.5 text-slate-400" /> Nhật ký sử
+                  dụng
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="my-1 border-slate-100" />
+                <DropdownMenuItem className="gap-2 rounded text-rose-600 focus:bg-rose-50/50 focus:text-rose-700 cursor-pointer py-2 text-xs font-medium">
+                  <PauseCircle className="w-3.5 h-3.5" /> Tạm dừng vận hành
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        {/* 2. Tuyến giữa: Tiêu đề & Mô tả dịch vụ */}
+        <div className="space-y-1">
+          <h3 className="text-sm font-bold text-slate-900 tracking-tight group-hover:text-indigo-600 transition-colors duration-300">
+            {service.name}
+          </h3>
+          <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed h-8 font-normal">
+            {service.description ||
+              "Chưa có mô tả chi tiết cho gói dịch vụ tiện ích này."}
+          </p>
         </div>
       </div>
 
-      {/* Middle Section: Info */}
-      <div className="space-y-1 mb-5">
-        <h3 className="text-[15px] font-bold text-slate-900 tracking-tight">
-          {service.name}
-        </h3>
-        <p className="text-[12px] text-slate-500 line-clamp-2 leading-relaxed h-8 font-medium">
-          {service.description}
-        </p>
-      </div>
-
-      {/* Bottom Section: Stats & Action */}
-      <div className="flex items-end justify-between pt-4 border-t border-slate-50">
-        <div>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-            Đơn giá
+      {/* 3. Tuyến dưới: Đơn giá và Nút hành động */}
+      <div className="flex items-end justify-between pt-3 border-t border-dashed border-slate-100 mt-4">
+        <div className="space-y-0.5">
+          <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+            Đơn giá mặc định
           </p>
           <div className="flex items-baseline gap-1">
-            <span className="text-xl font-black text-slate-900 tracking-tighter">
-              {typeof service.price === "number"
-                ? service.price.toLocaleString("vi-VN")
-                : service.price}
+            <span className="text-base font-bold text-slate-900 font-mono tracking-tight">
+              {Number(service.price).toLocaleString("vi-VN")}đ
             </span>
-            <span className="text-[10px] font-bold text-slate-500 lowercase">
+            <span className="text-[10px] font-medium text-slate-400">
               /{service.unit}
+            </span>
+
+            {/* Tích hợp tag xu hướng cố định vào đây, tránh hiệu ứng bay tự do làm nhiễu loạn thị giác */}
+            <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded text-[9px] font-semibold text-emerald-600 bg-emerald-50/60 ml-1">
+              <ArrowUpRight className="w-2.5 h-2.5 stroke-2" /> 12%
             </span>
           </div>
         </div>
 
         <Button
           onClick={onEdit}
-          className="h-9 px-5 rounded-xl bg-slate-900 text-[11px] font-bold text-white shadow-sm transition-all duration-300 hover:bg-slate-800 hover:shadow-indigo-500/20 active:scale-95"
+          variant="secondary"
+          className="h-8 px-3.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium transition-all shadow-2xs active:scale-[0.99]"
         >
           Cấu hình
         </Button>
-      </div>
-
-      {/* Floating Trend Indicator - Chỉ hiện thị nhẹ nhàng */}
-      <div className="absolute top-16 right-4 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500 flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
-        <ArrowUpRight className="w-2.5 h-2.5 stroke-[3px]" /> 12%
       </div>
     </Card>
   );

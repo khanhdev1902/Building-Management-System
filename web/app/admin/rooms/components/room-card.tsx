@@ -12,9 +12,9 @@ import {
   Maximize2,
   Banknote,
   Calendar,
-  Wind, // Icon Điều hòa
-  Wifi, // Icon Wifi
-  ShieldCheck, // Icon An ninh
+  Wind,
+  Wifi,
+  ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent } from "@/shared/components/ui/card";
@@ -39,106 +39,108 @@ export function RoomCard({
   onUpdate: (data: any) => void;
 }) {
   return (
-    <Card className="group relative border-slate-200/60 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-500 bg-white rounded-2xl overflow-hidden border flex flex-col h-full">
-      {/* Soft Glow Effect on Hover */}
-      <div className="absolute inset-0 bg-linear-to-br from-slate-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+    <Card className="group relative border border-slate-200/70 bg-white rounded-xl overflow-hidden transition-all duration-500 flex flex-col h-full shadow-[0_2px_4px_rgba(0,0,0,0.01)] hover:shadow-[0_16px_36px_rgba(15,23,42,0.06)] hover:border-slate-300/90 hover:-translate-y-1">
+      {/* 3D Depth Layer: Tạo vệt sáng mờ đổ bóng nội bộ khi hover */}
+      <div className="absolute inset-0 bg-linear-to-tr from-slate-50/0 via-indigo-50/0 to-indigo-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-      <CardContent className="p-5 space-y-5 relative z-10 flex flex-col h-full">
-        {/* 1. Header Section */}
-        <div className="flex items-start justify-between min-h-13">
+      <CardContent className="p-4.5 space-y-4 flex flex-col h-full relative z-10">
+        {/* 1. Header Section - Phân tầng sắc nét */}
+        <div className="flex items-start justify-between min-h-11">
           <div className="space-y-1.5">
-            <h3 className="text-xl font-extrabold text-slate-800 tracking-tight leading-tight group-hover:text-indigo-600 transition-colors">
-              {room.roomNumber}
+            <h3 className="text-lg font-black text-slate-950 tracking-tight leading-none group-hover:text-indigo-600 transition-colors duration-300">
+              Phòng {room.roomNumber}
             </h3>
             <div className="flex gap-1.5">
               <Badge
                 variant="outline"
-                className="bg-slate-50/50 text-slate-500 border-slate-200/60 text-[9px] px-1.5 py-0 rounded-md h-5 font-bold"
+                className="bg-slate-50/60 text-slate-500 border-slate-200/60 text-[9px] px-2 py-0 rounded-md h-5 font-bold uppercase tracking-wider"
               >
                 <Layers className="w-2.5 h-2.5 mr-1 text-slate-400" /> Tầng{" "}
                 {room.floor}
               </Badge>
               <Badge
                 variant="outline"
-                className="bg-slate-50/50 text-slate-500 border-slate-200/60 text-[9px] px-1.5 py-0 rounded-md h-5 font-bold"
+                className="bg-slate-50/60 text-slate-500 border-slate-200/60 text-[9px] px-2 py-0 rounded-md h-5 font-bold uppercase tracking-wider"
               >
                 <Maximize2 className="w-2.5 h-2.5 mr-1 text-slate-400" />{" "}
-                {room.acreage}m²
+                {room.acreage} m²
               </Badge>
             </div>
           </div>
-          <div className="shrink-0 pt-0.5">
+          <div className="shrink-0 transition-transform duration-300 group-hover:scale-102">
             <StatusBadge status={room.status} />
           </div>
         </div>
 
-        {/* 2. Operational Info Table */}
-        <div className="bg-slate-50/80 rounded-xl p-3.5 space-y-3 border border-slate-100">
+        {/* 2. Operational Info - Khay chứa xếp lớp (Layered Container) */}
+        <div className="bg-slate-50/50 border border-slate-100 rounded-lg p-3 space-y-2.5 shadow-inner transition-colors duration-300 group-hover:bg-slate-50/80">
           {/* Price */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-white rounded-md shadow-sm border border-slate-100">
-                <Banknote className="w-3.5 h-3.5 text-emerald-500" />
+            <div className="flex items-center gap-2 text-slate-400">
+              <div className="p-1 bg-white rounded border border-slate-100 shadow-xs">
+                <Banknote className="w-3.5 h-3.5 text-emerald-500 stroke-[1.8]" />
               </div>
-              <span className="text-[10px] uppercase font-black text-slate-400 tracking-wider">
+              <span className="text-[10px] uppercase font-black tracking-widest text-slate-400/90">
                 Giá thuê
               </span>
             </div>
             <span className="font-extrabold text-slate-900 text-sm tabular-nums tracking-tight">
-              {room.roomPrice?.toLocaleString("vi-VN")}đ
+              {Number(room.roomPrice ?? 0).toLocaleString("vi-VN")} đ
             </span>
           </div>
 
-          <div className="h-px bg-slate-200/50 w-full" />
+          <div className="h-px bg-slate-200/40 w-full" />
 
           {/* Tenant */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-white rounded-md shadow-sm border border-slate-100">
-                <User className="w-3.5 h-3.5 text-indigo-500" />
+            <div className="flex items-center gap-2 text-slate-400">
+              <div className="p-1 bg-white rounded border border-slate-100 shadow-xs">
+                <User className="w-3.5 h-3.5 text-indigo-500 stroke-[1.8]" />
               </div>
-              <span className="text-[10px] uppercase font-black text-slate-400 tracking-wider">
-                Khách
+              <span className="text-[10px] uppercase font-black tracking-widest text-slate-400/90">
+                Cư dân
               </span>
             </div>
             <span
-              className={`text-sm font-bold truncate max-w-30 text-right ${room.tenant ? "text-slate-700" : "text-slate-300 italic font-medium"}`}
+              className={`text-xs font-bold truncate max-w-30 text-right tracking-tight transition-colors duration-300 ${
+                room.tenant
+                  ? "text-slate-800"
+                  : "text-slate-300 italic font-medium"
+              }`}
             >
               {room.tenant?.name || "Sẵn sàng"}
             </span>
           </div>
         </div>
 
-        {/* 3. Amenities & Contract Area (Fixed Height 40px) */}
-        <div className="min-h-10 flex items-center justify-between px-1">
+        {/* 3. Amenities & Contract Area - Tương tác vi mô */}
+        <div className="min-h-8 flex items-center justify-between px-0.5">
           {room.tenant?.endDate ? (
-            <div className="flex items-center justify-between w-full px-3 py-2 bg-indigo-50/50 rounded-lg border border-indigo-100/30 transition-all animate-in fade-in slide-in-from-bottom-1">
-              <div className="flex items-center text-[10px] font-bold text-indigo-600 uppercase tracking-tighter">
-                <Calendar className="w-3 h-3 mr-2" />
+            <div className="flex items-center justify-between w-full px-2.5 py-1.5 bg-indigo-50/40 border border-indigo-100/30 rounded-md text-[10px] transition-all duration-300 group-hover:bg-indigo-50/70">
+              <div className="flex items-center font-black text-indigo-600 uppercase tracking-wider">
+                <Calendar className="w-3 h-3 mr-1.5 text-indigo-400 animate-pulse" />
                 Hạn hợp đồng
               </div>
-              <span className="text-[11px] font-black text-indigo-700 underline underline-offset-2 decoration-indigo-200">
+              <span className="font-mono font-black text-indigo-700">
                 {room.tenant.endDate}
               </span>
             </div>
           ) : (
-            /* Khi không có khách: Hiển thị các tiện ích có sẵn để "mồi" khách */
-            <div className="flex items-center gap-4 animate-in fade-in">
-              <div className="flex items-center gap-1.5 text-slate-400">
-                <Wind className="w-3.5 h-3.5" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">
-                  AC
-                </span>
+            /* Tiện ích mồi khách - Nhìn sâu và chuyển màu nhẹ khi hover card */
+            <div className="flex items-center gap-4 px-1">
+              <div className="flex items-center gap-1.5 text-slate-400 transition-colors duration-300 group-hover:text-slate-600">
+                <Wind className="w-3.5 h-3.5 stroke-[1.5] transition-transform duration-500 group-hover:rotate-12" />
+                <span className="text-[9px] font-black tracking-wider">AC</span>
               </div>
-              <div className="flex items-center gap-1.5 text-slate-400">
-                <Wifi className="w-3.5 h-3.5" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">
+              <div className="flex items-center gap-1.5 text-slate-400 transition-colors duration-300 group-hover:text-slate-600">
+                <Wifi className="w-3.5 h-3.5 stroke-[1.5]" />
+                <span className="text-[9px] font-black tracking-wider">
                   WIFI
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 text-slate-400">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">
+              <div className="flex items-center gap-1.5 text-slate-400 transition-colors duration-300 group-hover:text-slate-600">
+                <ShieldCheck className="w-3.5 h-3.5 stroke-[1.5]" />
+                <span className="text-[9px] font-black tracking-wider">
                   24/7
                 </span>
               </div>
@@ -146,10 +148,10 @@ export function RoomCard({
           )}
         </div>
 
-        {/* 4. Actions Section */}
+        {/* 4. Actions Section - Nút bấm dẹt, lì, phản hồi lực nhấn tốt */}
         <div className="flex items-center gap-2 mt-auto pt-1">
-          <Link href={`/rooms/${room.id}`} className="flex-1">
-            <Button className="w-full bg-slate-900 hover:bg-indigo-600 text-white rounded-xl h-11 font-bold text-xs shadow-sm transition-all hover:shadow-indigo-200 active:scale-95 border-b-2 border-slate-800 hover:border-indigo-700">
+          <Link href={`/admin/rooms/${room.id}`} className="flex-1">
+            <Button className="w-full bg-slate-950 hover:bg-indigo-600 text-white rounded-lg h-10 font-bold text-xs tracking-wider transition-all duration-300 shadow-sm hover:shadow-[0_4px_12px_rgba(79,70,229,0.25)] active:scale-[0.98]">
               Chi tiết phòng
             </Button>
           </Link>
@@ -159,14 +161,14 @@ export function RoomCard({
               <Button
                 variant="outline"
                 size="icon"
-                className="rounded-xl h-11 w-11 border-slate-200 bg-white hover:bg-slate-50 transition-all"
+                className="rounded-lg h-10 w-10 border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 shadow-xs active:scale-[0.98]"
               >
-                <MoreVertical className="h-5 w-5 text-slate-400 group-hover:text-slate-600" />
+                <MoreVertical className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-500" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="rounded-2xl w-56 p-2 shadow-2xl border-slate-100 bg-white/95 backdrop-blur-md"
+              className="rounded-xl border border-slate-100 w-52 p-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.08)] bg-white/95 backdrop-blur-md"
             >
               <RoomDialog
                 mode="update"
@@ -174,7 +176,7 @@ export function RoomCard({
                 onSubmit={onUpdate}
                 trigger={
                   <DropdownMenuItem
-                    className="gap-3 cursor-pointer rounded-xl py-3 focus:bg-slate-50 font-bold text-slate-600 text-xs"
+                    className="gap-2.5 cursor-pointer rounded-lg py-2.5 focus:bg-slate-50 font-bold text-slate-600 text-xs transition-colors"
                     onSelect={(e) => e.preventDefault()}
                   >
                     <PencilLine className="w-4 h-4 text-slate-400" /> Chỉnh sửa
@@ -182,11 +184,11 @@ export function RoomCard({
                   </DropdownMenuItem>
                 }
               />
-              <DropdownMenuItem className="gap-3 cursor-pointer rounded-xl py-3 focus:bg-slate-50 font-bold text-slate-600 text-xs">
+              <DropdownMenuItem className="gap-2.5 cursor-pointer rounded-lg py-2.5 focus:bg-slate-50 font-bold text-slate-600 text-xs transition-colors">
                 <FileText className="w-4 h-4 text-slate-400" /> Lập hợp đồng mới
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="my-1.5 opacity-50" />
-              <DropdownMenuItem className="gap-3 cursor-pointer rounded-xl py-3 focus:bg-rose-50 focus:text-rose-600 font-bold text-rose-500 text-xs">
+              <DropdownMenuSeparator className="my-1 border-slate-100" />
+              <DropdownMenuItem className="gap-2.5 cursor-pointer rounded-lg py-2.5 focus:bg-rose-50 focus:text-rose-600 font-bold text-rose-500 text-xs transition-colors">
                 <AlertCircle className="w-4 h-4" /> Báo hỏng / Sửa chữa
               </DropdownMenuItem>
             </DropdownMenuContent>
