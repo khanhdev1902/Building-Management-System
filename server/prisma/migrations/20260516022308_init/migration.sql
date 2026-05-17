@@ -1,21 +1,19 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'MANAGER', 'STAFF', 'TENANT');
 
-  - You are about to drop the `users` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropTable
-DROP TABLE "users";
+-- CreateEnum
+CREATE TYPE "RoomStatus" AS ENUM ('AVAILABLE', 'OCCUPIED', 'MAINTENANCE');
 
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT,
     "passwordHash" TEXT NOT NULL,
-    "role" "UserRole" NOT NULL,
+    "role" "UserRole" NOT NULL DEFAULT 'TENANT',
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "phone" TEXT,
+    "gender" TEXT,
     "avatarUrl" TEXT,
     "faceId" TEXT,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
@@ -40,8 +38,10 @@ CREATE TABLE "Staff" (
 CREATE TABLE "Tenant" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "isHost" BOOLEAN NOT NULL DEFAULT true,
     "citizenId" TEXT NOT NULL,
     "dateOfBirth" TIMESTAMP(3) NOT NULL,
+    "permanentAddress" TEXT,
     "occupation" TEXT,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -55,9 +55,9 @@ CREATE TABLE "Room" (
     "floor" INTEGER NOT NULL,
     "acreage" DOUBLE PRECISION NOT NULL,
     "roomPrice" DECIMAL(12,2) NOT NULL,
-    "status" TEXT NOT NULL,
+    "status" "RoomStatus" NOT NULL DEFAULT 'AVAILABLE',
     "description" TEXT,
-    "maxOccupants" INTEGER NOT NULL,
+    "maxOccupants" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Room_pkey" PRIMARY KEY ("id")
@@ -67,9 +67,12 @@ CREATE TABLE "Room" (
 CREATE TABLE "Service" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "type" TEXT NOT NULL,
-    "unitPrice" DECIMAL(12,2) NOT NULL,
+    "type" TEXT,
+    "price" DECIMAL(12,2) NOT NULL,
     "unit" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
+    "iconKey" TEXT,
+    "description" TEXT,
 
     CONSTRAINT "Service_pkey" PRIMARY KEY ("id")
 );
@@ -83,21 +86,25 @@ CREATE TABLE "RoomService" (
 );
 
 -- CreateTable
-CREATE TABLE "Amenity" (
+CREATE TABLE "Asset" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "total" INTEGER NOT NULL,
+    "active" INTEGER NOT NULL,
+    "available" INTEGER NOT NULL,
+    "description" TEXT,
 
-    CONSTRAINT "Amenity_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Asset_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "RoomAmenity" (
-    "amenityId" TEXT NOT NULL,
+CREATE TABLE "RoomAsset" (
+    "assetId" TEXT NOT NULL,
     "roomId" TEXT NOT NULL,
-    "quantity" INTEGER NOT NULL,
+    "quantity" INTEGER NOT NULL DEFAULT 1,
     "status" TEXT NOT NULL,
 
-    CONSTRAINT "RoomAmenity_pkey" PRIMARY KEY ("amenityId","roomId")
+    CONSTRAINT "RoomAsset_pkey" PRIMARY KEY ("assetId","roomId")
 );
 
 -- CreateTable
@@ -344,10 +351,10 @@ ALTER TABLE "RoomService" ADD CONSTRAINT "RoomService_roomId_fkey" FOREIGN KEY (
 ALTER TABLE "RoomService" ADD CONSTRAINT "RoomService_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "Service"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "RoomAmenity" ADD CONSTRAINT "RoomAmenity_amenityId_fkey" FOREIGN KEY ("amenityId") REFERENCES "Amenity"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "RoomAsset" ADD CONSTRAINT "RoomAsset_assetId_fkey" FOREIGN KEY ("assetId") REFERENCES "Asset"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "RoomAmenity" ADD CONSTRAINT "RoomAmenity_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "RoomAsset" ADD CONSTRAINT "RoomAsset_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Contract" ADD CONSTRAINT "Contract_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

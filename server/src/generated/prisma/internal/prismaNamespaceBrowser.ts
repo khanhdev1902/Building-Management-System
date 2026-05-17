@@ -57,8 +57,8 @@ export const ModelName = {
   Room: 'Room',
   Service: 'Service',
   RoomService: 'RoomService',
-  Amenity: 'Amenity',
-  RoomAmenity: 'RoomAmenity',
+  Asset: 'Asset',
+  RoomAsset: 'RoomAsset',
   Contract: 'Contract',
   Roommate: 'Roommate',
   EmergencyContact: 'EmergencyContact',
@@ -174,22 +174,26 @@ export const RoomServiceScalarFieldEnum = {
 export type RoomServiceScalarFieldEnum = (typeof RoomServiceScalarFieldEnum)[keyof typeof RoomServiceScalarFieldEnum]
 
 
-export const AmenityScalarFieldEnum = {
+export const AssetScalarFieldEnum = {
   id: 'id',
-  name: 'name'
+  name: 'name',
+  total: 'total',
+  active: 'active',
+  available: 'available',
+  description: 'description'
 } as const
 
-export type AmenityScalarFieldEnum = (typeof AmenityScalarFieldEnum)[keyof typeof AmenityScalarFieldEnum]
+export type AssetScalarFieldEnum = (typeof AssetScalarFieldEnum)[keyof typeof AssetScalarFieldEnum]
 
 
-export const RoomAmenityScalarFieldEnum = {
-  amenityId: 'amenityId',
+export const RoomAssetScalarFieldEnum = {
+  assetId: 'assetId',
   roomId: 'roomId',
   quantity: 'quantity',
   status: 'status'
 } as const
 
-export type RoomAmenityScalarFieldEnum = (typeof RoomAmenityScalarFieldEnum)[keyof typeof RoomAmenityScalarFieldEnum]
+export type RoomAssetScalarFieldEnum = (typeof RoomAssetScalarFieldEnum)[keyof typeof RoomAssetScalarFieldEnum]
 
 
 export const ContractScalarFieldEnum = {

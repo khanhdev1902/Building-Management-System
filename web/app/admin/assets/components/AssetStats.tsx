@@ -4,11 +4,21 @@ import React from "react";
 import { Box, PenTool, AlertOctagon, Activity } from "lucide-react";
 import { Card } from "@/shared/components/ui/card";
 
-export const AssetStats = () => {
+export const AssetStats = ({
+  total = 0,
+  active = 0,
+  fixxing = 0,
+  repair = 0,
+}: {
+  total?: number;
+  active?: number;
+  fixxing?: number;
+  repair?: number;
+}) => {
   const stats = [
     {
       label: "Tổng tài sản",
-      value: "1,284",
+      value: total,
       unit: "T.Bị",
       icon: <Box className="w-3.5 h-3.5" />,
       color: "text-slate-900",
@@ -20,7 +30,7 @@ export const AssetStats = () => {
     },
     {
       label: "Đang vận hành",
-      value: "1,250",
+      value: active,
       unit: "Live",
       icon: <Activity className="w-3.5 h-3.5" />,
       color: "text-emerald-600",
@@ -32,7 +42,7 @@ export const AssetStats = () => {
     },
     {
       label: "Đang bảo trì",
-      value: "26",
+      value: fixxing,
       unit: "Sửa",
       icon: <PenTool className="w-3.5 h-3.5" />,
       color: "text-amber-600",
@@ -44,7 +54,7 @@ export const AssetStats = () => {
     },
     {
       label: "Cần thay thế",
-      value: "08",
+      value: repair,
       unit: "Alert",
       icon: <AlertOctagon className="w-3.5 h-3.5" />,
       color: "text-red-600",

@@ -1,22 +1,40 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plus, QrCode, Database, Layers, ListFilter } from "lucide-react";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@/shared/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import { Button } from "@/shared/components/ui/button";
 
 // Sub-components
 import { AssetStats } from "./components/AssetStats";
 import { InventoryManager } from "./components/InventoryManager";
 import { AssetManager } from "./components/AssetManager";
+import { AssetCategory } from "./types/asset.type";
+import { assetApi } from "./apis/asset.api";
+import { toast } from "sonner";
 
 export default function AssetPage() {
-  // Đưa inventory (Danh sách thiết bị) lên làm mặc định
   const [activeTab, setActiveTab] = useState("inventory");
+  const [assets, setAssets] = useState<AssetCategory[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [active, setActive] = useState<number>(0);
+
+  useEffect(() => {
+    const getAssets = async () => {
+      try {
+        const res = await assetApi.getAllAssets();
+        if (res && res.data) {
+          setAssets(res.data.assets);
+          setTotal(res.data.totalAsset ?? 0);
+          setActive(res.data.activeAsset ?? 0);
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        toast.error(error?.message || "Không thể tải danh sách thiết bị");
+      }
+    };
+    getAssets();
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#fcfcfd]">
@@ -75,7 +93,7 @@ export default function AssetPage() {
         </div>
       </nav>
 
-      <main className="max-w-[1600px] mx-auto p-8 space-y-8">
+      <main className="max-w-400 mx-auto p-8 space-y-8">
         {/* Section Thống kê: Nhìn gắt và chuyên nghiệp */}
         <div className="space-y-2">
           <div className="flex items-center gap-2 mb-4">
@@ -84,7 +102,7 @@ export default function AssetPage() {
               Báo cáo hiệu suất vận hành
             </h2>
           </div>
-          <AssetStats />
+          <AssetStats total={total} active={active} />
         </div>
 
         {/* Content Section */}
@@ -103,7 +121,7 @@ export default function AssetPage() {
               <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">
                 Phân loại danh mục tài sản
               </h3>
-              <AssetManager />
+              <AssetManager assets={assets} />
             </div>
           )}
         </div>

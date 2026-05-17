@@ -1,34 +1,28 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
 import { Box, MoreVertical, Plus } from "lucide-react";
 import { AssetImportModal } from "./AssetImportModal";
+import { AssetCategory } from "../types/asset.type";
+import { assetApi } from "../apis/asset.api";
 
-export function AssetManager() {
+export function AssetManager({ assets = [] }: { assets: AssetCategory[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [editingData, setEditingData] = useState<{
     name: string;
     quantity: number;
     id: string;
   } | null>(null);
-  const [categories, setCategories] = useState([
-    {
-      id: "CAT-001",
-      name: "Điều hòa Daikin Inverter",
-      total: 12,
-      active: 10,
-      available: 2,
-    },
-  ]);
+  const [categories, setCategories] = useState<AssetCategory[]>(assets);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleOpenEdit = (item: any, e: React.MouseEvent) => {
     e.stopPropagation();
     setEditingData({ name: item.name, quantity: item.total, id: item.id });
     setIsOpen(true);
   };
 
-  const handleConfirm = (name: string, quantity: number) => {
+  const handleConfirm = async (name: string, quantity: number) => {
     if (editingData) {
       setCategories((prev) =>
         prev.map((c) =>
@@ -37,13 +31,17 @@ export function AssetManager() {
             : c,
         ),
       );
+      await assetApi.updateAsset(editingData.id, {
+        name: name,
+        total: quantity,
+      });
     } else {
       // Logic thêm mới
-      const newId = `CAT-00${categories.length + 1}`;
-      setCategories([
-        ...categories,
-        { id: newId, name, total: quantity, active: 0, available: quantity },
-      ]);
+      const newAsset = await assetApi.createAsset({
+        name: name,
+        total: quantity,
+      });
+      setCategories([...categories, newAsset.data ?? {}]);
     }
     setEditingData(null);
   };
@@ -75,7 +73,7 @@ export function AssetManager() {
                   <h3 className="text-[13px] font-black text-slate-900 truncate uppercase tracking-tight mb-1">
                     {item.name}
                   </h3>
-                  <p className="text-[9px] text-slate-400 font-bold tracking-[0.2em] leading-none">
+                  <p className="text-[9px] text-slate-400 font-bold tracking-[0.2em] leading-none truncate">
                     {item.id}
                   </p>
                 </div>

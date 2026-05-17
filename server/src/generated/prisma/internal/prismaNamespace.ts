@@ -390,8 +390,8 @@ export const ModelName = {
   Room: 'Room',
   Service: 'Service',
   RoomService: 'RoomService',
-  Amenity: 'Amenity',
-  RoomAmenity: 'RoomAmenity',
+  Asset: 'Asset',
+  RoomAsset: 'RoomAsset',
   Contract: 'Contract',
   Roommate: 'Roommate',
   EmergencyContact: 'EmergencyContact',
@@ -423,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "staff" | "tenant" | "room" | "service" | "roomService" | "amenity" | "roomAmenity" | "contract" | "roommate" | "emergencyContact" | "meter" | "invoice" | "invoiceItem" | "payment" | "shift" | "attendance" | "problem" | "conversation" | "conversationMember" | "message" | "notification" | "notificationRecipient" | "auditLog"
+    modelProps: "user" | "staff" | "tenant" | "room" | "service" | "roomService" | "asset" | "roomAsset" | "contract" | "roommate" | "emergencyContact" | "meter" | "invoice" | "invoiceItem" | "payment" | "shift" | "attendance" | "problem" | "conversation" | "conversationMember" | "message" | "notification" | "notificationRecipient" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -871,151 +871,151 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Amenity: {
-      payload: Prisma.$AmenityPayload<ExtArgs>
-      fields: Prisma.AmenityFieldRefs
+    Asset: {
+      payload: Prisma.$AssetPayload<ExtArgs>
+      fields: Prisma.AssetFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.AmenityFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AmenityPayload> | null
+          args: Prisma.AssetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.AmenityFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AmenityPayload>
+          args: Prisma.AssetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
         }
         findFirst: {
-          args: Prisma.AmenityFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AmenityPayload> | null
+          args: Prisma.AssetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.AmenityFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AmenityPayload>
+          args: Prisma.AssetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
         }
         findMany: {
-          args: Prisma.AmenityFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AmenityPayload>[]
+          args: Prisma.AssetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>[]
         }
         create: {
-          args: Prisma.AmenityCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AmenityPayload>
+          args: Prisma.AssetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
         }
         createMany: {
-          args: Prisma.AmenityCreateManyArgs<ExtArgs>
+          args: Prisma.AssetCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.AmenityCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AmenityPayload>[]
+          args: Prisma.AssetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>[]
         }
         delete: {
-          args: Prisma.AmenityDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AmenityPayload>
+          args: Prisma.AssetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
         }
         update: {
-          args: Prisma.AmenityUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AmenityPayload>
+          args: Prisma.AssetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
         }
         deleteMany: {
-          args: Prisma.AmenityDeleteManyArgs<ExtArgs>
+          args: Prisma.AssetDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.AmenityUpdateManyArgs<ExtArgs>
+          args: Prisma.AssetUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.AmenityUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AmenityPayload>[]
+          args: Prisma.AssetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>[]
         }
         upsert: {
-          args: Prisma.AmenityUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$AmenityPayload>
+          args: Prisma.AssetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
         }
         aggregate: {
-          args: Prisma.AmenityAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateAmenity>
+          args: Prisma.AssetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAsset>
         }
         groupBy: {
-          args: Prisma.AmenityGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AmenityGroupByOutputType>[]
+          args: Prisma.AssetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssetGroupByOutputType>[]
         }
         count: {
-          args: Prisma.AmenityCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AmenityCountAggregateOutputType> | number
+          args: Prisma.AssetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssetCountAggregateOutputType> | number
         }
       }
     }
-    RoomAmenity: {
-      payload: Prisma.$RoomAmenityPayload<ExtArgs>
-      fields: Prisma.RoomAmenityFieldRefs
+    RoomAsset: {
+      payload: Prisma.$RoomAssetPayload<ExtArgs>
+      fields: Prisma.RoomAssetFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.RoomAmenityFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAmenityPayload> | null
+          args: Prisma.RoomAssetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAssetPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.RoomAmenityFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAmenityPayload>
+          args: Prisma.RoomAssetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAssetPayload>
         }
         findFirst: {
-          args: Prisma.RoomAmenityFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAmenityPayload> | null
+          args: Prisma.RoomAssetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAssetPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.RoomAmenityFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAmenityPayload>
+          args: Prisma.RoomAssetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAssetPayload>
         }
         findMany: {
-          args: Prisma.RoomAmenityFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAmenityPayload>[]
+          args: Prisma.RoomAssetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAssetPayload>[]
         }
         create: {
-          args: Prisma.RoomAmenityCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAmenityPayload>
+          args: Prisma.RoomAssetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAssetPayload>
         }
         createMany: {
-          args: Prisma.RoomAmenityCreateManyArgs<ExtArgs>
+          args: Prisma.RoomAssetCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.RoomAmenityCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAmenityPayload>[]
+          args: Prisma.RoomAssetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAssetPayload>[]
         }
         delete: {
-          args: Prisma.RoomAmenityDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAmenityPayload>
+          args: Prisma.RoomAssetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAssetPayload>
         }
         update: {
-          args: Prisma.RoomAmenityUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAmenityPayload>
+          args: Prisma.RoomAssetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAssetPayload>
         }
         deleteMany: {
-          args: Prisma.RoomAmenityDeleteManyArgs<ExtArgs>
+          args: Prisma.RoomAssetDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.RoomAmenityUpdateManyArgs<ExtArgs>
+          args: Prisma.RoomAssetUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.RoomAmenityUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAmenityPayload>[]
+          args: Prisma.RoomAssetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAssetPayload>[]
         }
         upsert: {
-          args: Prisma.RoomAmenityUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAmenityPayload>
+          args: Prisma.RoomAssetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomAssetPayload>
         }
         aggregate: {
-          args: Prisma.RoomAmenityAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateRoomAmenity>
+          args: Prisma.RoomAssetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRoomAsset>
         }
         groupBy: {
-          args: Prisma.RoomAmenityGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.RoomAmenityGroupByOutputType>[]
+          args: Prisma.RoomAssetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoomAssetGroupByOutputType>[]
         }
         count: {
-          args: Prisma.RoomAmenityCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.RoomAmenityCountAggregateOutputType> | number
+          args: Prisma.RoomAssetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoomAssetCountAggregateOutputType> | number
         }
       }
     }
@@ -2323,22 +2323,26 @@ export const RoomServiceScalarFieldEnum = {
 export type RoomServiceScalarFieldEnum = (typeof RoomServiceScalarFieldEnum)[keyof typeof RoomServiceScalarFieldEnum]
 
 
-export const AmenityScalarFieldEnum = {
+export const AssetScalarFieldEnum = {
   id: 'id',
-  name: 'name'
+  name: 'name',
+  total: 'total',
+  active: 'active',
+  available: 'available',
+  description: 'description'
 } as const
 
-export type AmenityScalarFieldEnum = (typeof AmenityScalarFieldEnum)[keyof typeof AmenityScalarFieldEnum]
+export type AssetScalarFieldEnum = (typeof AssetScalarFieldEnum)[keyof typeof AssetScalarFieldEnum]
 
 
-export const RoomAmenityScalarFieldEnum = {
-  amenityId: 'amenityId',
+export const RoomAssetScalarFieldEnum = {
+  assetId: 'assetId',
   roomId: 'roomId',
   quantity: 'quantity',
   status: 'status'
 } as const
 
-export type RoomAmenityScalarFieldEnum = (typeof RoomAmenityScalarFieldEnum)[keyof typeof RoomAmenityScalarFieldEnum]
+export type RoomAssetScalarFieldEnum = (typeof RoomAssetScalarFieldEnum)[keyof typeof RoomAssetScalarFieldEnum]
 
 
 export const ContractScalarFieldEnum = {
@@ -2820,8 +2824,8 @@ export type GlobalOmitConfig = {
   room?: Prisma.RoomOmit
   service?: Prisma.ServiceOmit
   roomService?: Prisma.RoomServiceOmit
-  amenity?: Prisma.AmenityOmit
-  roomAmenity?: Prisma.RoomAmenityOmit
+  asset?: Prisma.AssetOmit
+  roomAsset?: Prisma.RoomAssetOmit
   contract?: Prisma.ContractOmit
   roommate?: Prisma.RoommateOmit
   emergencyContact?: Prisma.EmergencyContactOmit

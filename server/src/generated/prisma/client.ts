@@ -70,15 +70,15 @@ export type Service = Prisma.ServiceModel
  */
 export type RoomService = Prisma.RoomServiceModel
 /**
- * Model Amenity
+ * Model Asset
  * 
  */
-export type Amenity = Prisma.AmenityModel
+export type Asset = Prisma.AssetModel
 /**
- * Model RoomAmenity
+ * Model RoomAsset
  * 
  */
-export type RoomAmenity = Prisma.RoomAmenityModel
+export type RoomAsset = Prisma.RoomAssetModel
 /**
  * Model Contract
  * 

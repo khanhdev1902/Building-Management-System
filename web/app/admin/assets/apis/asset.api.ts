@@ -1,49 +1,54 @@
-// services/apis/asset.api.ts
-import axios from "axios"; // Hoặc import instance axios của anh (vd: @/shared/api/axios)
-import { AssetCategory } from "../types/asset.type";
+import { API_ENDPOINTS } from "@/services/api-endpoint";
+import { apiHandler } from "@/helpers/api.helper";
+import http from "@/services/http";
+import {
+  AssetCategory,
+  AssetItem,
+  CreateAssetCategoryRequest,
+  UpdateAssetCategoryRequest,
+  CreateAssetItemRequest,
+  UpdateAssetItemRequest,
+} from "../types/asset.type";
 
-const API_URL = "/api/asset-categories"; // Thay bằng URL backend thực tế của anh
+const getAllAssets = () => apiHandler(http.get(API_ENDPOINTS.ASSETS));
+const getAssetById = (id: string) =>
+  apiHandler(http.get(API_ENDPOINTS.ASSET_DETAIL(id)));
+const createAsset = (data: CreateAssetCategoryRequest) =>
+  apiHandler(http.post(API_ENDPOINTS.ASSETS, data));
+const updateAsset = (id: string, data: UpdateAssetCategoryRequest) =>
+  apiHandler<AssetCategory>(
+    http.patch(API_ENDPOINTS.ASSET_DETAIL(id), data),
+  );
+
+const deleteAsset = (id: string) =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  apiHandler<any>(http.delete(API_ENDPOINTS.ASSET_DETAIL(id)));
+
+// --- Assets --------------------------------------------------------------
+const getAllRoomAssets = () =>
+  apiHandler<AssetItem[]>(http.get(API_ENDPOINTS.ASSETS));
+const getRoomAssetById = (id: string) =>
+  apiHandler<AssetItem>(http.get(API_ENDPOINTS.ASSET_DETAIL(id)));
+const createRoomAsset = (data: CreateAssetItemRequest) =>
+  apiHandler<AssetItem>(http.post(API_ENDPOINTS.ASSETS, data));
+const updateRoomAsset = (id: string, data: UpdateAssetItemRequest) =>
+  apiHandler<AssetItem>(http.patch(API_ENDPOINTS.ASSET_DETAIL(id), data));
+const deleteRoomAsset = (id: string) =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  apiHandler<any>(http.delete(API_ENDPOINTS.ASSET_DETAIL(id)));
 
 export const assetApi = {
-  /**
-   * Lấy tất cả danh mục thiết bị (Điều hòa, Tủ lạnh...)
-   */
-  getCategories: async () => {
-    return axios.get<AssetCategory[]>(API_URL);
-  },
+  // Assets
+  getAllAssets,
+  getAssetById,
+  createAsset,
+  updateAsset,
+  deleteAsset,
 
-  /**
-   * Lấy chi tiết một danh mục theo ID
-   */
-  getCategoryById: async (id: string) => {
-    return axios.get<AssetCategory>(`${API_URL}/${id}`);
-  },
-
-  /**
-   * Tạo mới một loại thiết bị
-   */
-  createCategory: async (name: string) => {
-    return axios.post<AssetCategory>(API_URL, { name });
-  },
-
-  /**
-   * Cập nhật tên hoặc thông tin danh mục
-   */
-  updateCategory: async (id: string, name: string) => {
-    return axios.put<AssetCategory>(`${API_URL}/${id}`, { name });
-  },
-
-  /**
-   * Xóa danh mục (Cẩn thận: nên check xem có phòng nào đang dùng không)
-   */
-  deleteCategory: async (id: string) => {
-    return axios.delete(`${API_URL}/${id}`);
-  },
-
-  /**
-   * API bổ sung: Gán thiết bị vào phòng cụ thể
-   */
-  assignAssetToRoom: async (roomId: string, assetIds: string[]) => {
-    return axios.post(`/api/rooms/${roomId}/assets`, { assetIds });
-  },
+  // RoomAssets
+  getAllRoomAssets,
+  getRoomAssetById,
+  createRoomAsset,
+  updateRoomAsset,
+  deleteRoomAsset,
 };
