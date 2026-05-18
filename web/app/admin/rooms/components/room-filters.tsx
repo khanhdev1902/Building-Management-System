@@ -33,7 +33,7 @@ export function RoomFilters({
   const hasFilter =
     searchTerm || statusFilter !== "all" || floorFilter !== "all";
 
-  // Tính năng cao cấp: Bấm phím '/' tự động focus ô tìm kiếm
+  // Tính năng phím tắt: Bấm phím '/' tự động focus nhanh ô tìm kiếm
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "/" && document.activeElement !== inputRef.current) {
@@ -46,101 +46,104 @@ export function RoomFilters({
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row items-center gap-2.5 w-full bg-white/80 backdrop-blur-md p-2 rounded-xl border border-slate-200/70 shadow-[0_2px_8px_-3px_rgba(15,23,42,0.05)] sticky top-4 z-20 transition-all duration-300">
-      {/* 1. Thanh tìm kiếm thông minh */}
+    <div className="flex flex-col sm:flex-row items-center gap-2 w-full select-none animate-in fade-in duration-200">
+      {/* 1. THANH TÌM KIẾM PHẲNG LÌ - Nhúng chìm vào trục gối nền */}
       <div className="relative flex-1 w-full group">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-slate-800 transition-colors stroke-[1.5]" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 group-focus-within:text-slate-800 transition-colors" />
         <Input
           ref={inputRef}
-          placeholder="Tìm kiếm số phòng, tên khách thuê..."
-          className="w-full pl-9 pr-12 h-10 bg-slate-50/50 border border-slate-200/60 focus-visible:border-slate-400 focus-visible:ring-0 focus-visible:bg-white rounded-lg text-sm font-medium text-slate-800 placeholder:text-slate-400 placeholder:font-normal transition-all"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Tìm nhanh số phòng, tên chủ hộ cư dân..."
+          className="w-full pl-8.5 pr-10 h-8.5 bg-white border border-slate-200/80 focus-visible:border-slate-400 focus-visible:ring-0 rounded-lg text-xs font-medium text-slate-800 placeholder:text-slate-400 placeholder:font-normal transition-all shadow-2xs"
         />
 
-        {/* Chỉ báo phím tắt hoặc nút Xóa nhanh */}
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+        {/* Cụm phím xóa nhanh dẹt mượt */}
+        <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
           {searchTerm ? (
             <button
               onClick={() => setSearchTerm("")}
-              className="p-1 hover:bg-slate-100 rounded-md text-slate-400 hover:text-slate-600 transition-colors"
+              className="p-0.5 hover:bg-slate-100 rounded-md text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
             >
-              <X className="h-3.5 w-3.5" />
+              <X className="h-3 w-3" />
             </button>
           ) : (
-            <kbd className="hidden sm:inline-flex h-5 select-none pointer-events-none items-center gap-0.5 rounded border border-slate-200 bg-white px-1.5 font-mono text-[10px] font-medium text-slate-400 shadow-2xs">
-              <span className="text-[9px]">/</span>
+            <kbd className="hidden sm:inline-flex h-4.5 select-none pointer-events-none items-center gap-0.5 rounded border border-slate-200/60 bg-slate-50 px-1.5 font-mono text-[9px] font-medium text-slate-400">
+              <span>/</span>
             </kbd>
           )}
         </div>
       </div>
 
-      {/* 2. Cụm bộ lọc Dropdown phân lớp */}
-      <div className="flex items-center gap-2 w-full md:w-auto shrink-0">
-        {/* Bộ lọc Tầng */}
+      {/* 2. CỤM BỘ LỌC DROPDOWN PHÂN LỚP DẸT MỊN H-8.5 */}
+      <div className="flex items-center gap-1.5 w-full sm:w-auto shrink-0">
+        {/* Bộ lọc Vị trí Tầng tòa nhà */}
         <Select value={floorFilter} onValueChange={setFloorFilter}>
-          <SelectTrigger className="w-full md:w-32 h-10 border border-slate-200/80 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50/50 rounded-lg text-xs font-semibold tracking-tight transition-all shadow-2xs">
+          <SelectTrigger className="w-full sm:w-40 h-8.5 border border-slate-200/80 bg-white text-slate-600 hover:text-slate-900 hover:border-slate-300 rounded-lg text-xs font-semibold tracking-tight transition-all shadow-2xs cursor-pointer px-2.5">
             <div className="flex items-center gap-1.5">
-              <Layers className="h-3.5 w-3.5 text-slate-400 stroke-[1.5]" />
+              <Layers className="h-3.5 w-3.5 text-slate-400 stroke-[1.8]" />
               <SelectValue placeholder="Chọn vị trí tầng" />
             </div>
           </SelectTrigger>
-          <SelectContent className="rounded-lg border-slate-200 shadow-lg p-1">
+          <SelectContent className="rounded-lg border-slate-200/80 p-1 min-w-37.5">
             <SelectItem
               value="all"
-              className="text-xs font-medium rounded-md focus:bg-slate-50 focus:text-slate-900"
+              className="text-xs font-semibold rounded-md"
             >
-              Toàn bộ tòa nhà
+              Toàn bộ nhà
             </SelectItem>
             {[1, 2, 3, 4, 5].map((f) => (
               <SelectItem
                 key={f}
                 value={f.toString()}
-                className="text-xs rounded-md focus:bg-slate-50 focus:text-slate-900"
+                className="text-xs rounded-md font-medium"
               >
-                Tầng trung tâm {f}
+                Tầng {f}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
-        {/* Bộ lọc Trạng thái phòng */}
+        {/* Bộ lọc Trạng thái dòng vận hành quỹ căn */}
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full md:w-34 h-10 border border-slate-200/80 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50/50 rounded-lg text-xs font-semibold tracking-tight transition-all shadow-2xs">
+          <SelectTrigger className="w-full sm:w-40 h-8.5 border border-slate-200/80 bg-white text-slate-600 hover:text-slate-900 hover:border-slate-300 rounded-lg text-xs font-semibold tracking-tight transition-all shadow-2xs cursor-pointer px-2.5">
             <div className="flex items-center gap-1.5">
-              <ListFilter className="h-3.5 w-3.5 text-slate-400 stroke-[1.5]" />
+              <ListFilter className="h-3.5 w-3.5 text-slate-400 stroke-[1.8]" />
               <SelectValue placeholder="Trạng thái" />
             </div>
           </SelectTrigger>
-          <SelectContent className="rounded-lg border-slate-200 shadow-lg p-1">
-            <SelectItem value="all" className="text-xs font-medium rounded-md">
+          <SelectContent className="rounded-lg border-slate-200/80 p-1 min-w-33.75">
+            <SelectItem
+              value="all"
+              className="text-xs font-semibold rounded-md"
+            >
               Mọi trạng thái
             </SelectItem>
             <SelectItem
               value="AVAILABLE"
-              className="text-xs rounded-md focus:bg-emerald-50/50 focus:text-emerald-700"
+              className="text-xs rounded-md font-medium focus:bg-blue-50/40 focus:text-blue-700"
             >
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2" />
-              Căn hộ trống
+              <span className="inline-block w-1.2 h-1.2 rounded-full bg-blue-500 mr-2" />
+              Đang trống
             </SelectItem>
             <SelectItem
               value="OCCUPIED"
-              className="text-xs rounded-md focus:bg-blue-50/50 focus:text-blue-700"
+              className="text-xs rounded-md font-medium focus:bg-emerald-50/40 focus:text-emerald-700"
             >
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-500 mr-2" />
-              Đang vận hành
+              <span className="inline-block w-1.2 h-1.2 rounded-full bg-emerald-500 mr-2" />
+              Đang cho thuê ở
             </SelectItem>
             <SelectItem
-              value="MAINTENACE"
-              className="text-xs rounded-md focus:bg-amber-50/50 focus:text-amber-700"
+              value="MAINTENANCE"
+              className="text-xs rounded-md font-medium focus:bg-amber-50/40 focus:text-amber-700"
             >
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 mr-2" />
-              Đang bảo trì
+              <span className="inline-block w-1.2 h-1.2 rounded-full bg-amber-500 mr-2" />
+              Đang bảo dưỡng
             </SelectItem>
           </SelectContent>
         </Select>
 
-        {/* Nút Reset bộ lọc tối giản hiệu ứng Smooth */}
+        {/* Nút Xóa nhanh bộ lọc phẳng dẹt pastel màu rose */}
         {hasFilter && (
           <Button
             variant="ghost"
@@ -149,12 +152,10 @@ export function RoomFilters({
               setFloorFilter("all");
               setStatusFilter("all");
             }}
-            className="h-10 px-3 hover:bg-rose-50/60 text-rose-600 hover:text-rose-700 rounded-lg transition-all text-xs font-bold shrink-0 border border-dashed border-rose-200 hover:border-rose-300 bg-rose-50/20"
+            className="h-8.5 px-2.5 hover:bg-rose-50 text-rose-600 hover:text-rose-700 border border-dashed border-rose-200 hover:border-rose-300 bg-rose-50/30 rounded-lg text-xs font-bold shrink-0 shadow-none transition-all uppercase tracking-wider text-[10px]"
           >
-            <X className="h-3.5 w-3.5 mr-1 stroke-2" />
-            <span className="hidden md:inline uppercase tracking-wider text-[10px]">
-              Xóa lọc
-            </span>
+            <X className="h-3.5 w-3.5 mr-1 stroke-[2.5]" />
+            <span>Xóa lọc</span>
           </Button>
         )}
       </div>

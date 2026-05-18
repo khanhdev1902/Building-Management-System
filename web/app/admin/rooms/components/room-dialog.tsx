@@ -115,9 +115,11 @@ export function RoomDialog({
   useEffect(() => {
     if (isOpen) {
       if (mode === "update" && initialData) {
+        console.log("data update",initialData)
         reset({
           ...initialData,
         });
+        console.log("data form update:",form.getValues())
       } else {
         reset({
           roomNumber: "",
@@ -133,7 +135,7 @@ export function RoomDialog({
         });
       }
     }
-  }, [isOpen, initialData, mode, reset]);
+  }, [isOpen, initialData, mode, reset, form]);
 
   const handleFinalSubmit = (data: RoomFormValues) => {
     const defaultServiceIds = [electric?.id, water?.id].filter(

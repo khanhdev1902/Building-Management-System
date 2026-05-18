@@ -3,9 +3,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
-import { CreateRoomDto } from './dto';
+import { CreateRoomDto, UpdateRoomDto } from './dto';
 
 @Injectable()
 export class RoomService {
@@ -140,7 +139,9 @@ export class RoomService {
           {} as Record<string, number>,
         ),
 
-        amenities: room.roomAssets.map((ra) => ra.asset.name),
+        serviceIds: room.roomServices.map((rs) => rs.serviceId),
+
+        amenities: room.roomAssets.map((ra) => ra.asset.id),
 
         totalContracts: room._count.contracts,
       };
@@ -160,10 +161,75 @@ export class RoomService {
     return room;
   }
 
-  async update(id: string, data: Prisma.RoomUpdateInput) {
-    return this.prisma.room.update({
-      where: { id },
-      data,
+  async update(roomId: string, dto: UpdateRoomDto) {
+    return await this.prisma.$transaction(async (tx) => {
+      // 1. Update thông tin phòng
+      await tx.room.update({
+        where: { id: roomId },
+        data: {
+          roomNumber: dto.roomNumber,
+          roomPrice: dto.roomPrice,
+          floor: dto.floor,
+          acreage: dto.acreage,
+          description: dto.description,
+          maxOccupants: dto.maxOccupants,
+          type: dto.type,
+          status: dto.status,
+        },
+      });
+
+      // 2. Update services
+      // Xóa toàn bộ relation cũ
+      await tx.roomService.deleteMany({
+        where: { roomId },
+      });
+
+      // Add lại relation mới
+      if (dto.serviceIds?.length) {
+        await tx.roomService.createMany({
+          data: dto.serviceIds.map((serviceId) => ({
+            roomId,
+            serviceId,
+          })),
+          skipDuplicates: true,
+        });
+      }
+
+      // 3. Update assets / amenities
+      // Xóa relation cũ
+      await tx.roomAsset.deleteMany({
+        where: { roomId },
+      });
+
+      // Add lại relation mới
+      if (dto.amenities?.length) {
+        await tx.roomAsset.createMany({
+          data: dto.amenities.map((assetId) => ({
+            roomId,
+            assetId,
+            status: 'Active',
+          })),
+          skipDuplicates: true,
+        });
+      }
+
+      // 4. Return data mới nhất
+      return await tx.room.findUnique({
+        where: { id: roomId },
+        include: {
+          roomServices: {
+            include: {
+              service: true,
+            },
+          },
+
+          roomAssets: {
+            include: {
+              asset: true,
+            },
+          },
+        },
+      });
     });
   }
 

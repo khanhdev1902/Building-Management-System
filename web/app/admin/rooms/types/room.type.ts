@@ -13,32 +13,21 @@ export interface RoomServices {
 
 export interface RoomResponse {
   id: string;
-
   roomNumber: string;
-
   type: string;
-
   status: "AVAILABLE" | "OCCUPIED" | "MAINTENANCE";
-
   roomPrice: number;
-
   floor: number;
-
   acreage: number;
-
   tenant: Tenant | null;
-
   services: RoomServices;
-
   lastReading: {
     electric: number;
     water: number;
   };
-
   amenities: string[];
-
+  serviceId: string[];
   description?: string;
-
   maxOccupants: number;
 
   createdAt?: string;

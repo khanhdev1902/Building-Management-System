@@ -7,15 +7,12 @@ import {
   Wrench,
   Users,
   Receipt,
-  Zap,
   Settings,
   ShieldCheck,
   History,
   CreditCard,
   BarChart3, // Thống kê
-  Wallet, // Chi phí
   Clock, // Ca làm việc
-  Banknote, // Doanh thu
 } from "lucide-react";
 
 export const navigation = {
