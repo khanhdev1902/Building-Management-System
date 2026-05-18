@@ -45,18 +45,18 @@ export const navigation = {
       icon: Building2,
       children: [
         // { title: "Sơ đồ tòa nhà", url: "/admin/buildings" },
-        { title: "Dịch vụ", url: "/admin/services" },
+        { title: "Quản lý phòng", url: "/admin/rooms" },
+        { title: "Quản lý dịch vụ", url: "/admin/services" },
         { title: "Tài sản & Thiết bị", url: "/admin/assets" }, //Quản lý thiết bị chung
-        { title: "Danh sách phòng", url: "/admin/rooms" },
-        { title: "Chỉ số điện nước", icon: Zap, url: "/admin/utilities" },
+        { title: "Quản lý điện nước", url: "/admin/utilities" },
       ],
     },
     {
       title: "Cư dân & Hợp đồng",
       icon: UserCheck,
       children: [
-        { title: "Danh sách cư dân", url: "/admin/tenants" },
-        { title: "Hợp đồng", url: "/admin/contracts" },
+        { title: "Quản lý cư dân", url: "/admin/tenants" },
+        { title: "Quản lý hợp đồng", url: "/admin/contracts" },
         // { title: "Quản lý thẻ (Xe/Thang máy)", url: "/admin/cards" },
         // { title: "Quản lý gửi xe", url: "/admin/parking" },
       ],

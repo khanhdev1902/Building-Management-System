@@ -5,223 +5,199 @@ import {
   Phone,
   Mail,
   FileText,
-  Plus,
-  ShieldCheck,
   Download,
-  Copy,
-  ExternalLink,
   Camera,
   Loader2,
+  Copy,
+  Calendar,
+  User,
+  MapPin,
+  CheckCircle2,
+  ShieldCheck,
 } from "lucide-react";
 import {
   Avatar,
-  AvatarFallback,
   AvatarImage,
+  AvatarFallback,
 } from "@/shared/components/ui/avatar";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
-
-// --- Sub-components ---
-
-function SidebarInfoItem({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="group space-y-1">
-      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-        {label}
-      </p>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5 text-[13px] font-semibold text-slate-700">
-          <span className="text-slate-400 group-hover:text-indigo-600 transition-colors">
-            {icon}
-          </span>
-          {value}
-        </div>
-        <button
-          className="opacity-0 group-hover:opacity-100 p-1 text-slate-300 hover:text-slate-600 transition-all"
-          onClick={() => navigator.clipboard.writeText(value)}
-        >
-          <Copy size={12} />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function FileCard({ name, size }: { name: string; size: string }) {
-  return (
-    <div className="flex items-center justify-between p-2 border border-slate-100 rounded bg-white hover:border-slate-300 hover:bg-slate-50 transition-all group">
-      <div className="flex items-center gap-2.5 overflow-hidden">
-        <div className="p-1.5 bg-slate-50 group-hover:bg-white rounded border border-slate-100">
-          <FileText className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600" />
-        </div>
-        <span className="text-[12px] font-bold text-slate-600 truncate tracking-tight">
-          {name}
-        </span>
-      </div>
-      <div className="flex items-center gap-2">
-        <span className="text-[10px] font-medium text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity uppercase">
-          {size}
-        </span>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-7 w-7 text-slate-400 hover:text-slate-900"
-        >
-          <Download size={14} />
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-// --- Main Component ---
 
 export function TenantSidebar() {
   const [avatarUrl, setAvatarUrl] = useState("https://github.com/shadcn.png");
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAvatarClick = () => {
-    fileInputRef.current?.click();
-  };
-
+  // Hàm click giả lập upload ảnh đại diện cư dân
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    // 1. Tạo preview cục bộ ngay lập tức để UX mượt
-    const localUrl = URL.createObjectURL(file);
-    setAvatarUrl(localUrl);
-
-    // 2. Giả lập quá trình upload lên Server
+    setAvatarUrl(URL.createObjectURL(file));
     setIsUploading(true);
-
-    try {
-      // Giả sử gọi API upload ở đây
-      // const formData = new FormData();
-      // formData.append('file', file);
-      // await uploadApi(formData);
-
-      await new Promise((resolve) => setTimeout(resolve, 1500)); // Giả lập delay 1.5s
-      console.log("Upload thành công file:", file.name);
-    } catch (error) {
-      console.error("Lỗi upload:", error);
-    } finally {
-      setIsUploading(false);
-    }
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+    setIsUploading(false);
   };
 
   return (
-    <div className="lg:col-span-3 space-y-5 font-sans">
-      {/* Profile Card */}
-      <div className="bg-white border border-slate-200 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden">
-        <div className="p-6 text-center md:text-left">
-          {/* Avatar Section with Hover Edit */}
-          <div className="relative mx-auto md:mx-auto w-28 h-28 mb-6 group">
-            <div
-              className="relative w-full h-full rounded-full overflow-hidden border border-slate-100 shadow-sm cursor-pointer"
-              onClick={handleAvatarClick}
-            >
-              <Avatar className="w-full h-full rounded-none">
-                <AvatarImage src={avatarUrl} className="object-cover" />
-                <AvatarFallback className="text-xl font-bold bg-slate-50 text-slate-400">
-                  TA
-                </AvatarFallback>
-              </Avatar>
-
-              {/* Overlay Overlay */}
-              <div className="absolute inset-0 bg-slate-900/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200">
-                {isUploading ? (
-                  <Loader2 className="text-white w-6 h-6 animate-spin" />
-                ) : (
-                  <>
-                    <Camera className="text-white w-6 h-6 mb-1" />
-                    <span className="text-[10px] text-white font-bold uppercase tracking-tight">
-                      Thay ảnh
-                    </span>
-                  </>
-                )}
-              </div>
-
-              {/* Input ẩn */}
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                accept="image/*"
-                className="hidden"
-              />
+    <div className="bg-white border border-slate-200/80 rounded-xl shadow-[0_1px_3px_rgba(15,23,42,0.02)] overflow-hidden divide-y divide-slate-100 font-sans select-none animate-in fade-in duration-300">
+      {/* KHỐI 1: AVATAR & ĐỊNH DANH HÌNH ẢNH */}
+      <div className="p-5 flex flex-col items-center text-center">
+        <div className="relative w-22 h-22 mb-4 group">
+          <div
+            className="relative w-full h-full rounded-2xl overflow-hidden border border-slate-100 shadow-3xs cursor-pointer"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Avatar className="w-full h-full rounded-none">
+              <AvatarImage src={avatarUrl} className="object-cover" />
+              <AvatarFallback className="text-xs font-bold bg-slate-50 text-slate-400">
+                TA
+              </AvatarFallback>
+            </Avatar>
+            <div className="absolute inset-0 bg-slate-900/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200">
+              {isUploading ? (
+                <Loader2 className="text-white w-4 h-4 animate-spin" />
+              ) : (
+                <Camera className="text-white w-4 h-4" />
+              )}
             </div>
-
-            {/* Trạng thái xác thực */}
-            <div className="absolute -bottom-2 right-0 bg-green-800 text-white p-1.5 rounded-full shadow-lg border-2 border-white z-10">
-              <ShieldCheck className="w-4 h-4" />
-            </div>
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
           </div>
-
-          {/* Contact Info */}
-          <div className="space-y-5">
-            <SidebarInfoItem
-              icon={<Phone size={14} strokeWidth={2.5} />}
-              label="Số điện thoại"
-              value="0987 654 321"
-            />
-            <SidebarInfoItem
-              icon={<Mail size={14} strokeWidth={2.5} />}
-              label="Email cá nhân"
-              value="anhnv@gmail.com"
-            />
-            <SidebarInfoItem
-              icon={<FileText size={14} strokeWidth={2.5} />}
-              label="CCCD/Passport"
-              value="001092003xxx"
-            />
+          <div
+            className="absolute -bottom-1 -right-1 bg-blue-600 text-white p-1 rounded-full shadow-md border-2 border-white z-10"
+            title="Đã đối chiếu căn cước gốc"
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
           </div>
         </div>
+        <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded border border-slate-100">
+          CƯ DÂN CHÍNH THỨC
+        </span>
+      </div>
 
-        <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex justify-center">
-          <Button
-            variant="link"
-            className="text-[11px] font-bold text-indigo-600 h-auto p-0 uppercase tracking-tighter hover:no-underline"
-          >
-            Xem chi tiết lịch sử cư trú{" "}
-            <ExternalLink size={10} className="ml-1" />
-          </Button>
+      {/* KHỐI 2: THÔNG TIN LIÊN HỆ PHẲNG DẸT */}
+      <div className="p-4 space-y-3">
+        <SidebarInfoItem
+          icon={<Phone size={13} />}
+          label="Số điện thoại"
+          value="0912 333 444"
+        />
+        <SidebarInfoItem
+          icon={<Mail size={13} />}
+          label="Hòm thư điện tử"
+          value="anhnv@gmail.com"
+        />
+      </div>
+
+      {/* KHỐI 3: HỒ SƠ NHÂN TRẮC HỌC PHÁP LÝ (MỚI BỔ SUNG ĐẦY ĐỦ) */}
+      <div className="p-4 space-y-3 bg-slate-50/30">
+        <SidebarInfoItem
+          icon={<FileText size={13} />}
+          label="Số CCCD / Hộ chiếu"
+          value="037196001234"
+          isMono
+        />
+        <SidebarInfoItem
+          icon={<Calendar size={13} />}
+          label="Ngày tháng năm sinh"
+          value="24/08/1996"
+          isMono
+        />
+        <SidebarInfoItem
+          icon={<User size={13} />}
+          label="Giới tính sinh học"
+          value="Nam"
+        />
+        <SidebarInfoItem
+          icon={<MapPin size={13} />}
+          label="Nguyên quán / Quê quán"
+          value="Xuân Trường, Nam Định"
+        />
+
+        <div className="flex items-center gap-1.5 pt-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50/50 border border-emerald-100/50 p-2 rounded-lg">
+          <CheckCircle2 size={12} className="shrink-0" />
+          <span>Đã khai báo tạm trú trực tuyến</span>
         </div>
       </div>
 
-      {/* Documents Card */}
-      <div className="bg-white p-5 border border-slate-200 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-widest">
-            Hồ sơ pháp lý
-          </h3>
-          <Badge className="bg-slate-100 text-slate-500 hover:bg-slate-100 border-none text-[9px] font-bold">
-            2 FILES
+      {/* KHỐI 4: TÀI LIỆU ĐÍNH KÈM (Đã tích hợp chung khay) */}
+      <div className="p-4 space-y-2.5">
+        <div className="flex items-center justify-between select-none">
+          <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            Hồ sơ chứng từ liên quan
+          </h4>
+          <Badge className="bg-slate-100 text-slate-500 border-none text-[9px] font-bold rounded-md px-1.5 h-4">
+            2 files
           </Badge>
         </div>
-
-        <div className="space-y-2">
-          <FileCard name="HopDongThue_P101.pdf" size="2.4 MB" />
-          <FileCard name="CCCD_MatTruoc.jpg" size="1.1 MB" />
-
-          <Button
-            variant="outline"
-            className="w-full h-9 justify-center text-[11px] font-black uppercase tracking-tighter border-dashed border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-200 mt-2 bg-slate-50/30 transition-all"
-          >
-            <Plus className="w-3 h-3 mr-2" /> Tải lên tài liệu
-          </Button>
+        <div className="space-y-1.5">
+          {["HopDongThue_P101.pdf", "CCCD_MatTruoc.jpg"].map((file, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between p-2 border border-slate-100 rounded-lg bg-slate-50/30 group hover:border-slate-200 hover:bg-white transition-colors text-xs"
+            >
+              <span className="font-semibold text-slate-600 truncate max-w-[150px]">
+                {file}
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 text-slate-400 hover:text-slate-800 rounded-md"
+              >
+                <Download size={13} />
+              </Button>
+            </div>
+          ))}
         </div>
+      </div>
+    </div>
+  );
+}
+
+// --- SUB-COMPONENT TRỢ LÝ HIỂN THỊ TINH XẢO ---
+function SidebarInfoItem({
+  icon,
+  label,
+  value,
+  isMono = false,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  isMono?: boolean;
+}) {
+  return (
+    <div className="group space-y-0.5">
+      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide block">
+        {label}
+      </span>
+      <div className="flex items-center justify-between h-5">
+        <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 min-w-0">
+          <span className="text-slate-400 group-hover:text-slate-900 transition-colors shrink-0">
+            {icon}
+          </span>
+          <span
+            className={`truncate ${isMono ? "font-mono font-bold text-slate-800" : "font-sans"}`}
+          >
+            {value}
+          </span>
+        </div>
+
+        {/* Nút bấm ẩn hiện mượt mà chỉ khi hover vào dòng */}
+        <button
+          className="opacity-0 group-hover:opacity-100 p-1 text-slate-300 hover:text-slate-600 transition-all cursor-pointer rounded hover:bg-slate-100"
+          onClick={() => navigator.clipboard.writeText(value)}
+          title={`Sao chép ${label}`}
+        >
+          <Copy size={11} />
+        </button>
       </div>
     </div>
   );

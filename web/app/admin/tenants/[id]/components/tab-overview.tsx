@@ -1,198 +1,291 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import React from "react";
-import { Car, MoreVertical } from "lucide-react";
+import {
+  Bike,
+  History,
+  Plus,
+  Fingerprint,
+  Users,
+  Phone,
+  FileText,
+  MapPin,
+  User,
+  CheckCircle2,
+  AlertCircle,
+} from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
 
 export function TabOverview() {
   return (
-    <div className="p-0 animate-in fade-in duration-500 font-sans">
-      {/* 1. SECTION: NHÂN KHẨU (Chuyển sang Table để cân được nhiều người) */}
-      <section className="p-6 border-b border-slate-100">
-        <div className="flex items-center justify-between mb-4">
+    <div className="divide-y divide-slate-100/70 font-sans">
+      {/* SECTION 1: NHÂN KHẨU TẠM TRÚ ĐI KÈM (Lột xác sang dạng Grid Card) */}
+      <section className="p-5 space-y-4">
+        <div className="flex items-center justify-between select-none">
           <div className="flex items-center gap-2">
-            <h3 className="text-[11px] font-black uppercase text-slate-400 tracking-widest">
-              Hành chính cư dân
+            <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+              <Users size={14} className="text-slate-400" /> Thành viên cư trú
+              đi kèm (Roommates)
             </h3>
-            <Badge className="bg-slate-100 text-slate-500 border-none font-bold text-[10px]">
-              02 NGƯỜI
+            <Badge className="bg-slate-100 text-slate-500 border-none font-semibold text-[10px] rounded px-1.5 h-4.5">
+              02 Nhân khẩu
             </Badge>
           </div>
           <Button
             variant="outline"
             size="sm"
-            className="h-7 text-[10px] font-black uppercase border-slate-200"
+            className="h-6.5 text-[10px] font-semibold border-slate-200 rounded-md text-slate-600 hover:bg-slate-50"
           >
-            + THÊM THÀNH VIÊN
+            <Plus size={11} className="mr-1 stroke-[2.5]" /> Thêm thành viên
           </Button>
         </div>
 
-        <div className="rounded-md border border-slate-100 overflow-hidden">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50/50 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                <th className="px-4 py-2">Thành viên</th>
-                <th className="px-4 py-2">Quan hệ</th>
-                <th className="px-4 py-2">Định danh (CCCD)</th>
-                <th className="px-4 py-2">Tạm trú</th>
-                <th className="px-4 py-2 text-right">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              <ResidentRow
-                name="Lê Thị Bảo"
-                role="Vợ"
-                id="00109200xxxx"
-                status="Đã khai báo"
-              />
-              <ResidentRow
-                name="Nguyễn Văn C"
-                role="Con"
-                id="Chưa có"
-                status="Dưới 14 tuổi"
-              />
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* 2. SECTION: PHƯƠNG TIỆN (Làm phẳng, gọn gàng) */}
-      <section className="p-6 border-b border-slate-100">
-        <h3 className="text-[11px] font-black uppercase text-slate-400 tracking-widest mb-4">
-          Quản lý phương tiện
-        </h3>
+        {/* Matrix Grid: Giải quyết triệt để bài toán ở ghép/sinh viên chung phòng */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <VehicleItem
-            plate="29-G1 123.45"
-            type="Honda Vision"
-            card="#99120"
-            status="active"
-          />
-          <VehicleItem
-            plate="30-A2 555.88"
-            type="Mazda CX-5"
-            card="#88201"
-            status="locked"
-          />
+          {/* Cư dân đi kèm 1 */}
+          <div className="border border-slate-200/60 rounded-xl p-4 bg-slate-50/20 space-y-3 relative group hover:border-slate-300 transition-colors">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+              <div className="space-y-0.5">
+                <span className="font-bold text-slate-900 text-xs block">
+                  Lê Thị Bảo
+                </span>
+                <span className="text-[10px] font-mono text-slate-400 tracking-wide">
+                  ID: TEN-1025-SUB1
+                </span>
+              </div>
+              <Badge
+                variant="outline"
+                className="text-[9px] font-bold border-indigo-100 bg-indigo-50/40 text-indigo-700 rounded px-1.5"
+              >
+                Quan hệ: Bạn ở ghép
+              </Badge>
+            </div>
+
+            {/* Khay dữ liệu nhân trắc học nén chặt */}
+            <div className="grid grid-cols-2 gap-y-2.5 gap-x-3 text-[11px] font-medium text-slate-600">
+              <div className="space-y-0.5">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block">
+                  Số điện thoại
+                </span>
+                <span className="font-mono text-slate-800 font-bold flex items-center gap-1">
+                  <Phone size={11} className="text-slate-400" /> 0982 111 222
+                </span>
+              </div>
+              <div className="space-y-0.5">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block">
+                  Số định danh CCCD
+                </span>
+                <span className="font-mono text-slate-700 font-semibold flex items-center gap-1">
+                  <FileText size={11} className="text-slate-400" /> 037196005678
+                </span>
+              </div>
+              <div className="space-y-0.5">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block">
+                  Giới tính / Ngày sinh
+                </span>
+                <span className="text-slate-700 flex items-center gap-1">
+                  <User size={11} className="text-slate-400" /> Nữ • 14/05/1998
+                </span>
+              </div>
+              <div className="space-y-0.5">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block">
+                  Quê quán thường trú
+                </span>
+                <span
+                  className="text-slate-700 truncate flex items-center gap-1"
+                  title="Lục Ngạn, Bắc Giang"
+                >
+                  <MapPin size={11} className="text-slate-400" /> Bắc Giang
+                </span>
+              </div>
+            </div>
+
+            <div className="pt-1.5 flex items-center gap-1 text-[10px] font-semibold text-emerald-700">
+              <CheckCircle2 size={12} className="shrink-0" />
+              <span>CA Phường phê duyệt tạm trú</span>
+            </div>
+          </div>
+
+          {/* Cư dân đi kèm 2 */}
+          <div className="border border-slate-200/60 rounded-xl p-4 bg-slate-50/20 space-y-3 relative group hover:border-slate-300 transition-colors">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+              <div className="space-y-0.5">
+                <span className="font-bold text-slate-900 text-xs block">
+                  Nguyễn Văn C
+                </span>
+                <span className="text-[10px] font-mono text-slate-400 tracking-wide">
+                  ID: TEN-1025-SUB2
+                </span>
+              </div>
+              <Badge
+                variant="outline"
+                className="text-[9px] font-bold border-slate-200 bg-slate-100 text-slate-600 rounded px-1.5"
+              >
+                Quan hệ: Bạn cùng lớp
+              </Badge>
+            </div>
+
+            {/* Khay dữ liệu nhân trắc học nén chặt */}
+            <div className="grid grid-cols-2 gap-y-2.5 gap-x-3 text-[11px] font-medium text-slate-600">
+              <div className="space-y-0.5">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block">
+                  Số điện thoại
+                </span>
+                <span className="font-mono text-slate-800 font-bold flex items-center gap-1">
+                  <Phone size={11} className="text-slate-400" /> 0345 999 888
+                </span>
+              </div>
+              <div className="space-y-0.5">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block">
+                  Số định danh CCCD
+                </span>
+                <span className="font-mono text-slate-700 font-semibold flex items-center gap-1">
+                  <FileText size={11} className="text-slate-400" /> 038200012345
+                </span>
+              </div>
+              <div className="space-y-0.5">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block">
+                  Giới tính / Ngày sinh
+                </span>
+                <span className="text-slate-700 flex items-center gap-1">
+                  <User size={11} className="text-slate-400" /> Nam • 22/11/2004
+                </span>
+              </div>
+              <div className="space-y-0.5">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight block">
+                  Quê quán thường trú
+                </span>
+                <span
+                  className="text-slate-700 truncate flex items-center gap-1"
+                  title="Kim Động, Hưng Yên"
+                >
+                  <MapPin size={11} className="text-slate-400" /> Hưng Yên
+                </span>
+              </div>
+            </div>
+
+            <div className="pt-1.5 flex items-center gap-1 text-[10px] font-semibold text-amber-600">
+              <AlertCircle size={12} className="shrink-0" />
+              <span>Chờ bổ sung ảnh CCCD mặt sau</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* 3. SECTION: TIMELINE (Minimalist - Chống rối mắt) */}
-      <section className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-[11px] font-black uppercase text-slate-400 tracking-widest">
-            Nhật ký tác nghiệp gần đây
+      {/* SECTION 2: QUẢN LÝ PHƯƠNG TIỆN (Phẳng lì đồng hàng) */}
+      <section className="p-5 space-y-3">
+        <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5 select-none">
+          <Bike size={14} className="text-slate-400" /> Quản lý phương tiện gửi
+          tại hầm
+        </h3>
+
+        <div className="space-y-2">
+          {[
+            {
+              plate: "29-G1 123.45",
+              type: "Honda Vision • Thẻ mã số #99120",
+              active: true,
+            },
+            {
+              plate: "30-A2 555.88",
+              type: "Mazda CX-5 • Thẻ mã số #88201",
+              active: false,
+            },
+          ].map((v, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between p-2.5 rounded-xl border border-slate-100 bg-slate-50/40 select-none text-xs"
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className={`p-1.5 rounded-lg border ${v.active ? "bg-white text-slate-700" : "bg-rose-50 text-rose-500 border-rose-100/50"} shrink-0 shadow-3xs`}
+                >
+                  <Bike size={14} className="stroke-[2]" />
+                </div>
+                <div>
+                  <span className="font-mono font-bold text-slate-800 mr-2 uppercase">
+                    {v.plate}
+                  </span>
+                  <span className="text-slate-400 font-medium text-[11px]">
+                    {v.type}
+                  </span>
+                </div>
+              </div>
+              <Badge
+                className={`border-none text-[9px] font-semibold px-2 py-0.5 rounded-md ${
+                  v.active
+                    ? "bg-emerald-50 text-emerald-700"
+                    : "bg-rose-50 text-rose-700"
+                }`}
+              >
+                {v.active ? "Đang hoạt động" : "Tạm khóa thẻ"}
+              </Badge>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* SECTION 3: TIMELINE (Audit Log) */}
+      <section className="p-5 space-y-4">
+        <div className="flex items-center justify-between select-none">
+          <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+            <History size={14} className="text-slate-400" /> Nhật ký quét cổng
+            Vân tay / Cửa từ gần đây
           </h3>
-          <Button
-            variant="link"
-            className="h-auto p-0 text-[10px] font-bold text-indigo-600 uppercase"
-          >
-            Tất cả lịch sử
-          </Button>
+          <span className="text-[10px] text-slate-400 font-medium font-mono flex items-center gap-1">
+            <Fingerprint size={12} /> IoT Gateway Live
+          </span>
         </div>
 
-        <div className="space-y-0 relative before:absolute before:left-2.75 before:top-2 before:bottom-2 before:w-px before:bg-slate-100">
-          <TimelineItem
-            title="Đã thanh toán hóa đơn điện tháng 03"
-            user="Linh Nguyễn (Kế toán)"
-            time="Hôm nay, 10:30"
-            type="finance"
-          />
-          <TimelineItem
-            title="Báo cáo hỏng vòi sen"
-            user="Trần Bình An (Cư dân)"
-            time="Hôm qua, 14:20"
-            type="incident"
-          />
-          <TimelineItem
-            title="Gia hạn hợp đồng thuê nhà"
-            user="Lê Minh (Quản lý)"
-            time="15/01/2026"
-            type="system"
-          />
+        <div className="space-y-4 pl-1 relative before:absolute before:left-[5px] before:top-2 before:bottom-2 before:w-[1px] before:bg-slate-200/60 select-none">
+          {[
+            {
+              title: "Mở cổng bãi xe hầm B1 bằng xác thực Vân tay",
+              user: "Hệ thống tự động",
+              time: "Hôm nay, 10:30",
+              color: "bg-emerald-500",
+            },
+            {
+              title:
+                "Cảnh báo: Thẻ từ quẹt cổng sảnh chính Tầng 1 sai định dạng mã thẻ",
+              user: "Cổng kiểm soát an ninh số 2",
+              time: "Hôm qua, 14:20",
+              color: "bg-rose-500",
+            },
+            {
+              title:
+                "Hệ thống tự động kích hoạt chu kỳ thời hạn hợp đồng tạm trú mới",
+              user: "Khánh Nguyễn (Manager)",
+              time: "18/05/2026",
+              color: "bg-indigo-500",
+            },
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              className="flex gap-3 relative items-start text-xs font-sans"
+            >
+              <div
+                className={`h-2 w-2 rounded-full ${item.color} border border-white ring-2 ring-slate-50 mt-1 z-10 shrink-0`}
+              />
+              <div className="space-y-0.5 min-w-0 flex-1">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                  <p className="font-semibold text-slate-800 tracking-tight leading-normal">
+                    {item.title}
+                  </p>
+                  <span className="text-[10px] font-medium text-slate-400 font-mono shrink-0">
+                    {item.time}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-400 font-medium">
+                  Thiết bị tác nghiệp:{" "}
+                  <span className="text-slate-500">{item.user}</span>
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
-    </div>
-  );
-}
-
-// --- SUB-COMPONENTS NÂNG CẤP ---
-
-function ResidentRow({ name, role, id, status }: any) {
-  return (
-    <tr className="hover:bg-slate-50/50 transition-colors group">
-      <td className="px-4 py-3 text-[13px] font-bold text-slate-700">{name}</td>
-      <td className="px-4 py-3">
-        <Badge
-          variant="outline"
-          className="text-[9px] font-bold border-slate-200 text-slate-500"
-        >
-          {role}
-        </Badge>
-      </td>
-      <td className="px-4 py-3 text-[12px] font-medium text-slate-400 font-mono">
-        {id}
-      </td>
-      <td className="px-4 py-3 text-[12px] font-medium text-slate-500 italic">
-        {status}
-      </td>
-      <td className="px-4 py-3 text-right">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-7 w-7 text-slate-300 opacity-0 group-hover:opacity-100"
-        >
-          <MoreVertical size={14} />
-        </Button>
-      </td>
-    </tr>
-  );
-}
-
-function VehicleItem({ plate, type, card, status }: any) {
-  return (
-    <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 bg-white group hover:border-slate-300 transition-all">
-      <div className="flex items-center gap-3">
-        <div className="p-2 bg-slate-50 rounded group-hover:bg-slate-900 group-hover:text-white transition-colors">
-          <Car size={16} />
-        </div>
-        <div>
-          <p className="text-[13px] font-bold text-slate-800 tracking-tight">
-            {plate}
-          </p>
-          <p className="text-[10px] text-slate-400 font-medium">
-            {type} • Thẻ {card}
-          </p>
-        </div>
-      </div>
-      <Badge
-        className={`${status === "active" ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"} border-none text-[9px] font-black uppercase`}
-      >
-        {status === "active" ? "Đang chạy" : "Đã khóa"}
-      </Badge>
-    </div>
-  );
-}
-
-function TimelineItem({ title, user, time, type }: any) {
-  const dotColor: any = {
-    finance: "bg-emerald-500",
-    incident: "bg-red-500",
-    system: "bg-indigo-500",
-  };
-  return (
-    <div className="relative pl-8 pb-6 last:pb-0">
-      <div
-        className={`absolute left-2 top-1.5 w-2 h-2 rounded-full ${dotColor[type]} ring-4 ring-white z-10`}
-      />
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-1">
-        <p className="text-[13px] font-semibold text-slate-700">{title}</p>
-        <span className="text-[10px] font-medium text-slate-300">{time}</span>
-      </div>
-      <p className="text-[11px] text-slate-400 font-medium">
-        Thực hiện: <span className="text-slate-500">{user}</span>
-      </p>
     </div>
   );
 }
