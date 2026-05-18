@@ -26,7 +26,7 @@ export interface RoomResponse {
     water: number;
   };
   amenities: string[];
-  serviceId: string[];
+  serviceId?: string[];
   description?: string;
   maxOccupants: number;
 
