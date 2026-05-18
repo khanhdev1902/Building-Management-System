@@ -254,6 +254,7 @@ export default function OccupancyReport() {
                   ))}
                 </Pie>
                 <Tooltip
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   formatter={(val: any) => `${val} căn hộ`}
                   contentStyle={{ borderRadius: "6px", fontSize: "11px" }}
                 />

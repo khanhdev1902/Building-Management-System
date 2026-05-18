@@ -21,7 +21,7 @@ import {
 export const navigation = {
   // 1. QUẢN TRỊ CHIẾN LƯỢC
   analytics: [
-    { title: "Tổng quan Dashboard", icon: LayoutDashboard, url: "/admin/dashboard" },
+    { title: "Tổng quan chung cư", icon: LayoutDashboard, url: "/admin/dashboard" },
     {
       title: "Báo cáo & Thống kê",
       icon: BarChart3,
