@@ -10,6 +10,11 @@ import {
   ArrowUpRight,
   TrendingUp,
   FileText,
+  Clock,
+  History,
+  CheckCircle2,
+  AlertCircle,
+  FileDown,
 } from "lucide-react";
 import {
   BarChart,
@@ -21,14 +26,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// Import shadcn (giả định bạn đã cài)
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
 import {
@@ -50,275 +47,332 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 
+// Mockup dữ liệu dòng tiền băm nhỏ thực tế năm 2026 của chuỗi Danjin Tower
 const monthlyData = [
-  { name: "T1", revenue: 120, debt: 15 },
-  { name: "T2", revenue: 150, debt: 10 },
-  { name: "T3", revenue: 180, debt: 45 },
-  { name: "T4", revenue: 140, debt: 20 },
-  { name: "T5", revenue: 190, debt: 12 },
-  { name: "T6", revenue: 210, debt: 8 },
+  { name: "Tháng 01", revenue: 190, debt: 15 },
+  { name: "Tháng 02", revenue: 210, debt: 10 },
+  { name: "Tháng 03", revenue: 225, debt: 45 },
+  { name: "Tháng 04", revenue: 240, debt: 20 },
+  { name: "Tháng 05", revenue: 258, debt: 12 }, // Tháng 5 hiện tại bám sát tiến độ
 ];
 
 export default function RevenueDashboard() {
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6 bg-slate-50/50">
-      {/* Header Area */}
-      <div className="flex items-center justify-between space-y-2">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900">
-            Tài chính & Công nợ
+    <div className="max-w-7xl mx-auto p-6 space-y-6 bg-slate-50/20 min-h-screen antialiased selection:bg-indigo-50">
+      {/* 1. TOP BAR: TIÊU ĐỀ ĐIỀU HÀNH VÀ NÚT TÁC VỤ PHẲNG */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200/60 pb-4 select-none">
+        <div className="space-y-0.5">
+          <h2 className="text-xl font-bold tracking-tight text-slate-900">
+            Tổng quan Tài chính & Phân tích Dòng tiền
           </h2>
-          <div className="flex items-center text-slate-500 mt-1">
-            <span className="text-sm">
-              Báo cáo cập nhật lần cuối: 10 phút trước
+          <p className="text-xs text-slate-500 font-medium">
+            Hệ thống tự động đối soát Webhook ngân hàng kỳ này • Cập nhật lúc:{" "}
+            <span className="font-mono font-bold text-slate-700">
+              18:05 hôm nay
             </span>
-          </div>
+          </p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm">
-            <Filter className="mr-2 h-4 w-4" /> Lọc kỳ hạn
+        <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+          <Button
+            variant="outline"
+            className="h-9 text-xs font-semibold border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-2xs rounded-lg flex-1 sm:flex-none"
+          >
+            <Filter className="mr-1.5 h-3.5 w-3.5 text-slate-400" /> Lọc kì chu
+            kỳ
           </Button>
-          <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-            <Download className="mr-2 h-4 w-4" /> Xuất báo cáo
+          <Button className="h-9 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-2xs flex-1 sm:flex-none">
+            <FileDown className="mr-1.5 h-3.5 w-3.5" /> Xuất báo cáo gốc
           </Button>
         </div>
       </div>
 
-      {/* Main Content */}
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="bg-white border">
-          <TabsTrigger value="overview">Tổng quan</TabsTrigger>
-          <TabsTrigger value="invoices">Danh sách hóa đơn</TabsTrigger>
-          <TabsTrigger value="debts">Phân tích nợ</TabsTrigger>
+      {/* 2. CHIA TABS WORKSPACE PHẲNG */}
+      <Tabs defaultValue="overview" className="space-y-5">
+        <TabsList className="bg-slate-100 p-0.5 rounded-lg border border-slate-200/40 w-fit h-9 items-center select-none">
+          <TabsTrigger
+            value="overview"
+            className="h-7 px-4 rounded-md text-xs font-semibold transition-all data-[state=active]:bg-white data-[state=active]:shadow-2xs text-slate-500 data-[state=active]:text-slate-900"
+          >
+            Tổng quan tài khóa
+          </TabsTrigger>
+          <TabsTrigger
+            value="invoices"
+            className="h-7 px-4 rounded-md text-xs font-semibold transition-all text-slate-500 hover:text-slate-800"
+          >
+            Hóa đơn kì này
+          </TabsTrigger>
+          <TabsTrigger
+            value="debts"
+            className="h-7 px-4 rounded-md text-xs font-semibold transition-all text-slate-500 hover:text-slate-800"
+          >
+            Phân tích nợ đọng
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-4">
-          {/* Top Stats Cards */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card className="shadow-sm border-none ring-1 ring-slate-200">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-500">
-                  Tổng thực thu
-                </CardTitle>
-                <Banknote className="h-4 w-4 text-green-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-slate-900">
-                  452.230.000đ
+        <TabsContent value="overview" className="space-y-5 mt-0 outline-hidden">
+          {/* 3. KHỐI THỐNG KÊ METRIC CARDS LÌ PHẲNG */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 select-none">
+            <StatsCard
+              title="Dòng tiền thực thu"
+              value="452,230,000 đ"
+              sub="+20.1% so với tháng trước"
+              icon={Banknote}
+              color="emerald"
+              status={<TrendingUp size={11} className="text-emerald-600" />}
+            />
+            <StatsCard
+              title="Công nợ quá hạn"
+              value="38,400,000 đ"
+              sub="Treo 12 chứng từ gốc"
+              icon={CreditCard}
+              color="rose"
+              status={
+                <Badge className="bg-rose-50 text-rose-700 border-none px-1.5 py-0 rounded text-[9px] font-bold">
+                  RỦI RO CAO
+                </Badge>
+              }
+            />
+            <StatsCard
+              title="Tỷ lệ lấp đầy quỹ tiền"
+              value="92.4%"
+              sub="Mục tiêu tài khóa: 95%"
+              icon={ArrowUpRight}
+              color="indigo"
+              status={
+                <div className="w-16 bg-slate-100 h-1 rounded-full overflow-hidden">
+                  <div className="bg-indigo-600 h-full w-[92%]" />
                 </div>
-                <p className="text-xs text-green-600 flex items-center mt-1">
-                  <TrendingUp className="mr-1 h-3 w-3" /> +20.1% so với tháng
-                  trước
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="shadow-sm border-none ring-1 ring-slate-200">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-500">
-                  Nợ quá hạn
-                </CardTitle>
-                <CreditCard className="h-4 w-4 text-red-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-red-600">
-                  38.400.000đ
-                </div>
-                <div className="flex mt-2 gap-1">
-                  <Badge variant="destructive" className="text-[10px]">
-                    Cảnh báo cao
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="shadow-sm border-none ring-1 ring-slate-200">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-500">
-                  Tỷ lệ thanh toán
-                </CardTitle>
-                <ArrowUpRight className="h-4 w-4 text-blue-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-slate-900">92.4%</div>
-                <div className="w-full bg-slate-100 h-1.5 mt-3 rounded-full overflow-hidden">
-                  <div className="bg-blue-500 h-full w-[92%]" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="shadow-sm border-none ring-1 ring-slate-200">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-500">
-                  Hóa đơn chờ
-                </CardTitle>
-                <FileText className="h-4 w-4 text-orange-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-slate-900">24</div>
-                <p className="text-xs text-slate-500 mt-1">
-                  Đã gửi nhắc nợ 12 hộ
-                </p>
-              </CardContent>
-            </Card>
+              }
+            />
+            <StatsCard
+              title="Hóa đơn treo chờ duyệt"
+              value="24 chứng từ"
+              sub="Đã gửi thông báo nợ 12 hộ"
+              icon={FileText}
+              color="amber"
+              status={
+                <span className="text-[10px] text-amber-600 font-semibold">
+                  • Đang chờ khớp
+                </span>
+              }
+            />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            {/* Chart */}
-            <Card className="lg:col-span-4 shadow-sm border-none ring-1 ring-slate-200">
-              <CardHeader>
-                <CardTitle>Dòng tiền theo tháng</CardTitle>
-                <CardDescription>
-                  So sánh giữa số tiền phải thu và thực thu (triệu VNĐ)
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pl-2">
-                <div className="h-87.5">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={monthlyData}>
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        vertical={false}
-                        stroke="#f1f5f9"
-                      />
-                      <XAxis
-                        dataKey="name"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                        stroke="#64748b"
-                      />
-                      <YAxis
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                        stroke="#64748b"
-                        tickFormatter={(v) => `${v}M`}
-                      />
-                      <Tooltip
-                        cursor={{ fill: "#f8fafc" }}
-                        contentStyle={{
-                          borderRadius: "8px",
-                          border: "1px solid #e2e8f0",
-                        }}
-                      />
-                      <Bar
-                        dataKey="revenue"
-                        fill="#3b82f6"
-                        radius={[4, 4, 0, 0]}
-                        barSize={30}
-                        name="Thực thu"
-                      />
-                      <Bar
-                        dataKey="debt"
-                        fill="#e2e8f0"
-                        radius={[4, 4, 0, 0]}
-                        barSize={30}
-                        name="Còn nợ"
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
+          {/* 4. GRID HAI CỘT ĐỐI XỨNG: BIỂU ĐỒ VÀ BẢNG ĐỐI SOÁT GẦN ĐÂY */}
+          <div className="grid grid-cols-1 lg:grid-cols-7 gap-5">
+            {/* Cột trái (4 phần): Biểu đồ Recharts thanh mảnh, sắc nét */}
+            <div className="lg:col-span-4 bg-white border border-slate-200/80 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.01)] p-5 space-y-4">
+              <div className="flex items-center justify-between select-none">
+                <div className="space-y-0.5">
+                  <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                    Xu hướng phân rã dòng tiền (2026)
+                  </h3>
+                  <p className="text-[10px] text-slate-400 font-medium">
+                    Đối soát giá trị thực thu và nợ đọng lũy kế qua các kỳ (Đơn
+                    vị: Triệu VND)
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+              <div className="h-64 w-full select-none">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={monthlyData}
+                    margin={{ top: 10, right: 5, left: -20, bottom: 0 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#f1f5f9"
+                    />
+                    <XAxis
+                      dataKey="name"
+                      fontSize={10}
+                      tickLine={false}
+                      axisLine={false}
+                      stroke="#94a3b8"
+                      className="font-mono"
+                    />
+                    <YAxis
+                      fontSize={10}
+                      tickLine={false}
+                      axisLine={false}
+                      stroke="#94a3b8"
+                      tickFormatter={(v) => `${v}M`}
+                    />
+                    <Tooltip
+                      cursor={{ fill: "rgba(241,245,249,0.4)" }}
+                      contentStyle={{
+                        borderRadius: "8px",
+                        border: "1px solid #e2e8f0",
+                        backgroundColor: "#fff",
+                        fontSize: "11px",
+                        fontFamily: "sans-serif",
+                      }}
+                    />
+                    <Bar
+                      dataKey="revenue"
+                      fill="#0f172a"
+                      radius={[3, 3, 0, 0]}
+                      barSize={16}
+                      name="Thực thu"
+                    />
+                    <Bar
+                      dataKey="debt"
+                      fill="#cbd5e1"
+                      radius={[3, 3, 0, 0]}
+                      barSize={16}
+                      name="Treo nợ"
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
 
-            {/* Recent Invoices Table */}
-            <Card className="lg:col-span-3 shadow-sm border-none ring-1 ring-slate-200">
-              <CardHeader className="flex flex-row items-center">
-                <div className="grid gap-1">
-                  <CardTitle>Giao dịch gần đây</CardTitle>
-                  <CardDescription>
-                    Có 120 giao dịch trong tháng này.
-                  </CardDescription>
+            {/* Cột phải (3 phần): Bảng giao dịch dòng tiền đậm đặc nghiệp vụ */}
+            <div className="lg:col-span-3 bg-white border border-slate-200/80 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.01)] p-5 space-y-3.5 flex flex-col justify-between">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2 select-none">
+                <div className="space-y-0.5">
+                  <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                    Luồng khớp lệnh gần đây
+                  </h3>
+                  <p className="text-[10px] text-slate-400 font-medium">
+                    Quét sao kê ngân hàng 5 phút trước
+                  </p>
                 </div>
-                <Button size="sm" variant="ghost" className="ml-auto">
-                  Xem tất cả
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 text-[10px] font-bold text-indigo-600 uppercase p-0"
+                >
+                  Xem toàn sổ
                 </Button>
-              </CardHeader>
-              <CardContent>
+              </div>
+
+              <div className="overflow-x-auto flex-1">
                 <Table>
-                  <TableHeader className="bg-slate-50/50">
-                    <TableRow>
-                      <TableHead className="w-25">Phòng</TableHead>
-                      <TableHead>Số tiền</TableHead>
-                      <TableHead>Trạng thái</TableHead>
-                      <TableHead className="text-right"></TableHead>
+                  <TableHeader className="bg-slate-50/50 border-b border-slate-100/60 select-none">
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider py-2 pl-2">
+                        Căn hộ / Cư dân
+                      </TableHead>
+                      <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider py-2 text-right">
+                        Giá trị thu
+                      </TableHead>
+                      <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider text-center py-2">
+                        Trạng thái
+                      </TableHead>
+                      <TableHead className="w-6 py-2 pr-2"></TableHead>
                     </TableRow>
                   </TableHeader>
-                  <TableBody>
+                  <TableBody className="divide-y divide-slate-100/50 text-xs">
                     {[
                       {
-                        id: "101",
+                        id: "INV-01",
                         room: "P.402",
-                        amount: "5.200.000",
+                        name: "Trần Bình An",
+                        amount: "5,200,000",
                         status: "Paid",
+                        method: "VietQR",
                       },
                       {
-                        id: "102",
+                        id: "INV-02",
                         room: "P.901",
-                        amount: "8.150.000",
+                        name: "Hoàng Thu Thảo",
+                        amount: "8,150,000",
                         status: "Pending",
+                        method: "Chờ khớp",
                       },
                       {
-                        id: "103",
+                        id: "INV-03",
                         room: "P.205",
-                        amount: "4.000.000",
+                        name: "Trần Thị Bình",
+                        amount: "4,000,000",
                         status: "Overdue",
+                        method: "Treo trễ",
                       },
                       {
-                        id: "104",
+                        id: "INV-04",
                         room: "P.110",
-                        amount: "12.000.000",
+                        name: "Nguyễn Văn Anh",
+                        amount: "12,000,000",
                         status: "Paid",
+                        method: "Bank Transfer",
                       },
                       {
-                        id: "105",
+                        id: "INV-05",
                         room: "P.303",
-                        amount: "2.450.000",
+                        name: "Vũ Hải Đăng",
+                        amount: "2,450,000",
                         status: "Paid",
+                        method: "Tiền mặt",
                       },
                     ].map((inv) => (
                       <TableRow
                         key={inv.id}
-                        className="hover:bg-slate-50/50 transition-colors"
+                        className="hover:bg-slate-50/30 border-none group"
                       >
-                        <TableCell className="font-medium text-slate-900">
-                          {inv.room}
+                        <TableCell className="py-2.5 pl-2">
+                          <span className="font-bold text-slate-800 font-mono">
+                            P.{inv.room.replace("P.", "")}
+                          </span>
+                          <span className="text-[10px] text-slate-400 block font-sans font-medium mt-0.5">
+                            {inv.name}
+                          </span>
                         </TableCell>
-                        <TableCell>{inv.amount}</TableCell>
-                        <TableCell>
+                        <TableCell className="text-right py-2.5">
+                          <strong className="font-mono text-slate-900 font-bold">
+                            {inv.amount}đ
+                          </strong>
+                          <span className="text-[9px] text-slate-400 block font-mono font-normal mt-0.5">
+                            {inv.method}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-center py-2.5">
                           <Badge
-                            variant={
+                            variant="outline"
+                            className={`border-none text-[9px] font-bold px-1.5 py-0.5 rounded ${
                               inv.status === "Paid"
-                                ? "secondary"
+                                ? "bg-emerald-50 text-emerald-700"
                                 : inv.status === "Pending"
-                                  ? "outline"
-                                  : "destructive"
-                            }
-                            className="text-[10px] font-semibold uppercase tracking-wider"
+                                  ? "bg-amber-50 text-amber-700 animate-pulse"
+                                  : "bg-rose-50 text-rose-700"
+                            }`}
                           >
                             {inv.status === "Paid"
                               ? "Đã thu"
                               : inv.status === "Pending"
                                 ? "Chờ"
-                                : "Nợ"}
+                                : "Nợ đọng"}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-right pr-2 py-2.5">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8 w-8 p-0">
-                                <MoreHorizontal className="h-4 w-4" />
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 text-slate-300 opacity-0 group-hover:opacity-100 rounded-md"
+                              >
+                                <MoreHorizontal size={13} />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
-                              <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
-                              <DropdownMenuItem className="text-blue-600">
-                                Gửi nhắc nợ
+                            <DropdownMenuContent
+                              align="end"
+                              className="w-40 p-1 border-slate-200"
+                            >
+                              <DropdownMenuLabel className="text-[9px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1">
+                                Tác vụ sổ gốc
+                              </DropdownMenuLabel>
+                              <DropdownMenuSeparator className="my-1 border-slate-100" />
+                              <DropdownMenuItem className="text-xs font-semibold p-2">
+                                Xem chi tiết
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-xs font-semibold text-indigo-600 p-2">
+                                Khớp duyệt tiền
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -327,11 +381,46 @@ export default function RevenueDashboard() {
                     ))}
                   </TableBody>
                 </Table>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+// SUB-COMPONENT: THẺ TRỰC QUAN STATS CARD PHẲNG LÌ
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function StatsCard({ title, value, sub, icon: Icon, color, status }: any) {
+  const colors: Record<string, string> = {
+    emerald: "text-emerald-600 bg-emerald-50 border-emerald-100/40",
+    rose: "text-rose-600 bg-rose-50 border-rose-100/40",
+    indigo: "text-indigo-600 bg-indigo-50 border-indigo-100/40",
+    amber: "text-amber-600 bg-amber-50 border-amber-100/40",
+  };
+
+  return (
+    <div className="bg-white border border-slate-200/80 rounded-xl p-4 shadow-[0_1px_2px_rgba(0,0,0,0.01)] flex items-center justify-between transition-all hover:shadow-2xs">
+      <div className="space-y-0.5 min-w-0">
+        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block truncate">
+          {title}
+        </span>
+        <h4 className="text-xl font-bold text-slate-900 font-sans tracking-tight">
+          {value}
+        </h4>
+
+        {/* Khay lồng trạng thái inline phẳng mịn */}
+        <div className="flex items-center gap-2 pt-1">
+          {status}
+          <span className="text-[10px] font-medium text-slate-400 truncate block">
+            {sub}
+          </span>
+        </div>
+      </div>
+      <div className={`p-2.5 rounded-xl border ${colors[color]} shrink-0`}>
+        <Icon className="w-4 h-4 stroke-[1.8]" />
+      </div>
     </div>
   );
 }

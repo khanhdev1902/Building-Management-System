@@ -27,13 +27,12 @@ export const navigation = {
       icon: BarChart3,
       children: [
         {
-          title: "Doanh thu",
-          icon: Banknote,
+          title: "Báo cáo doanh thu",
           url: "/admin/reports/revenue",
         },
-        { title: "Chi phí vận hành", icon: Wallet, url: "/admin/reports/expenses" },
+        { title: "Chi phí vận hành", url: "/admin/reports/expenses" },
         { title: "Tỷ lệ lấp đầy & Biến động", url: "/admin/reports/occupancy" },
-        { title: "Báo cáo kỹ thuật/Bảo trì", url: "/admin/reports/maintenance" }, //Theo dõi sức khỏe tòa nhà
+        //{ title: "Báo cáo kỹ thuật/Bảo trì", url: "/admin/reports/maintenance" }, //Theo dõi sức khỏe tòa nhà
       ],
     },
   ],
