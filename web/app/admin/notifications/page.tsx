@@ -1,320 +1,718 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Bell,
-  CheckCheck,
-  CreditCard,
-  Wrench,
-  UserPlus,
-  Settings,
   Search,
-  Inbox,
-  Clock,
-  ArrowUpRight,
   Filter,
-  MoreHorizontal,
+  Plus,
+  Send,
+  FileText,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  MoreVertical,
   Trash2,
-  ShieldAlert,
+  Eye,
+  Megaphone,
+  Building,
+  Users,
+  ChevronLeft,
   ChevronRight,
-  CheckCircle2,
-  X,
+  SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
 import { Input } from "@/shared/components/ui/input";
 import { ScrollArea } from "@/shared/components/ui/scroll-area";
-import { Separator } from "@/shared/components/ui/separator";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/shared/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select";
+import { Textarea } from "@/shared/components/ui/textarea";
+import { toast } from "sonner";
 
-const NOTIFICATIONS = [
+// Mock Data chuẩn dữ liệu quản lý vận hành tòa nhà
+const INITIAL_NOTIFICATIONS = [
   {
-    id: "1",
+    id: "NOTI-001",
     type: "finance",
-    title: "Cảnh báo nợ cước P.202",
+    title: "Thông báo đóng tiền dịch vụ và tiền nước tháng 05/2026",
     content:
-      "Cư dân Trần Thị Bảo đã quá hạn thanh toán hóa đơn điện nước tháng 03/2026. Tổng nợ tích lũy: 1.250.000đ. Cần gửi thông báo nhắc nợ lần 2.",
-    time: "2 phút trước",
-    isRead: false,
+      "Ban quản lý thông báo hạn đóng tiền phòng, tiền nước định kỳ từ ngày 01 đến ngày 05 hàng tháng. Vui lòng thanh toán đúng hạn qua app Danjin BMS để tránh phát sinh phí phạt.",
+    target: "Toàn bộ tòa nhà",
+    status: "sent",
     priority: "high",
-    sender: "Hệ thống tài chính",
+    createdAt: "20/05/2026 08:00",
+    stats: { sent: 48, read: 32 },
   },
   {
-    id: "2",
+    id: "NOTI-002",
     type: "maintenance",
-    title: "Yêu cầu kỹ thuật #442",
+    title: "Bảo trì định kỳ hệ thống thang máy khu tòa nhà A",
     content:
-      "Phòng 101 báo hỏng vòi sen và thấm tường nhà vệ sinh. Mức độ: Cần xử lý trong ngày.",
-    time: "45 phút trước",
-    isRead: false,
+      "Tiến hành bảo dưỡng định kỳ cáp và động cơ thang máy trục chính tòa A trong khoảng thời gian từ 13:00 đến 16:00 ngày mai. Cư dân vui lòng di chuyển bằng cầu thang bộ.",
+    target: "Block A (24 Phòng)",
+    status: "scheduled",
     priority: "medium",
-    sender: "App Cư dân",
+    createdAt: "19/05/2026 15:30",
+    stats: { sent: 24, read: 0 },
   },
   {
-    id: "3",
-    type: "tenant",
-    title: "Cư dân mới xác minh",
+    id: "NOTI-003",
+    type: "life",
+    title: "Nhắc nhở phân loại rác thải tại nhà rác tầng hầm",
     content:
-      "Hệ thống đã nhận diện thông tin CCCD của Nguyễn Văn Anh (P.104). Vui lòng phê duyệt hồ sơ tạm trú để hoàn tất thủ tục.",
-    time: "3 giờ trước",
-    isRead: true,
+      "Hiện tại có tình trạng một số phòng để rác không đúng nơi quy định, không phân loại rác tái chế. Yêu cầu cư dân tuân thủ nội quy chung cư mini để bảo vệ không gian chung.",
+    target: "Toàn bộ tòa nhà",
+    status: "draft",
     priority: "low",
-    sender: "Cổng đăng ký",
+    createdAt: "18/05/2026 10:15",
+    stats: { sent: 0, read: 0 },
+  },
+  {
+    id: "NOTI-004",
+    type: "finance",
+    title: "Cảnh báo cắt điện nước do quá hạn thanh toán - P.302",
+    content:
+      "Yêu cầu phòng 302 hoàn thành nghĩa vụ tài chính hóa đơn tháng 04 trước 17h00 hôm nay. Quá thời gian trên hệ thống sẽ tự động ngắt rơ-le điện của phòng.",
+    target: "Phòng 302",
+    status: "sent",
+    priority: "high",
+    createdAt: "18/05/2026 09:00",
+    stats: { sent: 1, read: 1 },
   },
 ];
 
-export default function ProfessionalNotifications() {
-  const [selectedId, setSelectedId] = useState(NOTIFICATIONS[0].id);
-  const selectedNoti = NOTIFICATIONS.find((n) => n.id === selectedId);
+export default function NotificationManagement() {
+  const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  // Phân trang đơn giản
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // State Form tạo mới
+  const [newNoti, setNewNoti] = useState({
+    title: "",
+    content: "",
+    type: "life",
+    priority: "low",
+    targetType: "all",
+    specificRoom: "",
+  });
+
+  // Xử lý bộ lọc & Tìm kiếm dữ liệu
+  const filteredNotis = useMemo(() => {
+    return notifications.filter((n) => {
+      const matchesSearch =
+        n.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        n.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        n.target.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesType = typeFilter === "all" || n.type === typeFilter;
+      const matchesStatus = statusFilter === "all" || n.status === statusFilter;
+
+      return matchesSearch && matchesType && matchesStatus;
+    });
+  }, [notifications, searchQuery, typeFilter, statusFilter]);
+
+  // Tính toán số trang thực tế
+  const paginatedNotis = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredNotis.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredNotis, currentPage]);
+
+  const totalPages = Math.ceil(filteredNotis.length / itemsPerPage) || 1;
+
+  // Tạo thông báo mới
+  const handleCreate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newNoti.title || !newNoti.content) {
+      toast.error("Vui lòng điền đầy đủ tiêu đề và nội dung.");
+      return;
+    }
+
+    const targetText =
+      newNoti.targetType === "all"
+        ? "Toàn bộ tòa nhà"
+        : `Phòng ${newNoti.specificRoom || "Chưa rõ"}`;
+
+    const created: any = {
+      id: `NOTI-00${notifications.length + 1}`,
+      type: newNoti.type,
+      title: newNoti.title,
+      content: newNoti.content,
+      target: targetText,
+      status: "sent",
+      priority: newNoti.priority,
+      createdAt: "Vừa xong",
+      stats: { sent: newNoti.targetType === "all" ? 48 : 1, read: 0 },
+    };
+
+    setNotifications([created, ...notifications]);
+    setIsCreateOpen(false);
+    toast.success("Đã gửi phát thanh thông báo thành công đến cư dân!");
+
+    // Reset form
+    setNewNoti({
+      title: "",
+      content: "",
+      type: "life",
+      priority: "low",
+      targetType: "all",
+      specificRoom: "",
+    });
+  };
+
+  // Xóa thông báo
+  const handleDelete = (id: string) => {
+    setNotifications(notifications.filter((n) => n.id !== id));
+    toast.success(`Đã gỡ bỏ bản tin ${id}`);
+  };
 
   return (
-    <div className="flex h-screen w-full bg-[#f8fafc] text-slate-900 overflow-hidden font-sans">
-      {/* 1. Danh sách thông báo (Bên trái) */}
-      <div className="w-full md:w-[380px] lg:w-[420px] border-r border-slate-200 flex flex-col bg-white shadow-sm">
-        {/* Header danh sách */}
-        <div className="p-5 border-b border-slate-100 space-y-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-blue-50 rounded-lg">
-                <Bell className="w-5 h-5 text-blue-600" />
-              </div>
-              <h1 className="text-lg font-bold text-slate-800 tracking-tight">
-                Thông báo
-              </h1>
-            </div>
-            <Badge
-              variant="secondary"
-              className="bg-blue-600 text-white border-none rounded-full px-2 py-0.5 text-[11px]"
-            >
-              02 mới
-            </Badge>
+    <div className="flex flex-col h-screen w-full bg-slate-50/50 text-slate-900 font-sans antialiased">
+      {/* 1. THANH TOÀN DIỆN TOP BAR HEADER */}
+      <header className="bg-white border-b border-slate-200/80 px-6 py-4 flex items-center justify-between shadow-xs select-none">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 bg-slate-900 text-white rounded-xl shadow-sm">
+            <Megaphone className="w-5 h-5 stroke-[2.2]" />
           </div>
-
-          <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-            <Input
-              placeholder="Tìm theo nội dung, số phòng..."
-              className="pl-9 bg-slate-50 border-slate-200 text-xs h-10 focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:border-blue-500 transition-all"
-            />
-          </div>
-
-          <div className="flex items-center gap-1 overflow-x-auto pb-1 no-scrollbar">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="bg-slate-100 text-blue-700 text-[11px] font-semibold h-8 rounded-full px-4"
-            >
-              Tất cả
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-slate-500 text-[11px] h-8 rounded-full px-4 hover:bg-slate-50"
-            >
-              Chưa đọc
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-slate-500 text-[11px] h-8 rounded-full px-4 hover:bg-slate-50"
-            >
-              Tài chính
-            </Button>
+          <div>
+            <h1 className="text-base font-bold text-slate-900 tracking-tight">
+              Bảng tin & Thông báo
+            </h1>
+            <p className="text-xs text-slate-400 font-medium mt-0.5">
+              Quản lý nội dung phát thanh phát ra App cư dân tòa nhà Danjin BMS
+            </p>
           </div>
         </div>
 
-        {/* List Body */}
-        <ScrollArea className="flex-1">
-          <div className="divide-y divide-slate-50">
-            {NOTIFICATIONS.map((n) => (
-              <div
-                key={n.id}
-                onClick={() => setSelectedId(n.id)}
-                className={`relative p-4 cursor-pointer transition-all duration-200 border-l-4 ${
-                  selectedId === n.id
-                    ? "bg-blue-50/50 border-blue-600 shadow-sm"
-                    : "bg-white border-transparent hover:bg-slate-50"
-                }`}
-              >
-                <div className="flex justify-between items-start mb-1.5">
-                  <div className="flex items-center gap-2">
-                    {!n.isRead && (
-                      <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
-                    )}
-                    <span
-                      className={`text-xs font-bold ${selectedId === n.id ? "text-blue-700" : "text-slate-700"}`}
-                    >
-                      {n.title}
-                    </span>
-                  </div>
-                  <span className="text-[10px] text-slate-400 font-medium">
-                    {n.time}
-                  </span>
+        {/* Nút kích hoạt Form tạo thông báo */}
+        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 h-9.5 rounded-xl gap-2 shadow-xs transition-colors cursor-pointer">
+              <Plus className="w-4 h-4 stroke-[3]" /> Soạn thông báo mới
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[550px] bg-white rounded-2xl p-6 font-sans">
+            <DialogHeader>
+              <DialogTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <Megaphone className="w-4 h-4 text-blue-600" /> Soạn văn bản
+                phát thanh mới
+              </DialogTitle>
+              <DialogDescription className="text-xs text-slate-400">
+                Nội dung sẽ được gửi thông báo đẩy (Push Notification) tức thì
+                đến thiết bị của cư dân được chọn.
+              </DialogDescription>
+            </DialogHeader>
+
+            <form onSubmit={handleCreate} className="space-y-4 pt-3 text-xs">
+              <div className="space-y-1.5">
+                <label className="font-bold text-slate-700">
+                  Tiêu đề bản tin thông báo
+                </label>
+                <Input
+                  placeholder="Ví dụ: Lịch cắt nước sửa chữa trục ống chính..."
+                  value={newNoti.title}
+                  onChange={(e) =>
+                    setNewNoti({ ...newNoti, title: e.target.value })
+                  }
+                  className="h-9.5 rounded-xl bg-slate-50/50 border-slate-200 text-xs font-semibold text-slate-800 focus-visible:bg-white transition-all shadow-2xs"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-700">
+                    Danh mục nội dung
+                  </label>
+                  <Select
+                    value={newNoti.type}
+                    onValueChange={(val) =>
+                      setNewNoti({ ...newNoti, type: val })
+                    }
+                  >
+                    <SelectTrigger className="h-9.5 border-slate-200 bg-slate-50/50 rounded-xl text-xs font-medium px-3 focus:ring-0">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-slate-200">
+                      <SelectItem value="finance" className="text-xs">
+                        Tài chính / Công nợ
+                      </SelectItem>
+                      <SelectItem value="maintenance" className="text-xs">
+                        Kỹ thuật / Bảo trì
+                      </SelectItem>
+                      <SelectItem value="life" className="text-xs">
+                        Đời sống / Nội quy
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-                <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed pl-4">
-                  {n.content}
-                </p>
-                {n.priority === "high" && (
-                  <div className="mt-2 pl-4">
-                    <Badge className="bg-red-50 text-red-600 border-red-100 text-[9px] px-1.5 py-0">
-                      Khẩn cấp
-                    </Badge>
+
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-700">
+                    Mức độ khẩn cấp
+                  </label>
+                  <Select
+                    value={newNoti.priority}
+                    onValueChange={(val) =>
+                      setNewNoti({ ...newNoti, priority: val })
+                    }
+                  >
+                    <SelectTrigger className="h-9.5 border-slate-200 bg-slate-50/50 rounded-xl text-xs font-medium px-3 focus:ring-0">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-slate-200">
+                      <SelectItem value="low" className="text-xs">
+                        Thông thường (Thấp)
+                      </SelectItem>
+                      <SelectItem value="medium" className="text-xs">
+                        Quan trọng (Trung bình)
+                      </SelectItem>
+                      <SelectItem value="high" className="text-xs">
+                        Khẩn cấp (Cao)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 border-t border-slate-100 pt-3">
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-700">
+                    Đối tượng tiếp nhận
+                  </label>
+                  <Select
+                    value={newNoti.targetType}
+                    onValueChange={(val) =>
+                      setNewNoti({ ...newNoti, targetType: val })
+                    }
+                  >
+                    <SelectTrigger className="h-9.5 border-slate-200 bg-slate-50/50 rounded-xl text-xs font-medium px-3 focus:ring-0">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-slate-200">
+                      <SelectItem value="all" className="text-xs">
+                        Gửi Toàn bộ tòa nhà
+                      </SelectItem>
+                      <SelectItem value="room" className="text-xs">
+                        Gửi riêng Đích danh phòng
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {newNoti.targetType === "room" && (
+                  <div className="space-y-1.5 animate-in fade-in duration-150">
+                    <label className="font-bold text-slate-700">
+                      Mã số phòng cụ thể
+                    </label>
+                    <Input
+                      placeholder="Ví dụ: 302, 405..."
+                      value={newNoti.specificRoom}
+                      onChange={(e) =>
+                        setNewNoti({ ...newNoti, specificRoom: e.target.value })
+                      }
+                      className="h-9.5 rounded-xl bg-slate-50/50 border-slate-200 text-xs font-mono font-bold text-slate-800 focus-visible:bg-white shadow-2xs"
+                    />
                   </div>
                 )}
               </div>
-            ))}
-          </div>
-        </ScrollArea>
-      </div>
 
-      {/* 2. Chi tiết thông báo (Bên phải) */}
-      <div className="hidden md:flex flex-1 flex-col bg-white">
-        {selectedNoti ? (
-          <>
-            {/* Header chi tiết */}
-            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-10">
-              <div className="flex items-center gap-4">
-                <div
-                  className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm border ${
-                    selectedNoti.type === "finance"
-                      ? "bg-red-50 border-red-100 text-red-600"
-                      : selectedNoti.type === "maintenance"
-                        ? "bg-amber-50 border-amber-100 text-amber-600"
-                        : "bg-blue-50 border-blue-100 text-blue-600"
-                  }`}
-                >
-                  {selectedNoti.type === "finance" ? (
-                    <CreditCard size={24} />
-                  ) : selectedNoti.type === "maintenance" ? (
-                    <Wrench size={24} />
-                  ) : (
-                    <UserPlus size={24} />
-                  )}
-                </div>
-                <div>
-                  <h2 className="text-xl font-extrabold text-slate-800 leading-tight">
-                    {selectedNoti.title}
-                  </h2>
-                  <div className="flex items-center gap-3 mt-1.5">
-                    <span className="text-xs text-slate-400 flex items-center gap-1 font-medium">
-                      <Clock className="w-3.5 h-3.5" /> 30/03/2026 - 10:24
-                    </span>
-                    <span className="w-1 h-1 bg-slate-300 rounded-full" />
-                    <span className="text-xs text-blue-600 font-semibold">
-                      {selectedNoti.sender}
-                    </span>
-                  </div>
-                </div>
+              <div className="space-y-1.5">
+                <label className="font-bold text-slate-700">
+                  Chi tiết nội dung phát thông báo
+                </label>
+                <Textarea
+                  placeholder="Nhập nội dung văn bản chi tiết gửi tới cư dân..."
+                  rows={4}
+                  value={newNoti.content}
+                  onChange={(e) =>
+                    setNewNoti({ ...newNoti, content: e.target.value })
+                  }
+                  className="rounded-xl bg-slate-50/50 border-slate-200 text-xs font-medium leading-relaxed p-3 focus-visible:bg-white resize-none"
+                />
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 select-none">
                 <Button
-                  variant="outline"
-                  className="h-9 border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold"
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setIsCreateOpen(false)}
+                  className="h-9 text-xs text-slate-400 hover:text-slate-700 font-semibold rounded-xl"
                 >
-                  <CheckCheck className="w-4 h-4 mr-2 text-emerald-500" /> Đã
-                  đọc
+                  Hủy bỏ
                 </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9 border border-slate-200 rounded-lg text-slate-400 hover:text-slate-600"
-                    >
-                      <MoreHorizontal className="w-4 h-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuItem className="text-xs py-2 cursor-pointer">
-                      <ShieldAlert className="w-4 h-4 mr-2" /> Báo cáo sự cố
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-xs py-2 cursor-pointer text-red-600">
-                      <Trash2 className="w-4 h-4 mr-2" /> Xóa thông báo
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Button
+                  type="submit"
+                  className="h-9 px-5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-sm gap-1.5"
+                >
+                  <Send className="w-3.5 h-3.5" /> Phát thanh ngay
+                </Button>
               </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </header>
+
+      {/* 2. THANH PANEL ĐIỀU KHIỂN BỘ LỌC (FILTER BAR) */}
+      <section className="bg-white border-b border-slate-200/60 px-6 py-3 flex flex-col sm:flex-row items-center gap-3 justify-between select-none">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+          {/* Ô Tìm kiếm văn bản */}
+          <div className="relative w-full sm:w-64 group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+            <Input
+              placeholder="Tìm nội dung, đối tượng..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-8.5 bg-slate-50 border-slate-200 text-xs h-8.5 rounded-xl focus-visible:ring-2 focus-visible:ring-blue-500/10 focus-visible:border-blue-500 transition-all w-full"
+            />
+          </div>
+
+          {/* Lọc danh mục */}
+          <div className="flex items-center gap-1.5 bg-slate-100/80 p-1 rounded-xl border border-slate-200/30 text-[11px] font-semibold">
+            <button
+              onClick={() => {
+                setTypeFilter("all");
+                setCurrentPage(1);
+              }}
+              className={`px-3 py-1 rounded-lg transition-all ${typeFilter === "all" ? "bg-white text-slate-900 shadow-3xs" : "text-slate-500 hover:text-slate-800"}`}
+            >
+              Tất cả mục
+            </button>
+            <button
+              onClick={() => {
+                setTypeFilter("finance");
+                setCurrentPage(1);
+              }}
+              className={`px-3 py-1 rounded-lg transition-all ${typeFilter === "finance" ? "bg-white text-blue-600 shadow-3xs" : "text-slate-500 hover:text-slate-800"}`}
+            >
+              Tài chính
+            </button>
+            <button
+              onClick={() => {
+                setTypeFilter("maintenance");
+                setCurrentPage(1);
+              }}
+              className={`px-3 py-1 rounded-lg transition-all ${typeFilter === "maintenance" ? "bg-white text-amber-600 shadow-3xs" : "text-slate-500 hover:text-slate-800"}`}
+            >
+              Kỹ thuật
+            </button>
+            <button
+              onClick={() => {
+                setTypeFilter("life");
+                setCurrentPage(1);
+              }}
+              className={`px-3 py-1 rounded-lg transition-all ${typeFilter === "life" ? "bg-white text-emerald-600 shadow-3xs" : "text-slate-500 hover:text-slate-800"}`}
+            >
+              Đời sống
+            </button>
+          </div>
+        </div>
+
+        {/* Lọc theo Trạng thái gửi của hệ thống */}
+        <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <SlidersHorizontal className="w-3.5 h-3.5 text-slate-400" />
+          <Select
+            value={statusFilter}
+            onValueChange={(val) => {
+              setStatusFilter(val);
+              setCurrentPage(1);
+            }}
+          >
+            <SelectTrigger className="h-8.5 w-36 border-slate-200 bg-white rounded-xl text-[11px] font-semibold px-2.5 shadow-3xs focus:ring-0">
+              <SelectValue placeholder="Trạng thái gửi" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl border-slate-200 text-xs">
+              <SelectItem value="all" className="text-xs font-semibold">
+                Mọi trạng thái
+              </SelectItem>
+              <SelectItem
+                value="sent"
+                className="text-xs text-emerald-600 font-semibold"
+              >
+                ✓ Đã phát thanh
+              </SelectItem>
+              <SelectItem
+                value="scheduled"
+                className="text-xs text-blue-600 font-semibold"
+              >
+                ⏰ Lên lịch gửi
+              </SelectItem>
+              <SelectItem
+                value="draft"
+                className="text-xs text-slate-400 font-semibold"
+              >
+                📝 Bản lưu nháp
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </section>
+
+      {/* 3. KHU VỰC DANH SÁCH BẢNG TIN (TABLE CHUYÊN NGHIỆP) */}
+      <main className="flex-1 p-6 overflow-hidden flex flex-col justify-between">
+        <ScrollArea className="flex-1 bg-white rounded-xl border border-slate-200/80 shadow-xs">
+          <div className="w-full min-w-[800px] text-xs">
+            {/* Header cột bảng */}
+            <div className="grid grid-cols-12 gap-4 bg-slate-50/70 p-4 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider select-none">
+              <div className="col-span-5">Nội dung thông báo</div>
+              <div className="col-span-2">Phạm vi nhận</div>
+              <div className="col-span-2">Trạng thái phát</div>
+              <div className="col-span-2">Tỷ lệ xem app</div>
+              <div className="col-span-1 text-center">Tác vụ</div>
             </div>
 
-            {/* Nội dung chi tiết */}
-            <ScrollArea className="flex-1 bg-slate-50/30">
-              <div className="p-8 max-w-4xl mx-auto space-y-6">
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] p-6 space-y-6">
-                  <div className="space-y-3">
-                    <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.1em]">
-                      Nội dung chính
-                    </h3>
-                    <p className="text-[15px] text-slate-700 leading-relaxed font-medium">
-                      {selectedNoti.content}
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="p-4 rounded-xl border border-slate-100 bg-slate-50/50">
-                      <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
-                        Vị trí / Đối tượng
-                      </p>
-                      <p className="text-[13px] text-slate-800 font-bold mt-1 flex items-center gap-2">
-                        Phòng 202{" "}
-                        <ChevronRight size={14} className="text-slate-300" />{" "}
-                        LuxHouse Tower
-                      </p>
-                    </div>
-                    <div className="p-4 rounded-xl border border-slate-100 bg-slate-50/50">
-                      <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
-                        Mức độ ưu tiên
-                      </p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span
-                          className={`w-2 h-2 rounded-full ${selectedNoti.priority === "high" ? "bg-red-500" : "bg-amber-500"}`}
-                        />
-                        <span className="text-[13px] text-slate-800 font-bold uppercase">
-                          {selectedNoti.priority}
+            {/* List dòng dữ liệu */}
+            {paginatedNotis.length > 0 ? (
+              <div className="divide-y divide-slate-100">
+                {paginatedNotis.map((n) => (
+                  <div
+                    key={n.id}
+                    className="grid grid-cols-12 gap-4 p-4 items-center hover:bg-slate-50/50 transition-colors"
+                  >
+                    {/* Cột tiêu đề & nội dung rút gọn */}
+                    <div className="col-span-5 space-y-1 pr-4">
+                      <div className="flex items-center gap-2">
+                        {renderTypeBadge(n.type)}
+                        {n.priority === "high" && (
+                          <Badge className="bg-red-50 text-red-600 border border-red-100 rounded text-[9px] px-1 font-bold">
+                            Khẩn cấp
+                          </Badge>
+                        )}
+                        <span className="text-[10px] font-mono font-bold text-slate-400">
+                          {n.id}
                         </span>
                       </div>
+                      <h3 className="font-bold text-slate-800 line-clamp-1 text-[13px] tracking-tight">
+                        {n.title}
+                      </h3>
+                      <p className="text-[11px] text-slate-400 font-medium line-clamp-1">
+                        {n.content}
+                      </p>
+                    </div>
+
+                    {/* Cột đối tượng đích danh */}
+                    <div className="col-span-2 flex items-center gap-1.5 font-semibold text-slate-600">
+                      {n.target.includes("Toàn bộ") ? (
+                        <Building className="w-3.5 h-3.5 text-slate-400" />
+                      ) : (
+                        <Users className="w-3.5 h-3.5 text-blue-500" />
+                      )}
+                      <span>{n.target}</span>
+                    </div>
+
+                    {/* Cột trạng thái hệ thống */}
+                    <div className="col-span-2 select-none">
+                      {renderStatusBadge(n.status)}
+                      <span className="block text-[10px] text-slate-400 font-medium mt-1 font-mono">
+                        {n.createdAt}
+                      </span>
+                    </div>
+
+                    {/* Cột thống kê lượt đọc thực tế */}
+                    <div className="col-span-2 space-y-1 pr-6">
+                      <div className="flex justify-between text-[10px] font-bold text-slate-500 font-mono">
+                        <span>
+                          Đã xem: {n.stats.read}/{n.stats.sent}
+                        </span>
+                        <span>
+                          {n.stats.sent > 0
+                            ? Math.round((n.stats.read / n.stats.sent) * 100)
+                            : 0}
+                          %
+                        </span>
+                      </div>
+                      <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-blue-600 rounded-full transition-all duration-500"
+                          style={{
+                            width: `${n.stats.sent > 0 ? (n.stats.read / n.stats.sent) * 100 : 0}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Menu Tác vụ */}
+                    <div className="col-span-1 text-center select-none">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-lg text-slate-400 hover:text-slate-600 cursor-pointer"
+                          >
+                            <MoreVertical className="w-4 h-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          align="end"
+                          className="w-40 rounded-xl border-slate-200"
+                        >
+                          <DropdownMenuItem className="text-xs py-2 cursor-pointer gap-2 font-medium">
+                            <Eye className="w-3.5 h-3.5 text-slate-400" /> Xem
+                            chi tiết
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-xs py-2 cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 gap-2 font-semibold"
+                            onClick={() => handleDelete(n.id)}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" /> Gỡ bản tin
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </div>
-                </div>
-
-                <div className="flex items-center justify-between p-1">
-                  <div className="flex gap-3">
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 rounded-xl text-sm font-bold shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5 active:translate-y-0">
-                      Xử lý nghiệp vụ <ArrowUpRight className="ml-2 w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="border-slate-200 hover:bg-white px-6 py-6 rounded-xl text-sm font-semibold text-slate-600 transition-all"
-                    >
-                      Chuyển tiếp cho kỹ thuật
-                    </Button>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    className="text-slate-400 text-xs hover:text-red-500"
-                  >
-                    Bỏ qua thông báo này
-                  </Button>
-                </div>
+                ))}
               </div>
-            </ScrollArea>
-          </>
-        ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-slate-300 bg-slate-50/20">
-            <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-inner mb-4">
-              <Inbox size={40} className="text-slate-200" />
-            </div>
-            <p className="text-sm font-medium text-slate-400 tracking-wide">
-              Chọn thông báo để xem chi tiết
-            </p>
+            ) : (
+              <div className="py-16 text-center select-none">
+                <FileText className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+                <p className="text-sm font-bold text-slate-400">
+                  Không tìm thấy thông báo phù hợp
+                </p>
+                <p className="text-xs text-slate-300 mt-1">
+                  Vui lòng thay đổi cấu hình bộ lọc hoặc từ khóa tìm kiếm
+                </p>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </ScrollArea>
+
+        {/* 4. THANH ĐÁY ĐIỀU HƯỚNG PHÂN TRANG (PAGINATION) */}
+        <footer className="flex items-center justify-between pt-4 select-none">
+          <p className="text-xs text-slate-400 font-semibold">
+            Hiển thị{" "}
+            <span className="text-slate-700 font-mono">
+              {filteredNotis.length === 0
+                ? 0
+                : (currentPage - 1) * itemsPerPage + 1}
+            </span>{" "}
+            -{" "}
+            <span className="text-slate-700 font-mono">
+              {Math.min(currentPage * itemsPerPage, filteredNotis.length)}
+            </span>{" "}
+            trên tổng số{" "}
+            <span className="text-slate-700 font-mono">
+              {filteredNotis.length}
+            </span>{" "}
+            bản ghi
+          </p>
+          <div className="flex items-center gap-1.5">
+            <Button
+              variant="outline"
+              size="icon"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+              className="h-8.5 w-8.5 rounded-xl border-slate-200 text-slate-500 shadow-3xs hover:bg-white cursor-pointer disabled:opacity-40"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <Button
+                key={page}
+                size="sm"
+                variant={currentPage === page ? "default" : "outline"}
+                onClick={() => setCurrentPage(page)}
+                className={`h-8.5 w-8.5 rounded-xl text-xs font-bold font-mono transition-all ${currentPage === page ? "bg-slate-900 text-white shadow-sm border-none" : "border-slate-200 text-slate-600 hover:bg-white"}`}
+              >
+                {page}
+              </Button>
+            ))}
+
+            <Button
+              variant="outline"
+              size="icon"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              className="h-8.5 w-8.5 rounded-xl border-slate-200 text-slate-500 shadow-3xs hover:bg-white cursor-pointer disabled:opacity-40"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </footer>
+      </main>
     </div>
   );
+}
+
+// Hàm render badge Danh mục
+function renderTypeBadge(type: string) {
+  switch (type) {
+    case "finance":
+      return (
+        <Badge
+          variant="outline"
+          className="border-none bg-blue-50 text-blue-700 rounded-md text-[10px] font-bold px-1.5 py-0.5"
+        >
+          Tài chính
+        </Badge>
+      );
+    case "maintenance":
+      return (
+        <Badge
+          variant="outline"
+          className="border-none bg-amber-50 text-amber-700 rounded-md text-[10px] font-bold px-1.5 py-0.5"
+        >
+          Bảo trì
+        </Badge>
+      );
+    default:
+      return (
+        <Badge
+          variant="outline"
+          className="border-none bg-emerald-50 text-emerald-700 rounded-md text-[10px] font-bold px-1.5 py-0.5"
+        >
+          Đời sống
+        </Badge>
+      );
+  }
+}
+
+// Hàm render badge Trạng thái
+function renderStatusBadge(status: string) {
+  switch (status) {
+    case "sent":
+      return (
+        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-50/50 border border-emerald-100 px-2 py-0.5 rounded-full">
+          <CheckCircle className="w-3 h-3 stroke-[2.5]" /> Đã phát
+        </span>
+      );
+    case "scheduled":
+      return (
+        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-600 bg-blue-50/50 border border-blue-100 px-2 py-0.5 rounded-full">
+          <Clock className="w-3 h-3 stroke-[2.5]" /> Hẹn giờ
+        </span>
+      );
+    default:
+      return (
+        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-400 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-full">
+          <FileText className="w-3 h-3" /> Bản nháp
+        </span>
+      );
+  }
 }

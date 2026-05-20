@@ -3,6 +3,7 @@
 import React from "react";
 import { UserPlus, Download, Users } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
+import { AddResidentDialog } from "./tenant-add-resident-dialog";
 
 interface TenantHeaderProps {
   totalTenants?: number;
@@ -45,13 +46,14 @@ export function TenantHeader({
           <span>Xuất Excel</span>
         </Button>
 
-        <Button
+        {/* <Button
           onClick={onAddTenant}
           className="h-9 px-3.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium rounded-lg shadow-2xs flex gap-1.5 active:scale-[0.99] transition-all"
         >
           <UserPlus className="h-4 w-4 stroke-2" />
           <span>Thêm cư dân mới</span>
-        </Button>
+        </Button> */}
+          <AddResidentDialog />
       </div>
     </div>
   );

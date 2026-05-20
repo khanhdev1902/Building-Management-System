@@ -173,7 +173,7 @@ export class RoomService {
           acreage: dto.acreage,
           description: dto.description,
           maxOccupants: dto.maxOccupants,
-          type: dto.type,
+          // type: dto.type,
           status: dto.status,
         },
       });
