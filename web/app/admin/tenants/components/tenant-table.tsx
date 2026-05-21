@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
@@ -14,9 +13,10 @@ import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
 import { ChevronLeft, ChevronRight, SearchX } from "lucide-react";
 import { TenantTableRow } from "./tenant-table-row";
+import { Tenant, TenantStatus } from "../types/tenant.type";
 
 interface TenantTableProps {
-  data: any[];
+  data: Tenant[];
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
@@ -133,34 +133,41 @@ export function TenantTable({
 }
 
 // --- SUB-COMPONENTS BADGE TRẠNG THÁI TRÚ NGỤ ---
-export function StatusBadge({ status }: { status: string }) {
-  const configs: Record<string, { label: string; class: string; dot: string }> =
-    {
-      active: {
-        label: "Đang cư trú",
-        class: "bg-emerald-50 text-emerald-700 border-emerald-100/70",
-        dot: "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.4)]",
-      },
-      expiring: {
-        label: "Sắp hết hợp đồng",
-        class: "bg-amber-50 text-amber-700 border-amber-100/70",
-        dot: "bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.4)]",
-      },
-      inactive: {
-        label: "Đã dời đi",
-        class: "bg-slate-50 text-slate-500 border-slate-200/60",
-        dot: "bg-slate-400",
-      },
-    };
+export function StatusBadge({ status }: { status: TenantStatus }) {
+  const configs: Record<
+    TenantStatus,
+    { label: string; class: string; dot: string }
+  > = {
+    PENDING: {
+      label: "Chưa cư trú",
+      class: "bg-rose-50 text-rose-700 border-rose-100/70",
+      dot: "bg-rose-500 shadow-[0_0_6px_rgba(245,158,11,0.4)]",
+    },
+    ACTIVE: {
+      label: "Đang cư trú",
+      class: "bg-emerald-50 text-emerald-700 border-emerald-100/70",
+      dot: "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.4)]",
+    },
+    EXPIRING: {
+      label: "Sắp hết hợp đồng",
+      class: "bg-amber-50 text-amber-700 border-amber-100/70",
+      dot: "bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.4)]",
+    },
+    MOVED_OUT: {
+      label: "Đã dời đi",
+      class: "bg-slate-50 text-slate-500 border-slate-200/60",
+      dot: "bg-slate-400",
+    },
+  };
 
-  const config = configs[status] || configs.active;
+  const config = configs[status] || configs.PENDING;
 
   return (
     <Badge
       variant="outline"
       className={`${config.class} border px-2 py-0.5 rounded-full text-[10px] font-semibold inline-flex items-center gap-1.5 w-fit mx-auto cursor-default`}
     >
-      <span className={`h-1.2 w-1.2 rounded-full ${config.dot}`} />
+      {/* <span className={`h-1.2 w-1.2 rounded-full ${config.dot}`} /> */}
       {config.label}
     </Badge>
   );

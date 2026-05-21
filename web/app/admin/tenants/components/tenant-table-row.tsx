@@ -31,20 +31,10 @@ import {
 // Import badge trạng thái nội khu từ file table bọc ngoài
 import { StatusBadge } from "./tenant-table";
 import Link from "next/link";
+import { Tenant } from "../types/tenant.type";
 
 interface TenantItemProps {
-  tenant: {
-    id: string;
-    name: string;
-    email: string;
-    phone: string;
-    room: string;
-    joinDate: string;
-    status: string;
-    avatar: string;
-    identityVerified: boolean;
-    contractEnd: string;
-  };
+  tenant: Tenant;
 }
 
 export function TenantTableRow({ tenant }: TenantItemProps) {
@@ -53,17 +43,17 @@ export function TenantTableRow({ tenant }: TenantItemProps) {
       {/* Cột 1: Thẻ hồ sơ profile cá nhân & Định danh hình ảnh */}
       <TableCell className="pl-5 py-3">
         <div className="flex items-center gap-3">
-          <Avatar className="h-8.5 w-8.5 border border-slate-100 shadow-2xs rounded-lg">
-            <AvatarImage src={tenant.avatar} />
+          <Avatar className="h-8.5 w-8.5 border border-slate-100 shadow-2xs rounded-full">
+            <AvatarImage src={tenant.avataUrl ?? ""} />
             <AvatarFallback className="bg-slate-100 text-slate-700 text-[10px] font-bold">
-              {tenant.name.substring(0, 2).toUpperCase()}
+              {tenant.fullName.substring(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
 
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="font-semibold text-slate-800 text-xs tracking-tight truncate">
-                {tenant.name}
+                {tenant.fullName}
               </span>
               {tenant.identityVerified ? (
                 <ShieldCheck className="w-3.5 h-3.5 text-blue-500 shrink-0" />
@@ -75,7 +65,7 @@ export function TenantTableRow({ tenant }: TenantItemProps) {
               )}
             </div>
             <span className="text-[10px] text-slate-400 font-mono mt-0.5 tracking-wide">
-              {tenant.id}
+              {`ID:${tenant.id.substring(0, 12).toUpperCase()}`}
             </span>
           </div>
         </div>
@@ -85,7 +75,7 @@ export function TenantTableRow({ tenant }: TenantItemProps) {
       <TableCell className="py-3">
         <div className="flex flex-col">
           <span className="font-bold text-slate-700 text-xs font-mono">
-            P.{tenant.room}
+            {tenant.roomNumber ?? "Chưa gán phòng"}
           </span>
           <span className="text-[10px] text-slate-400 tracking-tight mt-0.5">
             Danjin Building
@@ -102,19 +92,26 @@ export function TenantTableRow({ tenant }: TenantItemProps) {
           </div>
           <div className="flex items-center text-[11px] text-slate-400 font-sans">
             <Mail className="mr-1.5 h-3 w-3 text-slate-400 stroke-[1.5]" />
-            {tenant.email}
+            {tenant.email ?? "Chưa cung cấp email"}
           </div>
         </div>
       </TableCell>
 
       {/* Cột 4: Chu kỳ mốc thời gian tạm trú */}
       <TableCell className="py-3">
-        <div className="flex flex-col text-[11px] font-medium text-slate-500 font-mono">
-          <span>Bắt đầu: {tenant.joinDate}</span>
-          <span className="text-slate-400 mt-0.5">
-            Hạn cuối: {tenant.contractEnd}
-          </span>
-        </div>
+        {tenant.contractStartDate ? (
+          <div className="flex flex-col text-[11px] font-medium text-slate-500 font-mono">
+            <span>Bắt đầu: {tenant.contractStartDate}</span>
+            <span className="text-slate-400 mt-0.5">
+              {" "}
+              Hạn cuối: {tenant.contractEndDate ?? "Chưa xác định"}
+            </span>
+          </div>
+        ) : (
+          <div className="flex flex-col text-xs font-medium text-slate-500">
+            <span className="text-rose-500">Chưa có hợp đồng</span>
+          </div>
+        )}
       </TableCell>
 
       {/* Cột 5: Badge trạng thái cư trú dẹt */}

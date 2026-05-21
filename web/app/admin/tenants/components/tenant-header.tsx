@@ -1,20 +1,21 @@
 "use client";
 
-import React from "react";
-import { UserPlus, Download, Users } from "lucide-react";
+import { Users, RefreshCw } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
-import { AddResidentDialog } from "./tenant-add-resident-dialog";
+import { AddResidentDialog } from "./add-resident-dialog";
 
 interface TenantHeaderProps {
   totalTenants?: number;
-  onExport?: () => void;
-  onAddTenant?: () => void;
+  isLoading?: boolean;
+  isRefreshing?: boolean;
+  getTenants?: (isManualRefresh?: boolean) => void;
 }
 
 export function TenantHeader({
   totalTenants = 112,
-  onExport = () => {},
-  onAddTenant = () => {},
+  isLoading = false,
+  isRefreshing = false,
+  getTenants = () => {},
 }: TenantHeaderProps) {
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200/60 pb-4 select-none">
@@ -39,21 +40,17 @@ export function TenantHeader({
       <div className="flex items-center gap-2 shrink-0 self-start sm:self-center">
         <Button
           variant="outline"
-          onClick={onExport}
-          className="h-9 px-3 text-xs font-medium border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-2xs rounded-lg transition-colors"
+          size="sm"
+          disabled={isLoading}
+          onClick={() => getTenants(true)}
+          className="h-9 text-xs font-semibold px-3 bg-white border-slate-200 text-slate-600 rounded-lg shadow-2xs gap-1.5 hover:bg-slate-50 cursor-pointer self-end sm:self-auto transition-all"
         >
-          <Download className="mr-1.5 h-3.5 w-3.5 text-slate-400 stroke-[1.75]" />
-          <span>Xuất Excel</span>
+          <RefreshCw
+            className={`w-3.5 h-3.5 text-slate-400 ${isRefreshing ? "animate-spin text-blue-600" : ""}`}
+          />
+          <span>Đồng bộ lại dữ liệu</span>
         </Button>
-
-        {/* <Button
-          onClick={onAddTenant}
-          className="h-9 px-3.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium rounded-lg shadow-2xs flex gap-1.5 active:scale-[0.99] transition-all"
-        >
-          <UserPlus className="h-4 w-4 stroke-2" />
-          <span>Thêm cư dân mới</span>
-        </Button> */}
-          <AddResidentDialog />
+        <AddResidentDialog />
       </div>
     </div>
   );

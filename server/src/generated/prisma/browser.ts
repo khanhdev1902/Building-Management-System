@@ -33,6 +33,11 @@ export type Staff = Prisma.StaffModel
  */
 export type Tenant = Prisma.TenantModel
 /**
+ * Model Vehicle
+ * 
+ */
+export type Vehicle = Prisma.VehicleModel
+/**
  * Model Room
  * 
  */

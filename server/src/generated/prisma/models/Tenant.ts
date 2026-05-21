@@ -31,6 +31,10 @@ export type TenantMinAggregateOutputType = {
   citizenId: string | null
   dateOfBirth: Date | null
   permanentAddress: string | null
+  hometownProvince: string | null
+  hometownDistrict: string | null
+  hometownWard: string | null
+  hometownAddress: string | null
   occupation: string | null
   updatedAt: Date | null
 }
@@ -42,6 +46,10 @@ export type TenantMaxAggregateOutputType = {
   citizenId: string | null
   dateOfBirth: Date | null
   permanentAddress: string | null
+  hometownProvince: string | null
+  hometownDistrict: string | null
+  hometownWard: string | null
+  hometownAddress: string | null
   occupation: string | null
   updatedAt: Date | null
 }
@@ -53,6 +61,10 @@ export type TenantCountAggregateOutputType = {
   citizenId: number
   dateOfBirth: number
   permanentAddress: number
+  hometownProvince: number
+  hometownDistrict: number
+  hometownWard: number
+  hometownAddress: number
   occupation: number
   updatedAt: number
   _all: number
@@ -66,6 +78,10 @@ export type TenantMinAggregateInputType = {
   citizenId?: true
   dateOfBirth?: true
   permanentAddress?: true
+  hometownProvince?: true
+  hometownDistrict?: true
+  hometownWard?: true
+  hometownAddress?: true
   occupation?: true
   updatedAt?: true
 }
@@ -77,6 +93,10 @@ export type TenantMaxAggregateInputType = {
   citizenId?: true
   dateOfBirth?: true
   permanentAddress?: true
+  hometownProvince?: true
+  hometownDistrict?: true
+  hometownWard?: true
+  hometownAddress?: true
   occupation?: true
   updatedAt?: true
 }
@@ -88,6 +108,10 @@ export type TenantCountAggregateInputType = {
   citizenId?: true
   dateOfBirth?: true
   permanentAddress?: true
+  hometownProvince?: true
+  hometownDistrict?: true
+  hometownWard?: true
+  hometownAddress?: true
   occupation?: true
   updatedAt?: true
   _all?: true
@@ -172,6 +196,10 @@ export type TenantGroupByOutputType = {
   citizenId: string
   dateOfBirth: Date
   permanentAddress: string | null
+  hometownProvince: string | null
+  hometownDistrict: string | null
+  hometownWard: string | null
+  hometownAddress: string | null
   occupation: string | null
   updatedAt: Date
   _count: TenantCountAggregateOutputType | null
@@ -204,12 +232,17 @@ export type TenantWhereInput = {
   citizenId?: Prisma.StringFilter<"Tenant"> | string
   dateOfBirth?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   permanentAddress?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  hometownProvince?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  hometownDistrict?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  hometownWard?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  hometownAddress?: Prisma.StringNullableFilter<"Tenant"> | string | null
   occupation?: Prisma.StringNullableFilter<"Tenant"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   contracts?: Prisma.ContractListRelationFilter
   roommates?: Prisma.RoommateListRelationFilter
   emergencyContacts?: Prisma.EmergencyContactListRelationFilter
+  vehicles?: Prisma.VehicleListRelationFilter
 }
 
 export type TenantOrderByWithRelationInput = {
@@ -219,12 +252,17 @@ export type TenantOrderByWithRelationInput = {
   citizenId?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   permanentAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  hometownProvince?: Prisma.SortOrderInput | Prisma.SortOrder
+  hometownDistrict?: Prisma.SortOrderInput | Prisma.SortOrder
+  hometownWard?: Prisma.SortOrderInput | Prisma.SortOrder
+  hometownAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   occupation?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   contracts?: Prisma.ContractOrderByRelationAggregateInput
   roommates?: Prisma.RoommateOrderByRelationAggregateInput
   emergencyContacts?: Prisma.EmergencyContactOrderByRelationAggregateInput
+  vehicles?: Prisma.VehicleOrderByRelationAggregateInput
 }
 
 export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -237,12 +275,17 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   isHost?: Prisma.BoolFilter<"Tenant"> | boolean
   dateOfBirth?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   permanentAddress?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  hometownProvince?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  hometownDistrict?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  hometownWard?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  hometownAddress?: Prisma.StringNullableFilter<"Tenant"> | string | null
   occupation?: Prisma.StringNullableFilter<"Tenant"> | string | null
   updatedAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   contracts?: Prisma.ContractListRelationFilter
   roommates?: Prisma.RoommateListRelationFilter
   emergencyContacts?: Prisma.EmergencyContactListRelationFilter
+  vehicles?: Prisma.VehicleListRelationFilter
 }, "id" | "userId" | "citizenId">
 
 export type TenantOrderByWithAggregationInput = {
@@ -252,6 +295,10 @@ export type TenantOrderByWithAggregationInput = {
   citizenId?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   permanentAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  hometownProvince?: Prisma.SortOrderInput | Prisma.SortOrder
+  hometownDistrict?: Prisma.SortOrderInput | Prisma.SortOrder
+  hometownWard?: Prisma.SortOrderInput | Prisma.SortOrder
+  hometownAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   occupation?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TenantCountOrderByAggregateInput
@@ -269,6 +316,10 @@ export type TenantScalarWhereWithAggregatesInput = {
   citizenId?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
   dateOfBirth?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
   permanentAddress?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
+  hometownProvince?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
+  hometownDistrict?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
+  hometownWard?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
+  hometownAddress?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
   occupation?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
 }
@@ -279,12 +330,17 @@ export type TenantCreateInput = {
   citizenId: string
   dateOfBirth: Date | string
   permanentAddress?: string | null
+  hometownProvince?: string | null
+  hometownDistrict?: string | null
+  hometownWard?: string | null
+  hometownAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTenantProfileInput
   contracts?: Prisma.ContractCreateNestedManyWithoutTenantInput
   roommates?: Prisma.RoommateCreateNestedManyWithoutTenantInput
   emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutTenantInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateInput = {
@@ -294,11 +350,16 @@ export type TenantUncheckedCreateInput = {
   citizenId: string
   dateOfBirth: Date | string
   permanentAddress?: string | null
+  hometownProvince?: string | null
+  hometownDistrict?: string | null
+  hometownWard?: string | null
+  hometownAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutTenantInput
   roommates?: Prisma.RoommateUncheckedCreateNestedManyWithoutTenantInput
   emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutTenantInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUpdateInput = {
@@ -307,12 +368,17 @@ export type TenantUpdateInput = {
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTenantProfileNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutTenantNestedInput
   roommates?: Prisma.RoommateUpdateManyWithoutTenantNestedInput
   emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutTenantNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateInput = {
@@ -322,11 +388,16 @@ export type TenantUncheckedUpdateInput = {
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutTenantNestedInput
   roommates?: Prisma.RoommateUncheckedUpdateManyWithoutTenantNestedInput
   emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutTenantNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateManyInput = {
@@ -336,6 +407,10 @@ export type TenantCreateManyInput = {
   citizenId: string
   dateOfBirth: Date | string
   permanentAddress?: string | null
+  hometownProvince?: string | null
+  hometownDistrict?: string | null
+  hometownWard?: string | null
+  hometownAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
 }
@@ -346,6 +421,10 @@ export type TenantUpdateManyMutationInput = {
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -357,6 +436,10 @@ export type TenantUncheckedUpdateManyInput = {
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -373,6 +456,10 @@ export type TenantCountOrderByAggregateInput = {
   citizenId?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   permanentAddress?: Prisma.SortOrder
+  hometownProvince?: Prisma.SortOrder
+  hometownDistrict?: Prisma.SortOrder
+  hometownWard?: Prisma.SortOrder
+  hometownAddress?: Prisma.SortOrder
   occupation?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -384,6 +471,10 @@ export type TenantMaxOrderByAggregateInput = {
   citizenId?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   permanentAddress?: Prisma.SortOrder
+  hometownProvince?: Prisma.SortOrder
+  hometownDistrict?: Prisma.SortOrder
+  hometownWard?: Prisma.SortOrder
+  hometownAddress?: Prisma.SortOrder
   occupation?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -395,6 +486,10 @@ export type TenantMinOrderByAggregateInput = {
   citizenId?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   permanentAddress?: Prisma.SortOrder
+  hometownProvince?: Prisma.SortOrder
+  hometownDistrict?: Prisma.SortOrder
+  hometownWard?: Prisma.SortOrder
+  hometownAddress?: Prisma.SortOrder
   occupation?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -434,6 +529,20 @@ export type TenantUncheckedUpdateOneWithoutUserNestedInput = {
   delete?: Prisma.TenantWhereInput | boolean
   connect?: Prisma.TenantWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutUserInput, Prisma.TenantUpdateWithoutUserInput>, Prisma.TenantUncheckedUpdateWithoutUserInput>
+}
+
+export type TenantCreateNestedOneWithoutVehiclesInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutVehiclesInput, Prisma.TenantUncheckedCreateWithoutVehiclesInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutVehiclesInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutVehiclesNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutVehiclesInput, Prisma.TenantUncheckedCreateWithoutVehiclesInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutVehiclesInput
+  upsert?: Prisma.TenantUpsertWithoutVehiclesInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutVehiclesInput, Prisma.TenantUpdateWithoutVehiclesInput>, Prisma.TenantUncheckedUpdateWithoutVehiclesInput>
 }
 
 export type TenantCreateNestedOneWithoutContractsInput = {
@@ -486,11 +595,16 @@ export type TenantCreateWithoutUserInput = {
   citizenId: string
   dateOfBirth: Date | string
   permanentAddress?: string | null
+  hometownProvince?: string | null
+  hometownDistrict?: string | null
+  hometownWard?: string | null
+  hometownAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   contracts?: Prisma.ContractCreateNestedManyWithoutTenantInput
   roommates?: Prisma.RoommateCreateNestedManyWithoutTenantInput
   emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutTenantInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutUserInput = {
@@ -499,11 +613,16 @@ export type TenantUncheckedCreateWithoutUserInput = {
   citizenId: string
   dateOfBirth: Date | string
   permanentAddress?: string | null
+  hometownProvince?: string | null
+  hometownDistrict?: string | null
+  hometownWard?: string | null
+  hometownAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutTenantInput
   roommates?: Prisma.RoommateUncheckedCreateNestedManyWithoutTenantInput
   emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutTenantInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutUserInput = {
@@ -528,11 +647,16 @@ export type TenantUpdateWithoutUserInput = {
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.ContractUpdateManyWithoutTenantNestedInput
   roommates?: Prisma.RoommateUpdateManyWithoutTenantNestedInput
   emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutTenantNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutUserInput = {
@@ -541,6 +665,99 @@ export type TenantUncheckedUpdateWithoutUserInput = {
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.ContractUncheckedUpdateManyWithoutTenantNestedInput
+  roommates?: Prisma.RoommateUncheckedUpdateManyWithoutTenantNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutTenantNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutVehiclesInput = {
+  id?: string
+  isHost?: boolean
+  citizenId: string
+  dateOfBirth: Date | string
+  permanentAddress?: string | null
+  hometownProvince?: string | null
+  hometownDistrict?: string | null
+  hometownWard?: string | null
+  hometownAddress?: string | null
+  occupation?: string | null
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutTenantProfileInput
+  contracts?: Prisma.ContractCreateNestedManyWithoutTenantInput
+  roommates?: Prisma.RoommateCreateNestedManyWithoutTenantInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutVehiclesInput = {
+  id?: string
+  userId: string
+  isHost?: boolean
+  citizenId: string
+  dateOfBirth: Date | string
+  permanentAddress?: string | null
+  hometownProvince?: string | null
+  hometownDistrict?: string | null
+  hometownWard?: string | null
+  hometownAddress?: string | null
+  occupation?: string | null
+  updatedAt?: Date | string
+  contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutTenantInput
+  roommates?: Prisma.RoommateUncheckedCreateNestedManyWithoutTenantInput
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutVehiclesInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutVehiclesInput, Prisma.TenantUncheckedCreateWithoutVehiclesInput>
+}
+
+export type TenantUpsertWithoutVehiclesInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutVehiclesInput, Prisma.TenantUncheckedUpdateWithoutVehiclesInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutVehiclesInput, Prisma.TenantUncheckedCreateWithoutVehiclesInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutVehiclesInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutVehiclesInput, Prisma.TenantUncheckedUpdateWithoutVehiclesInput>
+}
+
+export type TenantUpdateWithoutVehiclesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  citizenId?: Prisma.StringFieldUpdateOperationsInput | string
+  dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutTenantProfileNestedInput
+  contracts?: Prisma.ContractUpdateManyWithoutTenantNestedInput
+  roommates?: Prisma.RoommateUpdateManyWithoutTenantNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutVehiclesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  isHost?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  citizenId?: Prisma.StringFieldUpdateOperationsInput | string
+  dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutTenantNestedInput
@@ -554,11 +771,16 @@ export type TenantCreateWithoutContractsInput = {
   citizenId: string
   dateOfBirth: Date | string
   permanentAddress?: string | null
+  hometownProvince?: string | null
+  hometownDistrict?: string | null
+  hometownWard?: string | null
+  hometownAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTenantProfileInput
   roommates?: Prisma.RoommateCreateNestedManyWithoutTenantInput
   emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutTenantInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutContractsInput = {
@@ -568,10 +790,15 @@ export type TenantUncheckedCreateWithoutContractsInput = {
   citizenId: string
   dateOfBirth: Date | string
   permanentAddress?: string | null
+  hometownProvince?: string | null
+  hometownDistrict?: string | null
+  hometownWard?: string | null
+  hometownAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   roommates?: Prisma.RoommateUncheckedCreateNestedManyWithoutTenantInput
   emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutTenantInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutContractsInput = {
@@ -596,11 +823,16 @@ export type TenantUpdateWithoutContractsInput = {
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTenantProfileNestedInput
   roommates?: Prisma.RoommateUpdateManyWithoutTenantNestedInput
   emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutTenantNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutContractsInput = {
@@ -610,10 +842,15 @@ export type TenantUncheckedUpdateWithoutContractsInput = {
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roommates?: Prisma.RoommateUncheckedUpdateManyWithoutTenantNestedInput
   emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutTenantNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutRoommatesInput = {
@@ -622,11 +859,16 @@ export type TenantCreateWithoutRoommatesInput = {
   citizenId: string
   dateOfBirth: Date | string
   permanentAddress?: string | null
+  hometownProvince?: string | null
+  hometownDistrict?: string | null
+  hometownWard?: string | null
+  hometownAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTenantProfileInput
   contracts?: Prisma.ContractCreateNestedManyWithoutTenantInput
   emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutTenantInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutRoommatesInput = {
@@ -636,10 +878,15 @@ export type TenantUncheckedCreateWithoutRoommatesInput = {
   citizenId: string
   dateOfBirth: Date | string
   permanentAddress?: string | null
+  hometownProvince?: string | null
+  hometownDistrict?: string | null
+  hometownWard?: string | null
+  hometownAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutTenantInput
   emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutTenantInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutRoommatesInput = {
@@ -664,11 +911,16 @@ export type TenantUpdateWithoutRoommatesInput = {
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTenantProfileNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutTenantNestedInput
   emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutTenantNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutRoommatesInput = {
@@ -678,10 +930,15 @@ export type TenantUncheckedUpdateWithoutRoommatesInput = {
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutTenantNestedInput
   emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutTenantNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutEmergencyContactsInput = {
@@ -690,11 +947,16 @@ export type TenantCreateWithoutEmergencyContactsInput = {
   citizenId: string
   dateOfBirth: Date | string
   permanentAddress?: string | null
+  hometownProvince?: string | null
+  hometownDistrict?: string | null
+  hometownWard?: string | null
+  hometownAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTenantProfileInput
   contracts?: Prisma.ContractCreateNestedManyWithoutTenantInput
   roommates?: Prisma.RoommateCreateNestedManyWithoutTenantInput
+  vehicles?: Prisma.VehicleCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutEmergencyContactsInput = {
@@ -704,10 +966,15 @@ export type TenantUncheckedCreateWithoutEmergencyContactsInput = {
   citizenId: string
   dateOfBirth: Date | string
   permanentAddress?: string | null
+  hometownProvince?: string | null
+  hometownDistrict?: string | null
+  hometownWard?: string | null
+  hometownAddress?: string | null
   occupation?: string | null
   updatedAt?: Date | string
   contracts?: Prisma.ContractUncheckedCreateNestedManyWithoutTenantInput
   roommates?: Prisma.RoommateUncheckedCreateNestedManyWithoutTenantInput
+  vehicles?: Prisma.VehicleUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutEmergencyContactsInput = {
@@ -732,11 +999,16 @@ export type TenantUpdateWithoutEmergencyContactsInput = {
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTenantProfileNestedInput
   contracts?: Prisma.ContractUpdateManyWithoutTenantNestedInput
   roommates?: Prisma.RoommateUpdateManyWithoutTenantNestedInput
+  vehicles?: Prisma.VehicleUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutEmergencyContactsInput = {
@@ -746,10 +1018,15 @@ export type TenantUncheckedUpdateWithoutEmergencyContactsInput = {
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   dateOfBirth?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   permanentAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownProvince?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownWard?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.ContractUncheckedUpdateManyWithoutTenantNestedInput
   roommates?: Prisma.RoommateUncheckedUpdateManyWithoutTenantNestedInput
+  vehicles?: Prisma.VehicleUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 
@@ -761,12 +1038,14 @@ export type TenantCountOutputType = {
   contracts: number
   roommates: number
   emergencyContacts: number
+  vehicles: number
 }
 
 export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contracts?: boolean | TenantCountOutputTypeCountContractsArgs
   roommates?: boolean | TenantCountOutputTypeCountRoommatesArgs
   emergencyContacts?: boolean | TenantCountOutputTypeCountEmergencyContactsArgs
+  vehicles?: boolean | TenantCountOutputTypeCountVehiclesArgs
 }
 
 /**
@@ -800,6 +1079,13 @@ export type TenantCountOutputTypeCountEmergencyContactsArgs<ExtArgs extends runt
   where?: Prisma.EmergencyContactWhereInput
 }
 
+/**
+ * TenantCountOutputType without action
+ */
+export type TenantCountOutputTypeCountVehiclesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VehicleWhereInput
+}
+
 
 export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -808,12 +1094,17 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   citizenId?: boolean
   dateOfBirth?: boolean
   permanentAddress?: boolean
+  hometownProvince?: boolean
+  hometownDistrict?: boolean
+  hometownWard?: boolean
+  hometownAddress?: boolean
   occupation?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   contracts?: boolean | Prisma.Tenant$contractsArgs<ExtArgs>
   roommates?: boolean | Prisma.Tenant$roommatesArgs<ExtArgs>
   emergencyContacts?: boolean | Prisma.Tenant$emergencyContactsArgs<ExtArgs>
+  vehicles?: boolean | Prisma.Tenant$vehiclesArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenant"]>
 
@@ -824,6 +1115,10 @@ export type TenantSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   citizenId?: boolean
   dateOfBirth?: boolean
   permanentAddress?: boolean
+  hometownProvince?: boolean
+  hometownDistrict?: boolean
+  hometownWard?: boolean
+  hometownAddress?: boolean
   occupation?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -836,6 +1131,10 @@ export type TenantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   citizenId?: boolean
   dateOfBirth?: boolean
   permanentAddress?: boolean
+  hometownProvince?: boolean
+  hometownDistrict?: boolean
+  hometownWard?: boolean
+  hometownAddress?: boolean
   occupation?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -848,16 +1147,21 @@ export type TenantSelectScalar = {
   citizenId?: boolean
   dateOfBirth?: boolean
   permanentAddress?: boolean
+  hometownProvince?: boolean
+  hometownDistrict?: boolean
+  hometownWard?: boolean
+  hometownAddress?: boolean
   occupation?: boolean
   updatedAt?: boolean
 }
 
-export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "isHost" | "citizenId" | "dateOfBirth" | "permanentAddress" | "occupation" | "updatedAt", ExtArgs["result"]["tenant"]>
+export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "isHost" | "citizenId" | "dateOfBirth" | "permanentAddress" | "hometownProvince" | "hometownDistrict" | "hometownWard" | "hometownAddress" | "occupation" | "updatedAt", ExtArgs["result"]["tenant"]>
 export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   contracts?: boolean | Prisma.Tenant$contractsArgs<ExtArgs>
   roommates?: boolean | Prisma.Tenant$roommatesArgs<ExtArgs>
   emergencyContacts?: boolean | Prisma.Tenant$emergencyContactsArgs<ExtArgs>
+  vehicles?: boolean | Prisma.Tenant$vehiclesArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TenantIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -874,6 +1178,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     contracts: Prisma.$ContractPayload<ExtArgs>[]
     roommates: Prisma.$RoommatePayload<ExtArgs>[]
     emergencyContacts: Prisma.$EmergencyContactPayload<ExtArgs>[]
+    vehicles: Prisma.$VehiclePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -882,6 +1187,10 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     citizenId: string
     dateOfBirth: Date
     permanentAddress: string | null
+    hometownProvince: string | null
+    hometownDistrict: string | null
+    hometownWard: string | null
+    hometownAddress: string | null
     occupation: string | null
     updatedAt: Date
   }, ExtArgs["result"]["tenant"]>
@@ -1282,6 +1591,7 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
   contracts<T extends Prisma.Tenant$contractsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$contractsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   roommates<T extends Prisma.Tenant$roommatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$roommatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoommatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   emergencyContacts<T extends Prisma.Tenant$emergencyContactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$emergencyContactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmergencyContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vehicles<T extends Prisma.Tenant$vehiclesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$vehiclesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1317,6 +1627,10 @@ export interface TenantFieldRefs {
   readonly citizenId: Prisma.FieldRef<"Tenant", 'String'>
   readonly dateOfBirth: Prisma.FieldRef<"Tenant", 'DateTime'>
   readonly permanentAddress: Prisma.FieldRef<"Tenant", 'String'>
+  readonly hometownProvince: Prisma.FieldRef<"Tenant", 'String'>
+  readonly hometownDistrict: Prisma.FieldRef<"Tenant", 'String'>
+  readonly hometownWard: Prisma.FieldRef<"Tenant", 'String'>
+  readonly hometownAddress: Prisma.FieldRef<"Tenant", 'String'>
   readonly occupation: Prisma.FieldRef<"Tenant", 'String'>
   readonly updatedAt: Prisma.FieldRef<"Tenant", 'DateTime'>
 }
@@ -1789,6 +2103,30 @@ export type Tenant$emergencyContactsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.EmergencyContactScalarFieldEnum | Prisma.EmergencyContactScalarFieldEnum[]
+}
+
+/**
+ * Tenant.vehicles
+ */
+export type Tenant$vehiclesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Vehicle
+   */
+  select?: Prisma.VehicleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Vehicle
+   */
+  omit?: Prisma.VehicleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VehicleInclude<ExtArgs> | null
+  where?: Prisma.VehicleWhereInput
+  orderBy?: Prisma.VehicleOrderByWithRelationInput | Prisma.VehicleOrderByWithRelationInput[]
+  cursor?: Prisma.VehicleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VehicleScalarFieldEnum | Prisma.VehicleScalarFieldEnum[]
 }
 
 /**

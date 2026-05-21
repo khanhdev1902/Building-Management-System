@@ -23,4 +23,7 @@ export const API_ENDPOINTS = {
   ASSET_DETAIL: (id: string) => `/assets/${id}`,
   ROOM_ASSETS: "/assets/room-assets",
   ROOM_ASSETS_DETAIL: (id: string) => `/assets/room-assets/${id}`,
+
+  TENANTS: "users/tenants",
+  TENANT_DETAIL: (id: string) => `users/tenants/${id}`,
 } as const;

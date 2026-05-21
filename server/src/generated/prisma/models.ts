@@ -11,6 +11,7 @@
 export type * from './models/User.js'
 export type * from './models/Staff.js'
 export type * from './models/Tenant.js'
+export type * from './models/Vehicle.js'
 export type * from './models/Room.js'
 export type * from './models/Service.js'
 export type * from './models/RoomService.js'

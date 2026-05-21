@@ -37,7 +37,7 @@ export function StepTenantForm() {
           <Input
             {...register("tenantName")}
             placeholder="Ví dụ: Nguyễn Văn Khanh"
-            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg font-medium"
+            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg"
           />
         </FormGroup>
 
@@ -48,7 +48,7 @@ export function StepTenantForm() {
           <Input
             {...register("phone")}
             placeholder="09xx xxx xxx"
-            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg font-mono font-bold"
+            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg"
           />
         </FormGroup>
 
@@ -59,7 +59,7 @@ export function StepTenantForm() {
           <Input
             {...register("email")}
             placeholder="khanhnv@danjin.vn"
-            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg font-medium"
+            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg"
           />
         </FormGroup>
 
@@ -70,7 +70,7 @@ export function StepTenantForm() {
           <Input
             {...register("cccd")}
             placeholder="Số căn cước công dân 12 số..."
-            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg font-mono font-bold"
+            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg"
           />
         </FormGroup>
 
@@ -81,7 +81,7 @@ export function StepTenantForm() {
           <Input
             type="date"
             {...register("birthday")}
-            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg font-medium"
+            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg"
           />
         </FormGroup>
 
@@ -95,10 +95,10 @@ export function StepTenantForm() {
             </SelectTrigger>
             <SelectContent className="p-1 rounded-lg">
               <SelectItem value="Nam" className="text-xs">
-                Nam giới
+                Nam
               </SelectItem>
               <SelectItem value="Nữ" className="text-xs">
-                Nữ giới
+                Nữ
               </SelectItem>
             </SelectContent>
           </Select>
@@ -111,7 +111,7 @@ export function StepTenantForm() {
           <Input
             {...register("hometown")}
             placeholder="Ví dụ: Xuân Trường, Nam Định"
-            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg font-medium"
+            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg"
           />
         </FormGroup>
 
@@ -122,7 +122,7 @@ export function StepTenantForm() {
           <Input
             {...register("occupation")}
             placeholder="Ví dụ: Sinh viên IT Thăng Long"
-            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg font-medium"
+            className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg"
           />
         </FormGroup>
       </div>

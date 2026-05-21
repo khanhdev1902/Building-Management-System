@@ -31,7 +31,7 @@ export function TenantStatsBanner({
       activeStyle: "border-slate-900 bg-slate-50/50 ring-1 ring-slate-900",
     },
     {
-      key: "active",
+      key: "ACTIVE",
       label: "Cư dân đang ở",
       value: statsCounts.active,
       icon: <UserCheck size={15} className="stroke-[1.75]" />,
@@ -40,7 +40,7 @@ export function TenantStatsBanner({
         "border-emerald-500 bg-emerald-50/20 ring-1 ring-emerald-500",
     },
     {
-      key: "expiring",
+      key: "EXPIRING",
       label: "Hợp đồng sắp hết hạn",
       value: statsCounts.expiring,
       icon: <AlertCircle size={15} className="stroke-[1.75]" />,
@@ -48,8 +48,8 @@ export function TenantStatsBanner({
       activeStyle: "border-amber-500 bg-amber-50/20 ring-1 ring-amber-500",
     },
     {
-      key: "unverified",
-      label: "Hồ sơ chưa xác minh",
+      key: "PENDING",
+      label: "Chưa cư trú",
       value: statsCounts.unverified,
       icon: <ShieldAlert size={15} className="stroke-[1.75]" />,
       style: "border-slate-200/80 hover:border-rose-300",

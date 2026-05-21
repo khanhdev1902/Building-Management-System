@@ -56,19 +56,56 @@ model Staff {
 }
 
 model Tenant {
-  id            String   @id @default(uuid())
-  userId        String   @unique
-  user          User     @relation(fields: [userId], references: [id])
-  isHost        Boolean  @default(true)
-  citizenId     String   @unique
-  dateOfBirth   DateTime
-  permanentAddress String?
-  occupation    String?
-  updatedAt     DateTime @updatedAt
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id])
+  isHost             Boolean  @default(true)
+  citizenId          String   @unique
+  dateOfBirth        DateTime
 
-  contracts         Contract[]
-  roommates         Roommate[]
-  emergencyContacts EmergencyContact[]
+  // Địa chỉ thường trú
+  permanentAddress   String?
+
+  // Quê quán
+  hometownProvince   String?
+  hometownDistrict   String?
+  hometownWard       String?
+  hometownAddress    String?
+
+  occupation         String?
+  updatedAt          DateTime @updatedAt
+
+  contracts          Contract[]
+  roommates          Roommate[]
+  emergencyContacts  EmergencyContact[]
+
+  vehicles Vehicle[]
+}
+
+enum VehicleType {
+  MOTORBIKE
+  CAR
+  BICYCLE
+  ELECTRIC_BIKE
+  OTHER
+}
+model Vehicle {
+  id              String      @id @default(uuid())
+
+  tenantId        String
+  tenant          Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  type            VehicleType
+
+  licensePlate    String      @unique
+  brand           String?
+  model           String?
+  color           String?
+  registrationImage String?
+  note            String?
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 }
 
 enum RoomStatus {

@@ -10,18 +10,29 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiResponse } from 'src/common/responses/api-response';
-import { CreateUserDto, FindAllUserDto, UpdateUserDto } from './dto';
+import { FindAllUserDto, UpdateUserDto } from './dto';
+import { CreateTenantDto } from './dto/create-tenant.dto';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  async create(@Body() dto: CreateUserDto) {
-    const newUser = await this.userService.create(dto);
-    return ApiResponse.success(newUser, 'Tạo người dùng thành công', 201);
+  @Post('/tenants')
+  async createTenant(@Body() dto: CreateTenantDto) {
+    const newTenant = await this.userService.createTenant(dto);
+    return ApiResponse.success(newTenant, 'Tạo người dùng thành công', 201);
   }
 
+  @Get('/tenants')
+  async getAllTenants(@Query() query: FindAllUserDto) {
+    console.log(query);
+    const tenants = await this.userService.getAllTenants();
+    return ApiResponse.success(
+      tenants,
+      'Lấy danh sách cư dân thành công !',
+      200,
+    );
+  }
   @Get()
   async findAll(@Query() query: FindAllUserDto) {
     const users = await this.userService.findAll(query);

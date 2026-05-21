@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   Staff: 'Staff',
   Tenant: 'Tenant',
+  Vehicle: 'Vehicle',
   Room: 'Room',
   Service: 'Service',
   RoomService: 'RoomService',
@@ -130,11 +131,32 @@ export const TenantScalarFieldEnum = {
   citizenId: 'citizenId',
   dateOfBirth: 'dateOfBirth',
   permanentAddress: 'permanentAddress',
+  hometownProvince: 'hometownProvince',
+  hometownDistrict: 'hometownDistrict',
+  hometownWard: 'hometownWard',
+  hometownAddress: 'hometownAddress',
   occupation: 'occupation',
   updatedAt: 'updatedAt'
 } as const
 
 export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]
+
+
+export const VehicleScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  type: 'type',
+  licensePlate: 'licensePlate',
+  brand: 'brand',
+  model: 'model',
+  color: 'color',
+  registrationImage: 'registrationImage',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VehicleScalarFieldEnum = (typeof VehicleScalarFieldEnum)[keyof typeof VehicleScalarFieldEnum]
 
 
 export const RoomScalarFieldEnum = {

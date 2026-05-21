@@ -19,6 +19,17 @@ export const UserRole = {
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
+export const VehicleType = {
+  MOTORBIKE: 'MOTORBIKE',
+  CAR: 'CAR',
+  BICYCLE: 'BICYCLE',
+  ELECTRIC_BIKE: 'ELECTRIC_BIKE',
+  OTHER: 'OTHER'
+} as const
+
+export type VehicleType = (typeof VehicleType)[keyof typeof VehicleType]
+
+
 export const RoomStatus = {
   AVAILABLE: 'AVAILABLE',
   OCCUPIED: 'OCCUPIED',

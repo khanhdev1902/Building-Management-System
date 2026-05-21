@@ -17,18 +17,21 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 
+// Interface map khớp 100% với Schema của Page tổng
+interface FilterValues {
+  floor: string;
+  roomNumber: string;
+  province: string;
+  gender: string;
+  identityVerified: string;
+  hasVehicle: string;
+}
+
 interface TenantFilterToolbarProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
-
-  // Cấu hình State bộ lọc nâng cao truyền ngược ra file Page tổng
-  filters: {
-    floor: string;
-    identityVerified: string;
-    hasVehicle: string;
-  };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onFiltersChange: (newFilters: any) => void;
+  filters: FilterValues;
+  onFiltersChange: (newFilters: FilterValues) => void;
 }
 
 export function TenantFilterToolbar({
@@ -39,32 +42,39 @@ export function TenantFilterToolbar({
 }: TenantFilterToolbarProps) {
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  // Hàm cập nhật động từng trường lọc nội bộ
-  const handleUpdateFilter = (key: string, value: string) => {
+  // Kích hoạt cập nhật động trường lọc tương ứng
+  const handleUpdateFilter = (key: keyof FilterValues, value: string) => {
     onFiltersChange({
       ...filters,
       [key]: value,
     });
   };
 
-  // Hàm xóa bộ lọc, đưa mọi thứ về trạng thái ban đầu
+  // Reset toàn bộ khay lọc nâng cao về trạng thái ban đầu
   const handleResetFilters = () => {
     onFiltersChange({
       floor: "all",
+      roomNumber: "all",
+      province: "all",
+      gender: "all",
       identityVerified: "all",
       hasVehicle: "all",
     });
     setPopoverOpen(false);
   };
 
+  // Kiểm tra xem hệ thống có đang kích hoạt bất kỳ bộ lọc chuyên sâu nào không
   const hasActiveFilters =
     filters.floor !== "all" ||
+    filters.roomNumber !== "all" ||
+    filters.province !== "all" ||
+    filters.gender !== "all" ||
     filters.identityVerified !== "all" ||
     filters.hasVehicle !== "all";
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 w-full select-none">
-      {/* 1. Ô Input Tìm kiếm phẳng dẹt sắc nét */}
+      {/* 1. Ô Tìm kiếm văn bản phẳng sắc nét */}
       <div className="relative flex-1 w-full group">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-slate-800 transition-colors stroke-[1.5]" />
         <Input
@@ -75,7 +85,7 @@ export function TenantFilterToolbar({
         />
       </div>
 
-      {/* Cụm điều khiển Bộ Lọc Chuyên Sâu bên phải */}
+      {/* 2. Nút Popover điều phối ma trận lọc */}
       <div className="flex items-center gap-2 shrink-0 justify-end w-full sm:w-auto">
         <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
           <PopoverTrigger asChild>
@@ -100,9 +110,8 @@ export function TenantFilterToolbar({
           <PopoverContent
             align="end"
             sideOffset={6}
-            className="w-70 p-4 rounded-xl border border-slate-200/80 bg-white shadow-lg space-y-4"
+            className="w-80 p-4 rounded-xl border border-slate-200/80 bg-white shadow-lg space-y-4 max-h-[85vh] overflow-y-auto"
           >
-            {/* Tiêu đề Popover */}
             <div className="flex items-center gap-1.5 border-b border-slate-100 pb-2.5">
               <SlidersHorizontal
                 size={13}
@@ -113,41 +122,100 @@ export function TenantFilterToolbar({
               </h4>
             </div>
 
-            {/* Các trường lọc nghiệp vụ thực tế */}
+            {/* LƯỚI KHAY LỌC PHÂN RÃ CHI TIẾT */}
             <div className="space-y-3.5">
-              {/* Lọc theo Vị trí Tầng tòa nhà */}
+              {/* Cụm 1: Vị trí phòng ốc (Gồm Tầng và đích danh Số phòng) */}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">
+                    Vị trí Tầng
+                  </label>
+                  <Select
+                    value={filters.floor}
+                    onValueChange={(val) => handleUpdateFilter("floor", val)}
+                  >
+                    <SelectTrigger className="h-8.5 text-xs font-medium border-slate-200/80 bg-slate-50/30 focus:ring-0">
+                      <SelectValue placeholder="Tầng" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-lg text-xs">
+                      <SelectItem value="all">Tất cả tầng</SelectItem>
+                      <SelectItem value="1">Tầng 1</SelectItem>
+                      <SelectItem value="2">Tầng 2</SelectItem>
+                      <SelectItem value="3">Tầng 3</SelectItem>
+                      <SelectItem value="4">Tầng 4</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">
+                    Số phòng căn hộ
+                  </label>
+                  <Select
+                    value={filters.roomNumber}
+                    onValueChange={(val) =>
+                      handleUpdateFilter("roomNumber", val)
+                    }
+                  >
+                    <SelectTrigger className="h-8.5 text-xs font-medium border-slate-200/80 bg-slate-50/30 focus:ring-0">
+                      <SelectValue placeholder="Số phòng" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-lg text-xs">
+                      <SelectItem value="all">Mọi phòng</SelectItem>
+                      <SelectItem value="101">Phòng 101</SelectItem>
+                      <SelectItem value="104">Phòng 104</SelectItem>
+                      <SelectItem value="202">Phòng 202</SelectItem>
+                      <SelectItem value="302">Phòng 302</SelectItem>
+                      <SelectItem value="405">Phòng 405</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Cụm 2: Địa lý quê quán đăng ký gốc */}
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">
-                  Vị trí Tầng căn hộ
+                  Nguyên quán (Tỉnh / Thành)
                 </label>
                 <Select
-                  value={filters.floor}
-                  onValueChange={(val) => handleUpdateFilter("floor", val)}
+                  value={filters.province}
+                  onValueChange={(val) => handleUpdateFilter("province", val)}
                 >
-                  <SelectTrigger className="h-8.5 text-xs font-medium border-slate-200/80 bg-slate-50/30 text-slate-700 rounded-md focus:ring-0">
-                    <SelectValue placeholder="Chọn vị trí tầng" />
+                  <SelectTrigger className="h-8.5 text-xs font-medium border-slate-200/80 bg-slate-50/30 focus:ring-0">
+                    <SelectValue placeholder="Chọn Tỉnh / Thành" />
                   </SelectTrigger>
-                  <SelectContent className="rounded-lg border-slate-200">
-                    <SelectItem value="all" className="text-xs">
-                      Tất cả các tầng
-                    </SelectItem>
-                    <SelectItem value="1" className="text-xs">
-                      Tầng 1 (Khu 1xx)
-                    </SelectItem>
-                    <SelectItem value="2" className="text-xs">
-                      Tầng 2 (Khu 2xx)
-                    </SelectItem>
-                    <SelectItem value="3" className="text-xs">
-                      Tầng 3 (Khu 3xx)
-                    </SelectItem>
-                    <SelectItem value="4" className="text-xs">
-                      Tầng 4 (Khu 4xx)
-                    </SelectItem>
+                  <SelectContent className="rounded-lg text-xs">
+                    <SelectItem value="all">Tất cả các tỉnh thành</SelectItem>
+                    <SelectItem value="Hà Nội">Hà Nội</SelectItem>
+                    <SelectItem value="Hưng Yên">Hưng Yên</SelectItem>
+                    <SelectItem value="Hải Phòng">Hải Phòng</SelectItem>
+                    <SelectItem value="Thanh Hóa">Thanh Hóa</SelectItem>
+                    <SelectItem value="Nghệ An">Nghệ An</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Lọc theo Tình trạng Xác minh hồ sơ pháp lý */}
+              {/* Cụm 3: Giới tính trắc học */}
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">
+                  Giới tính
+                </label>
+                <Select
+                  value={filters.gender}
+                  onValueChange={(val) => handleUpdateFilter("gender", val)}
+                >
+                  <SelectTrigger className="h-8.5 text-xs font-medium border-slate-200/80 bg-slate-50/30 focus:ring-0">
+                    <SelectValue placeholder="Chọn giới tính" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg text-xs">
+                    <SelectItem value="all">Mọi giới tính</SelectItem>
+                    <SelectItem value="Nam">Nam giới</SelectItem>
+                    <SelectItem value="Nữ">Nữ giới</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Cụm 4: Hồ sơ pháp lý CCCD */}
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">
                   Hồ sơ định danh (CCCD)
@@ -158,24 +226,22 @@ export function TenantFilterToolbar({
                     handleUpdateFilter("identityVerified", val)
                   }
                 >
-                  <SelectTrigger className="h-8.5 text-xs font-medium border-slate-200/80 bg-slate-50/30 text-slate-700 rounded-md focus:ring-0">
-                    <SelectValue placeholder="Trạng thái hồ sơ" />
+                  <SelectTrigger className="h-8.5 text-xs font-medium border-slate-200/80 bg-slate-50/30 focus:ring-0">
+                    <SelectValue placeholder="Tình trạng hồ sơ" />
                   </SelectTrigger>
-                  <SelectContent className="rounded-lg border-slate-200">
-                    <SelectItem value="all" className="text-xs">
-                      Tất cả tình trạng
-                    </SelectItem>
-                    <SelectItem value="verified" className="text-xs">
+                  <SelectContent className="rounded-lg text-xs">
+                    <SelectItem value="all">Tất cả tình trạng</SelectItem>
+                    <SelectItem value="verified">
                       Đã đối chiếu xác minh
                     </SelectItem>
-                    <SelectItem value="unverified" className="text-xs">
+                    <SelectItem value="unverified">
                       Chưa nộp ảnh CCCD gốc
                     </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Lọc theo Đăng ký Phương tiện (Thẻ gửi xe) */}
+              {/* Cụm 5: Chiếm dụng bãi giữ xe */}
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">
                   Phương tiện gửi tại hầm
@@ -184,25 +250,19 @@ export function TenantFilterToolbar({
                   value={filters.hasVehicle}
                   onValueChange={(val) => handleUpdateFilter("hasVehicle", val)}
                 >
-                  <SelectTrigger className="h-8.5 text-xs font-medium border-slate-200/80 bg-slate-50/30 text-slate-700 rounded-md focus:ring-0">
+                  <SelectTrigger className="h-8.5 text-xs font-medium border-slate-200/80 bg-slate-50/30 focus:ring-0">
                     <SelectValue placeholder="Chọn trạng thái xe" />
                   </SelectTrigger>
-                  <SelectContent className="rounded-lg border-slate-200">
-                    <SelectItem value="all" className="text-xs">
-                      Tất cả danh sách
-                    </SelectItem>
-                    <SelectItem value="yes" className="text-xs">
-                      Có đăng ký biển số xe
-                    </SelectItem>
-                    <SelectItem value="no" className="text-xs">
-                      Không sử dụng bãi xe
-                    </SelectItem>
+                  <SelectContent className="rounded-lg text-xs">
+                    <SelectItem value="all">Tất cả danh sách</SelectItem>
+                    <SelectItem value="yes">Có đăng ký biển số xe</SelectItem>
+                    <SelectItem value="no">Không sử dụng bãi xe</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            {/* Nút Clear nhanh toàn bộ bộ lọc */}
+            {/* Nút Clear toàn bộ ma trận lọc */}
             {hasActiveFilters && (
               <div className="flex justify-end pt-2 border-t border-slate-100">
                 <Button

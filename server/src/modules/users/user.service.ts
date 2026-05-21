@@ -7,10 +7,158 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/database/prisma.service';
 import { Prisma, UserRole } from 'src/generated/prisma/client';
 import { CreateUserDto, FindAllUserDto, UpdateUserDto } from './dto';
+import { CreateTenantDto, VehicleDto } from './dto/create-tenant.dto';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
+
+  async createTenant(dto: CreateTenantDto) {
+    const password = '123456';
+
+    const existingUser = await this.prisma.user.findFirst({
+      where: {
+        OR: [{ email: dto.email }, { phone: dto.phone }],
+      },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('Email hoặc số điện thoại đã tồn tại');
+    }
+
+    const existingTenant = await this.prisma.tenant.findUnique({
+      where: { citizenId: dto.cccd },
+    });
+
+    if (existingTenant) {
+      throw new ConflictException('Citizen ID đã tồn tại');
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const normalizedName = dto.name.trim().replace(/\s+/g, ' ');
+    const nameParts = normalizedName.split(' ');
+    const firstName = nameParts.pop() || '';
+    const lastName = nameParts.join(' ');
+
+    return await this.prisma.$transaction(async (tx) => {
+      const newUser = await tx.user.create({
+        data: {
+          firstName,
+          lastName,
+          passwordHash,
+          phone: dto.phone,
+          gender: dto.gender,
+          email: dto.email,
+          role: 'TENANT',
+        },
+      });
+
+      const newTenant = await tx.tenant.create({
+        data: {
+          userId: newUser.id,
+          citizenId: dto.cccd,
+          dateOfBirth: new Date(dto.birthday),
+          occupation: dto.occupation,
+          hometownProvince: dto.province,
+          hometownDistrict: dto.district,
+          hometownWard: dto.ward,
+          hometownAddress: dto.addressDetail,
+        },
+      });
+
+      if (dto.vehicles?.length) {
+        await tx.vehicle.createMany({
+          data: dto.vehicles.map((vehicle: VehicleDto) => ({
+            tenantId: newTenant.id,
+            type: vehicle.type,
+            licensePlate: vehicle.licensePlate,
+            brand: vehicle.brand,
+            color: vehicle.color,
+          })),
+        });
+      }
+
+      return {
+        user: newUser,
+        tenant: newTenant,
+      };
+    });
+  }
+
+  async getAllTenants() {
+    const tenants = await this.prisma.user.findMany({
+      where: {
+        role: 'TENANT',
+      },
+
+      include: {
+        tenantProfile: {
+          include: {
+            contracts: {
+              include: {
+                room: true,
+              },
+              orderBy: {
+                createdAt: 'desc',
+              },
+            },
+            vehicles: true,
+          },
+        },
+      },
+    });
+
+    return tenants.map((user) => {
+      const latestContract = user.tenantProfile?.contracts?.[0];
+      const now = new Date();
+
+      const endDate = latestContract?.endDate
+        ? new Date(latestContract.endDate)
+        : null;
+
+      let status = 'PENDING';
+
+      if (latestContract) {
+        if (endDate && endDate < now) {
+          status = 'MOVED_OUT';
+        } else if (endDate) {
+          const oneMonthLater = new Date();
+
+          oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+
+          if (endDate <= oneMonthLater) {
+            status = 'EXPIRING';
+          } else {
+            status = 'ACTIVE';
+          }
+        }
+      }
+
+      return {
+        id: user.tenantProfile?.id,
+        fullName: `${user.lastName} ${user.firstName}`,
+        avataUrl: user.avatarUrl,
+        email: user.email,
+        phone: user.phone,
+        gender: user.gender,
+        citizenId: user.tenantProfile?.citizenId,
+        occupation: user.tenantProfile?.occupation,
+        roomNumber: latestContract?.room?.roomNumber ?? null,
+        // buildingName: latestContract?.room?.buildingName ?? null,
+        contractStartDate: latestContract?.startDate ?? null,
+        contractEndDate: latestContract?.endDate ?? null,
+        status,
+        hometown: {
+          province: user.tenantProfile?.hometownProvince,
+          district: user.tenantProfile?.hometownDistrict,
+          ward: user.tenantProfile?.hometownWard,
+          address: user.tenantProfile?.hometownAddress,
+        },
+
+        vehicles: user.tenantProfile?.vehicles ?? [],
+      };
+    });
+  }
 
   async create(dto: CreateUserDto) {
     const { tenantProfile, staffProfile, password, ...userData } = dto;

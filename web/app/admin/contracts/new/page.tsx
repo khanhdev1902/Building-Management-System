@@ -121,7 +121,7 @@ export default function CreateContract() {
 
   const onSubmit = (data: ContractFormValues) => {
     console.log("Phát hành dữ liệu hợp đồng Danjin:", data);
-    alert("✓ Phát hành hợp đồng số hóa thành công!");
+    // alert("✓ Phát hành hợp đồng số hóa thành công!");
   };
 
   return (
@@ -168,14 +168,14 @@ export default function CreateContract() {
                 onClick={handleNextStep}
                 className="h-8.5 px-4.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg shadow-3xs flex items-center gap-1 cursor-pointer"
               >
-                <span>Tiếp tục cấu hình</span>
+                <span>Tiếp tục</span>
               </Button>
             ) : (
               <Button
                 type="submit"
                 className="h-8.5 px-5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-3xs flex items-center gap-1 cursor-pointer uppercase tracking-wide text-[11px]"
               >
-                <CheckCircle2 size={13} /> Ký phát hành hợp đồng
+                <CheckCircle2 size={13} /> Đăng ký hợp đồng
               </Button>
             )}
           </div>
