@@ -144,6 +144,7 @@ export class UserService {
         citizenId: user.tenantProfile?.citizenId,
         occupation: user.tenantProfile?.occupation,
         roomNumber: latestContract?.room?.roomNumber ?? null,
+        dateOfBirth: user.tenantProfile?.dateOfBirth,
         // buildingName: latestContract?.room?.buildingName ?? null,
         contractStartDate: latestContract?.startDate ?? null,
         contractEndDate: latestContract?.endDate ?? null,

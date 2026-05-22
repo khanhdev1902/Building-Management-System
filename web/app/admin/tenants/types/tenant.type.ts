@@ -46,6 +46,7 @@ export interface Tenant {
   phone: string;
   gender: string;
   citizenId: string;
+  dateOfBirth?: string;
   occupation: string;
   roomNumber: string | null;
   contractStartDate: string | null;

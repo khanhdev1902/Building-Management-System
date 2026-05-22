@@ -26,4 +26,10 @@ export const API_ENDPOINTS = {
 
   TENANTS: "users/tenants",
   TENANT_DETAIL: (id: string) => `users/tenants/${id}`,
+
+  // ================= CONTRACTS =================
+  CONTRACTS: "/contracts",
+  CONTRACT_DETAIL: (id: string) => `/contracts/${id}`,
+  CONTRACT_RENEW: (id: string) => `/contracts/${id}/renew`,
+  CONTRACT_TERMINATE: (id: string) => `/contracts/${id}/terminate`,
 } as const;

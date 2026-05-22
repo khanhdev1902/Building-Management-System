@@ -131,18 +131,21 @@ export class RoomService {
             }
           : null,
 
-        services: room.roomServices.reduce(
-          (acc, rs) => {
-            acc[rs.service.name] = Number(rs.service.price);
-            return acc;
-          },
-          {} as Record<string, number>,
-        ),
-
+        // services: room.roomServices.reduce(
+        //   (acc, rs) => {
+        //     acc[rs.service.name] = Number(rs.service.price);
+        //     return acc;
+        //   },
+        //   {} as Record<string, number>,
+        // ),
+        services: room.roomServices.map((rs) => ({
+          id: rs.serviceId,
+          name: rs.service.name,
+          price: rs.service.price,
+          unit: rs.service.unit,
+        })),
         serviceIds: room.roomServices.map((rs) => rs.serviceId),
-
         amenities: room.roomAssets.map((ra) => ra.asset.id),
-
         totalContracts: room._count.contracts,
       };
     });

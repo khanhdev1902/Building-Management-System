@@ -61,8 +61,10 @@ export function StepFinanceForm() {
 
   const handleSelectRoom = (room: RoomResponse) => {
     setValue("roomNumber", room.roomNumber);
-    setValue("rentPrice", room.roomPrice);
+    setValue("rentPrice", room.roomPrice * 1);
     setValue("deposit", room.roomPrice * 2); // Mặc định cọc bằng 2 tháng tiền nhà
+    setValue("services", room.services);
+    setValue("roomId", room.id);
     setOpenRoomList(false);
   };
 
@@ -82,8 +84,8 @@ export function StepFinanceForm() {
             <Input
               disabled={true}
               {...register("roomNumber")}
-              placeholder="Nhập số phòng hoặc chọn nhanh..."
-              className="h-8.5 text-xs font-mono font-bold bg-slate-50/40 border-slate-200 rounded-lg pr-8 focus-visible:bg-white transition-all w-full"
+              placeholder="Nhập số phòng..."
+              className="h-8.5 text-xs bg-slate-50/40 border-slate-200 rounded-lg pr-8 focus-visible:bg-white transition-all w-full"
             />
             <Popover open={openRoomList} onOpenChange={setOpenRoomList}>
               <PopoverTrigger asChild>
