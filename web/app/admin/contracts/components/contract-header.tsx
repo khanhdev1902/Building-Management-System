@@ -1,18 +1,23 @@
 "use client";
 
 import React from "react";
-import { Plus, Download, Home } from "lucide-react";
+import { Plus, Download, Home, RefreshCw } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import Link from "next/link";
+import { cn } from "@/shared/utils/cn";
 
 interface ContractHeaderProps {
   totalContracts?: number;
   onExport?: () => void;
+  onRefresh?: () => void; // Thêm prop hành động refresh
+  isRefreshing?: boolean; // Thêm trạng thái xoay icon
 }
 
 export function ContractHeader({
   totalContracts = 45,
   onExport = () => {},
+  onRefresh = () => {},
+  isRefreshing = false,
 }: ContractHeaderProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/60 pb-4 select-none">
@@ -35,17 +40,34 @@ export function ContractHeader({
 
       {/* Cụm hành động tác vụ dẹt h-9 */}
       <div className="flex items-center gap-2 shrink-0 self-start sm:self-center">
+        {/* NÚT LÀM MỚI DATA */}
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={onRefresh}
+          disabled={isRefreshing}
+          className="h-9 w-9 border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-2xs rounded-lg transition-colors cursor-pointer"
+          title="Làm mới dữ liệu"
+        >
+          <RefreshCw
+            className={cn(
+              "h-3.5 w-3.5 text-slate-500 stroke-2",
+              isRefreshing && "animate-spin text-indigo-600", // Xoay tít mù khi đang loading
+            )}
+          />
+        </Button>
+
         <Button
           variant="outline"
           onClick={onExport}
-          className="h-9 px-3 text-xs font-medium border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-2xs rounded-lg transition-colors"
+          className="h-9 px-3 text-xs font-medium border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-2xs rounded-lg transition-colors cursor-pointer"
         >
           <Download className="mr-1.5 h-3.5 w-3.5 text-slate-400 stroke-[1.75]" />
           <span>Xuất file báo cáo</span>
         </Button>
 
         <Link href="/admin/contracts/new">
-          <Button className="h-9 px-3.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium rounded-lg shadow-2xs flex gap-1.5 active:scale-[0.99] transition-all">
+          <Button className="h-9 px-3.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium rounded-lg shadow-2xs flex gap-1.5 active:scale-[0.99] transition-all cursor-pointer">
             <Plus className="h-4 w-4 stroke-[2.5]" />
             <span>Khởi tạo hợp đồng</span>
           </Button>

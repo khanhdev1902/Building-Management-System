@@ -123,6 +123,19 @@ export class CreateContractDto {
   @IsNumber()
   waterStart!: number;
 
+  @IsOptional()
+  @IsString()
+  province?: string;
+  @IsOptional()
+  @IsString()
+  district?: string;
+  @IsOptional()
+  @IsString()
+  ward?: string;
+  @IsOptional()
+  @IsString()
+  addressDetail?: string;
+
   @ValidateNested({ each: true })
   @Type(() => ContractVehicleDto)
   @IsArray()

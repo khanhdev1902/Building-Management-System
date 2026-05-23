@@ -29,11 +29,13 @@ export type AggregateContract = {
 export type ContractAvgAggregateOutputType = {
   rentalPrice: runtime.Decimal | null
   deposit: runtime.Decimal | null
+  paymentCycle: number | null
 }
 
 export type ContractSumAggregateOutputType = {
   rentalPrice: runtime.Decimal | null
   deposit: runtime.Decimal | null
+  paymentCycle: number | null
 }
 
 export type ContractMinAggregateOutputType = {
@@ -47,6 +49,7 @@ export type ContractMinAggregateOutputType = {
   depositStatus: string | null
   status: string | null
   reasonEnd: string | null
+  paymentCycle: number | null
   updatedAt: Date | null
   createdAt: Date | null
 }
@@ -62,6 +65,7 @@ export type ContractMaxAggregateOutputType = {
   depositStatus: string | null
   status: string | null
   reasonEnd: string | null
+  paymentCycle: number | null
   updatedAt: Date | null
   createdAt: Date | null
 }
@@ -77,6 +81,7 @@ export type ContractCountAggregateOutputType = {
   depositStatus: number
   status: number
   reasonEnd: number
+  paymentCycle: number
   updatedAt: number
   createdAt: number
   _all: number
@@ -86,11 +91,13 @@ export type ContractCountAggregateOutputType = {
 export type ContractAvgAggregateInputType = {
   rentalPrice?: true
   deposit?: true
+  paymentCycle?: true
 }
 
 export type ContractSumAggregateInputType = {
   rentalPrice?: true
   deposit?: true
+  paymentCycle?: true
 }
 
 export type ContractMinAggregateInputType = {
@@ -104,6 +111,7 @@ export type ContractMinAggregateInputType = {
   depositStatus?: true
   status?: true
   reasonEnd?: true
+  paymentCycle?: true
   updatedAt?: true
   createdAt?: true
 }
@@ -119,6 +127,7 @@ export type ContractMaxAggregateInputType = {
   depositStatus?: true
   status?: true
   reasonEnd?: true
+  paymentCycle?: true
   updatedAt?: true
   createdAt?: true
 }
@@ -134,6 +143,7 @@ export type ContractCountAggregateInputType = {
   depositStatus?: true
   status?: true
   reasonEnd?: true
+  paymentCycle?: true
   updatedAt?: true
   createdAt?: true
   _all?: true
@@ -236,6 +246,7 @@ export type ContractGroupByOutputType = {
   depositStatus: string
   status: string
   reasonEnd: string | null
+  paymentCycle: number | null
   updatedAt: Date
   createdAt: Date
   _count: ContractCountAggregateOutputType | null
@@ -274,6 +285,7 @@ export type ContractWhereInput = {
   depositStatus?: Prisma.StringFilter<"Contract"> | string
   status?: Prisma.StringFilter<"Contract"> | string
   reasonEnd?: Prisma.StringNullableFilter<"Contract"> | string | null
+  paymentCycle?: Prisma.IntNullableFilter<"Contract"> | number | null
   updatedAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
   room?: Prisma.XOR<Prisma.RoomScalarRelationFilter, Prisma.RoomWhereInput>
@@ -293,6 +305,7 @@ export type ContractOrderByWithRelationInput = {
   depositStatus?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reasonEnd?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentCycle?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   room?: Prisma.RoomOrderByWithRelationInput
@@ -315,6 +328,7 @@ export type ContractWhereUniqueInput = Prisma.AtLeast<{
   depositStatus?: Prisma.StringFilter<"Contract"> | string
   status?: Prisma.StringFilter<"Contract"> | string
   reasonEnd?: Prisma.StringNullableFilter<"Contract"> | string | null
+  paymentCycle?: Prisma.IntNullableFilter<"Contract"> | number | null
   updatedAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
   room?: Prisma.XOR<Prisma.RoomScalarRelationFilter, Prisma.RoomWhereInput>
@@ -334,6 +348,7 @@ export type ContractOrderByWithAggregationInput = {
   depositStatus?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reasonEnd?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentCycle?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ContractCountOrderByAggregateInput
@@ -357,6 +372,7 @@ export type ContractScalarWhereWithAggregatesInput = {
   depositStatus?: Prisma.StringWithAggregatesFilter<"Contract"> | string
   status?: Prisma.StringWithAggregatesFilter<"Contract"> | string
   reasonEnd?: Prisma.StringNullableWithAggregatesFilter<"Contract"> | string | null
+  paymentCycle?: Prisma.IntNullableWithAggregatesFilter<"Contract"> | number | null
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Contract"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Contract"> | Date | string
 }
@@ -370,6 +386,7 @@ export type ContractCreateInput = {
   depositStatus: string
   status: string
   reasonEnd?: string | null
+  paymentCycle?: number | null
   updatedAt?: Date | string
   createdAt?: Date | string
   room: Prisma.RoomCreateNestedOneWithoutContractsInput
@@ -389,6 +406,7 @@ export type ContractUncheckedCreateInput = {
   depositStatus: string
   status: string
   reasonEnd?: string | null
+  paymentCycle?: number | null
   updatedAt?: Date | string
   createdAt?: Date | string
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutContractInput
@@ -404,6 +422,7 @@ export type ContractUpdateInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   room?: Prisma.RoomUpdateOneRequiredWithoutContractsNestedInput
@@ -423,6 +442,7 @@ export type ContractUncheckedUpdateInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutContractNestedInput
@@ -440,6 +460,7 @@ export type ContractCreateManyInput = {
   depositStatus: string
   status: string
   reasonEnd?: string | null
+  paymentCycle?: number | null
   updatedAt?: Date | string
   createdAt?: Date | string
 }
@@ -453,6 +474,7 @@ export type ContractUpdateManyMutationInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -468,6 +490,7 @@ export type ContractUncheckedUpdateManyInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -493,6 +516,7 @@ export type ContractCountOrderByAggregateInput = {
   depositStatus?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reasonEnd?: Prisma.SortOrder
+  paymentCycle?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -500,6 +524,7 @@ export type ContractCountOrderByAggregateInput = {
 export type ContractAvgOrderByAggregateInput = {
   rentalPrice?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
+  paymentCycle?: Prisma.SortOrder
 }
 
 export type ContractMaxOrderByAggregateInput = {
@@ -513,6 +538,7 @@ export type ContractMaxOrderByAggregateInput = {
   depositStatus?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reasonEnd?: Prisma.SortOrder
+  paymentCycle?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -528,6 +554,7 @@ export type ContractMinOrderByAggregateInput = {
   depositStatus?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reasonEnd?: Prisma.SortOrder
+  paymentCycle?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -535,6 +562,7 @@ export type ContractMinOrderByAggregateInput = {
 export type ContractSumOrderByAggregateInput = {
   rentalPrice?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
+  paymentCycle?: Prisma.SortOrder
 }
 
 export type ContractScalarRelationFilter = {
@@ -663,6 +691,7 @@ export type ContractCreateWithoutTenantInput = {
   depositStatus: string
   status: string
   reasonEnd?: string | null
+  paymentCycle?: number | null
   updatedAt?: Date | string
   createdAt?: Date | string
   room: Prisma.RoomCreateNestedOneWithoutContractsInput
@@ -680,6 +709,7 @@ export type ContractUncheckedCreateWithoutTenantInput = {
   depositStatus: string
   status: string
   reasonEnd?: string | null
+  paymentCycle?: number | null
   updatedAt?: Date | string
   createdAt?: Date | string
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutContractInput
@@ -726,6 +756,7 @@ export type ContractScalarWhereInput = {
   depositStatus?: Prisma.StringFilter<"Contract"> | string
   status?: Prisma.StringFilter<"Contract"> | string
   reasonEnd?: Prisma.StringNullableFilter<"Contract"> | string | null
+  paymentCycle?: Prisma.IntNullableFilter<"Contract"> | number | null
   updatedAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Contract"> | Date | string
 }
@@ -739,6 +770,7 @@ export type ContractCreateWithoutRoomInput = {
   depositStatus: string
   status: string
   reasonEnd?: string | null
+  paymentCycle?: number | null
   updatedAt?: Date | string
   createdAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutContractsInput
@@ -756,6 +788,7 @@ export type ContractUncheckedCreateWithoutRoomInput = {
   depositStatus: string
   status: string
   reasonEnd?: string | null
+  paymentCycle?: number | null
   updatedAt?: Date | string
   createdAt?: Date | string
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutContractInput
@@ -797,6 +830,7 @@ export type ContractCreateWithoutRoommatesInput = {
   depositStatus: string
   status: string
   reasonEnd?: string | null
+  paymentCycle?: number | null
   updatedAt?: Date | string
   createdAt?: Date | string
   room: Prisma.RoomCreateNestedOneWithoutContractsInput
@@ -815,6 +849,7 @@ export type ContractUncheckedCreateWithoutRoommatesInput = {
   depositStatus: string
   status: string
   reasonEnd?: string | null
+  paymentCycle?: number | null
   updatedAt?: Date | string
   createdAt?: Date | string
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutContractInput
@@ -845,6 +880,7 @@ export type ContractUpdateWithoutRoommatesInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   room?: Prisma.RoomUpdateOneRequiredWithoutContractsNestedInput
@@ -863,6 +899,7 @@ export type ContractUncheckedUpdateWithoutRoommatesInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutContractNestedInput
@@ -877,6 +914,7 @@ export type ContractCreateWithoutInvoicesInput = {
   depositStatus: string
   status: string
   reasonEnd?: string | null
+  paymentCycle?: number | null
   updatedAt?: Date | string
   createdAt?: Date | string
   room: Prisma.RoomCreateNestedOneWithoutContractsInput
@@ -895,6 +933,7 @@ export type ContractUncheckedCreateWithoutInvoicesInput = {
   depositStatus: string
   status: string
   reasonEnd?: string | null
+  paymentCycle?: number | null
   updatedAt?: Date | string
   createdAt?: Date | string
   roommates?: Prisma.RoommateUncheckedCreateNestedManyWithoutContractInput
@@ -925,6 +964,7 @@ export type ContractUpdateWithoutInvoicesInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   room?: Prisma.RoomUpdateOneRequiredWithoutContractsNestedInput
@@ -943,6 +983,7 @@ export type ContractUncheckedUpdateWithoutInvoicesInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roommates?: Prisma.RoommateUncheckedUpdateManyWithoutContractNestedInput
@@ -958,6 +999,7 @@ export type ContractCreateManyTenantInput = {
   depositStatus: string
   status: string
   reasonEnd?: string | null
+  paymentCycle?: number | null
   updatedAt?: Date | string
   createdAt?: Date | string
 }
@@ -971,6 +1013,7 @@ export type ContractUpdateWithoutTenantInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   room?: Prisma.RoomUpdateOneRequiredWithoutContractsNestedInput
@@ -988,6 +1031,7 @@ export type ContractUncheckedUpdateWithoutTenantInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutContractNestedInput
@@ -1004,6 +1048,7 @@ export type ContractUncheckedUpdateManyWithoutTenantInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1018,6 +1063,7 @@ export type ContractCreateManyRoomInput = {
   depositStatus: string
   status: string
   reasonEnd?: string | null
+  paymentCycle?: number | null
   updatedAt?: Date | string
   createdAt?: Date | string
 }
@@ -1031,6 +1077,7 @@ export type ContractUpdateWithoutRoomInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutContractsNestedInput
@@ -1048,6 +1095,7 @@ export type ContractUncheckedUpdateWithoutRoomInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutContractNestedInput
@@ -1064,6 +1112,7 @@ export type ContractUncheckedUpdateManyWithoutRoomInput = {
   depositStatus?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   reasonEnd?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1119,6 +1168,7 @@ export type ContractSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   depositStatus?: boolean
   status?: boolean
   reasonEnd?: boolean
+  paymentCycle?: boolean
   updatedAt?: boolean
   createdAt?: boolean
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
@@ -1139,6 +1189,7 @@ export type ContractSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   depositStatus?: boolean
   status?: boolean
   reasonEnd?: boolean
+  paymentCycle?: boolean
   updatedAt?: boolean
   createdAt?: boolean
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
@@ -1156,6 +1207,7 @@ export type ContractSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   depositStatus?: boolean
   status?: boolean
   reasonEnd?: boolean
+  paymentCycle?: boolean
   updatedAt?: boolean
   createdAt?: boolean
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
@@ -1173,11 +1225,12 @@ export type ContractSelectScalar = {
   depositStatus?: boolean
   status?: boolean
   reasonEnd?: boolean
+  paymentCycle?: boolean
   updatedAt?: boolean
   createdAt?: boolean
 }
 
-export type ContractOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roomId" | "tenantId" | "startDate" | "endDate" | "rentalPrice" | "deposit" | "depositStatus" | "status" | "reasonEnd" | "updatedAt" | "createdAt", ExtArgs["result"]["contract"]>
+export type ContractOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roomId" | "tenantId" | "startDate" | "endDate" | "rentalPrice" | "deposit" | "depositStatus" | "status" | "reasonEnd" | "paymentCycle" | "updatedAt" | "createdAt", ExtArgs["result"]["contract"]>
 export type ContractInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -1213,6 +1266,7 @@ export type $ContractPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     depositStatus: string
     status: string
     reasonEnd: string | null
+    paymentCycle: number | null
     updatedAt: Date
     createdAt: Date
   }, ExtArgs["result"]["contract"]>
@@ -1652,6 +1706,7 @@ export interface ContractFieldRefs {
   readonly depositStatus: Prisma.FieldRef<"Contract", 'String'>
   readonly status: Prisma.FieldRef<"Contract", 'String'>
   readonly reasonEnd: Prisma.FieldRef<"Contract", 'String'>
+  readonly paymentCycle: Prisma.FieldRef<"Contract", 'Int'>
   readonly updatedAt: Prisma.FieldRef<"Contract", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Contract", 'DateTime'>
 }

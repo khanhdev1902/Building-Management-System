@@ -2452,6 +2452,7 @@ export const ContractScalarFieldEnum = {
   depositStatus: 'depositStatus',
   status: 'status',
   reasonEnd: 'reasonEnd',
+  paymentCycle: 'paymentCycle',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt'
 } as const
@@ -2464,9 +2465,12 @@ export const RoommateScalarFieldEnum = {
   contractId: 'contractId',
   tenantId: 'tenantId',
   fullName: 'fullName',
+  gender: 'gender',
+  occupation: 'occupation',
   citizenId: 'citizenId',
   phone: 'phone',
   dateOfBirth: 'dateOfBirth',
+  hometownAddress: 'hometownAddress',
   isActive: 'isActive',
   faceId: 'faceId',
   moveInDate: 'moveInDate',

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { TableCell, TableRow } from "@/shared/components/ui/table";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -55,7 +54,8 @@ export function TenantTableRow({ tenant }: TenantItemProps) {
               <span className="font-semibold text-slate-800 text-xs tracking-tight truncate">
                 {tenant.fullName}
               </span>
-              {tenant.identityVerified ? (
+              {/* {tenant.identityVerified ? ( */}
+              {tenant.contractEndDate ? (
                 <ShieldCheck className="w-3.5 h-3.5 text-blue-500 shrink-0" />
               ) : (
                 <span
@@ -101,10 +101,16 @@ export function TenantTableRow({ tenant }: TenantItemProps) {
       <TableCell className="py-3">
         {tenant.contractStartDate ? (
           <div className="flex flex-col text-[11px] font-medium text-slate-500 font-mono">
-            <span>Bắt đầu: {tenant.contractStartDate}</span>
+            <span>
+              Bắt đầu:{" "}
+              {new Date(tenant.contractStartDate).toLocaleDateString("vi-VN")}
+            </span>
             <span className="text-slate-400 mt-0.5">
               {" "}
-              Hạn cuối: {tenant.contractEndDate ?? "Chưa xác định"}
+              Hạn cuối:{" "}
+              {new Date(tenant.contractEndDate ?? "").toLocaleDateString(
+                "vi-VN",
+              ) ?? "Chưa xác định"}
             </span>
           </div>
         ) : (

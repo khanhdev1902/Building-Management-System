@@ -76,6 +76,9 @@ export class RoomService {
 
   async findAll() {
     const rooms = await this.prisma.room.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
       include: {
         roomAssets: {
           include: {

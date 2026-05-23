@@ -90,7 +90,7 @@ export default function CreateContract() {
     resolver: zodResolver(contractFormSchema),
     mode: "onChange",
     defaultValues: {
-      tenantId:"",
+      tenantId: "",
       tenantName: "",
       phone: "",
       email: "",
@@ -167,10 +167,9 @@ export default function CreateContract() {
       router.push("/admin/contracts");
     } catch (error: any) {
       console.error("Lỗi khi call API tạo hợp đồng:", error);
-      toast.error(
-        error?.response?.data?.message ||
-          "Lỗi khởi tạo hợp đồng, vui lòng thử lại.",
-      );
+      toast.error("Lỗi khởi tạo hợp đồng!", {
+        description: error?.message || "Vui lòng thử lại sau.",
+      });
     } finally {
       setIsCallApi(false);
       setIsSubmitting(false);

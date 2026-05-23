@@ -1,6 +1,6 @@
 // src/modules/contracts/contracts.controller.ts
 
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 
 import { ContractsService } from './contracts.service';
 import { CreateContractDto } from './dto/create-contract.dto';
@@ -17,10 +17,15 @@ export class ContractsController {
     return ApiResponse.success(newContract, 'Tạo hợp đồng thành công!', 201);
   }
 
-  //   @Get()
-  //   async getAllContracts() {
-  //     return this.contractsService.getAllContracts();
-  //   }
+  @Get()
+  async getAllContracts() {
+    const contracts = await this.contractsService.getAllContracts();
+    return ApiResponse.success(
+      contracts,
+      'Lấy dánh ách hợp đồng thành công!',
+      200,
+    );
+  }
 
   //   @Get(':id')
   //   async getContractById(@Param('id') id: string) {

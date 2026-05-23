@@ -1,20 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   User,
-  Layers,
   MoreVertical,
-  FileText,
   AlertCircle,
   PencilLine,
   Maximize2,
-  Banknote,
-  Calendar,
   Wind,
   Wifi,
   ShieldCheck,
+  FilePlus2,
+  ArrowUpRight,
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent } from "@/shared/components/ui/card";
@@ -28,7 +26,6 @@ import {
 } from "@/shared/components/ui/dropdown-menu";
 import { StatusBadge } from "./status-badge";
 import { RoomDialog } from "./room-dialog";
-import { Badge } from "@/shared/components/ui/badge";
 import { RoomResponse } from "../types/room.type";
 
 export function RoomCard({
@@ -38,158 +35,168 @@ export function RoomCard({
   room: RoomResponse;
   onUpdate: (data: any) => void;
 }) {
-  return (
-    <Card className="group relative border border-slate-200/70 bg-white rounded-xl overflow-hidden transition-all duration-500 flex flex-col h-full shadow-[0_2px_4px_rgba(0,0,0,0.01)] hover:shadow-[0_16px_36px_rgba(15,23,42,0.06)] hover:border-slate-300/90 hover:-translate-y-1">
-      {/* 3D Depth Layer: Tạo vệt sáng mờ đổ bóng nội bộ khi hover */}
-      <div className="absolute inset-0 bg-linear-to-tr from-slate-50/0 via-indigo-50/0 to-indigo-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+  const isAvailable = room.status === "AVAILABLE" || !room.tenant;
 
-      <CardContent className="p-4.5 space-y-4 flex flex-col h-full relative z-10">
-        {/* 1. Header Section - Phân tầng sắc nét */}
-        <div className="flex items-start justify-between min-h-11">
-          <div className="space-y-1.5">
-            <h3 className="text-lg font-black text-slate-950 tracking-tight leading-none group-hover:text-indigo-600 transition-colors duration-300">
+  // Tránh lỗi Hydration cho Date hiển thị trên Next.js
+  const [formattedDate, setFormattedDate] = useState<string>("");
+  useEffect(() => {
+    if (room.tenant?.endDate) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFormattedDate(
+        new Date(room.tenant.endDate).toLocaleDateString("vi-VN"),
+      );
+    }
+  }, [room.tenant?.endDate]);
+
+  return (
+    <Card className="group relative border border-slate-200/80 bg-white rounded-xl overflow-hidden transition-all duration-300 flex flex-col h-full shadow-[0_1px_2px_rgba(15,23,42,0.01)] hover:shadow-[0_16px_32px_-8px_rgba(15,23,42,0.05)] hover:border-slate-300">
+      <CardContent className="p-4 flex flex-col h-full justify-between relative z-10 space-y-4">
+        {/* 1. KHU VỰC TIÊU ĐỀ */}
+        <div className="flex items-start justify-between">
+          <div className="space-y-1">
+            <h3 className="text-base font-black text-slate-900 tracking-tight leading-none group-hover:text-indigo-600 transition-colors duration-200">
               Phòng {room.roomNumber}
             </h3>
-            <div className="flex gap-1.5">
-              <Badge
-                variant="outline"
-                className="bg-slate-50/60 text-slate-500 border-slate-200/60 text-[9px] px-2 py-0 rounded-md h-5 font-bold uppercase tracking-wider"
-              >
-                <Layers className="w-2.5 h-2.5 mr-1 text-slate-400" /> Tầng{" "}
-                {room.floor}
-              </Badge>
-              <Badge
-                variant="outline"
-                className="bg-slate-50/60 text-slate-500 border-slate-200/60 text-[9px] px-2 py-0 rounded-md h-5 font-bold uppercase tracking-wider"
-              >
-                <Maximize2 className="w-2.5 h-2.5 mr-1 text-slate-400" />{" "}
+            <div className="flex gap-1 select-none">
+              <span className="text-[10px] font-bold text-slate-400 font-mono">
+                Tầng {room.floor}
+              </span>
+              <span className="text-[10px] text-slate-300 font-mono">•</span>
+              <span className="text-[10px] font-bold text-slate-400 font-mono">
                 {room.acreage} m²
-              </Badge>
+              </span>
             </div>
           </div>
-          <div className="shrink-0 transition-transform duration-300 group-hover:scale-102">
+          <div className="shrink-0">
             <StatusBadge status={room.status} />
           </div>
         </div>
 
-        {/* 2. Operational Info - Khay chứa xếp lớp (Layered Container) */}
-        <div className="bg-slate-50/50 border border-slate-100 rounded-lg p-3 space-y-2.5 shadow-inner transition-colors duration-300 group-hover:bg-slate-50/80">
-          {/* Price */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-slate-400">
-              <div className="p-1 bg-white rounded border border-slate-100 shadow-xs">
-                <Banknote className="w-3.5 h-3.5 text-emerald-500 stroke-[1.8]" />
-              </div>
-              <span className="text-[10px] uppercase font-black tracking-widest text-slate-400/90">
-                Giá thuê
+        {/* 2. KHU VỰC THÔNG SỐ */}
+        <div className="bg-slate-50/50 border border-slate-100 rounded-xl p-3 space-y-2.5">
+          <div className="flex items-center justify-between select-none">
+            <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
+              Giá thuê nhà
+            </span>
+            <span className="font-black text-slate-900 text-sm font-mono tracking-tight">
+              {Number(room.roomPrice ?? 0).toLocaleString("vi-VN")}
+              <span className="text-[11px] font-sans font-normal text-slate-400 ml-1">
+                đ
               </span>
-            </div>
-            <span className="font-extrabold text-slate-900 text-sm tabular-nums tracking-tight">
-              {Number(room.roomPrice ?? 0).toLocaleString("vi-VN")} đ
             </span>
           </div>
 
-          <div className="h-px bg-slate-200/40 w-full" />
+          <div className="h-px bg-slate-200/50 w-full" />
 
-          {/* Tenant */}
+          {/* Đã sửa đổi ngữ nghĩa Label linh hoạt theo trạng thái */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-slate-400">
-              <div className="p-1 bg-white rounded border border-slate-100 shadow-xs">
-                <User className="w-3.5 h-3.5 text-indigo-500 stroke-[1.8]" />
-              </div>
-              <span className="text-[10px] uppercase font-black tracking-widest text-slate-400/90">
-                Cư dân
-              </span>
-            </div>
-            <span
-              className={`text-xs font-bold truncate max-w-30 text-right tracking-tight transition-colors duration-300 ${
-                room.tenant
-                  ? "text-slate-800"
-                  : "text-slate-300 italic font-medium"
-              }`}
-            >
-              {room.tenant?.name || "Sẵn sàng"}
+            <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 select-none">
+              {isAvailable ? "Trạng thái" : "Cư dân lưu trú"}
             </span>
+            {isAvailable ? (
+              <span className="text-xs font-semibold text-slate-400 italic tracking-tight select-none">
+                Phòng trống sẵn sàng
+              </span>
+            ) : (
+              <div className="flex items-center gap-1.5 max-w-35">
+                <User size={12} className="text-indigo-500 shrink-0" />
+                <span className="text-xs font-bold text-slate-800 truncate tracking-tight">
+                  {room.tenant?.name || "Chưa cập nhật"}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* 3. Amenities & Contract Area - Tương tác vi mô */}
-        <div className="min-h-8 flex items-center justify-between px-0.5">
-          {room.tenant?.endDate ? (
-            <div className="flex items-center justify-between w-full px-2.5 py-1.5 bg-indigo-50/40 border border-indigo-100/30 rounded-md text-[10px] transition-all duration-300 group-hover:bg-indigo-50/70">
-              <div className="flex items-center font-black text-indigo-600 uppercase tracking-wider">
-                <Calendar className="w-3 h-3 mr-1.5 text-indigo-400 animate-pulse" />
+        {/* 3. KHU VỰC HẠN HỢP ĐỒNG / TIỆN ÍCH */}
+        <div className="min-h-7 flex items-center justify-between w-full">
+          {!isAvailable && formattedDate ? (
+            <div className="flex items-center justify-between w-full px-2.5 py-1 bg-amber-50/50 border border-amber-100/60 rounded-lg text-[10px] font-medium text-slate-600">
+              <span className="text-amber-700 font-bold uppercase tracking-wide">
                 Hạn hợp đồng
-              </div>
-              <span className="font-mono font-black text-indigo-700">
-                {room.tenant.endDate}
+              </span>
+              <span className="font-mono font-bold text-amber-800">
+                {formattedDate}
               </span>
             </div>
           ) : (
-            /* Tiện ích mồi khách - Nhìn sâu và chuyển màu nhẹ khi hover card */
-            <div className="flex items-center gap-4 px-1">
-              <div className="flex items-center gap-1.5 text-slate-400 transition-colors duration-300 group-hover:text-slate-600">
-                <Wind className="w-3.5 h-3.5 stroke-[1.5] transition-transform duration-500 group-hover:rotate-12" />
-                <span className="text-[9px] font-black tracking-wider">AC</span>
+            <div className="flex items-center gap-3 select-none opacity-60 group-hover:opacity-100 transition-opacity">
+              <div className="flex items-center gap-1 text-slate-400 font-mono text-[9px] font-bold">
+                <Wind size={12} /> AC
               </div>
-              <div className="flex items-center gap-1.5 text-slate-400 transition-colors duration-300 group-hover:text-slate-600">
-                <Wifi className="w-3.5 h-3.5 stroke-[1.5]" />
-                <span className="text-[9px] font-black tracking-wider">
-                  WIFI
-                </span>
+              <div className="flex items-center gap-1 text-slate-400 font-mono text-[9px] font-bold">
+                <Wifi size={12} /> WIFI
               </div>
-              <div className="flex items-center gap-1.5 text-slate-400 transition-colors duration-300 group-hover:text-slate-600">
-                <ShieldCheck className="w-3.5 h-3.5 stroke-[1.5]" />
-                <span className="text-[9px] font-black tracking-wider">
-                  24/7
-                </span>
+              <div className="flex items-center gap-1 text-slate-400 font-mono text-[9px] font-bold">
+                <ShieldCheck size={12} /> 24/7
               </div>
             </div>
           )}
         </div>
 
-        {/* 4. Actions Section - Nút bấm dẹt, lì, phản hồi lực nhấn tốt */}
-        <div className="flex items-center gap-2 mt-auto pt-1">
-          <Link href={`/admin/rooms/${room.id}`} className="flex-1">
-            <Button className="w-full bg-slate-950 hover:bg-indigo-600 text-white rounded-lg h-10 font-bold text-xs tracking-wider transition-all duration-300 shadow-sm hover:shadow-[0_4px_12px_rgba(79,70,229,0.25)] active:scale-[0.98]">
-              Chi tiết phòng
-            </Button>
-          </Link>
+        {/* 4. KHU VỰC ĐIỀU HƯỚNG TÁC VỤ */}
+        <div className="flex items-center gap-2 pt-0.5">
+          {isAvailable ? (
+            <Link href="/admin/contracts/new" className="flex-1">
+              <Button className="w-full bg-emerald-700 hover:bg-emerald-900 text-white rounded-lg h-9 font-bold text-xs tracking-wide transition-colors shadow-2xs gap-1 cursor-pointer border-none">
+                <FilePlus2 size={13} className="stroke-[2.5]" />
+                <span>Lập hợp đồng</span>
+              </Button>
+            </Link>
+          ) : (
+            <Link href={`/admin/rooms/${room.id}`} className="flex-1">
+              <Button className="w-full bg-slate-950 hover:bg-slate-900 text-white rounded-lg h-9 font-bold text-xs tracking-wide transition-colors shadow-2xs cursor-pointer flex items-center justify-center gap-1">
+                <span>Chi tiết phòng</span>
+                <ArrowUpRight size={13} className="text-slate-400 stroke-2" />
+              </Button>
+            </Link>
+          )}
 
+          {/* DROPDOWN MENU */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
                 size="icon"
-                className="rounded-lg h-10 w-10 border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all duration-300 shadow-xs active:scale-[0.98]"
+                className="rounded-lg h-9 w-9 border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 transition-colors shadow-2xs cursor-pointer"
               >
-                <MoreVertical className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-500" />
+                <MoreVertical className="h-4 w-4 text-slate-400" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="rounded-xl border border-slate-100 w-52 p-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.08)] bg-white/95 backdrop-blur-md"
+              className="rounded-xl border border-slate-200/80 w-48 p-1 shadow-md bg-white select-none"
             >
+              {isAvailable && (
+                <DropdownMenuItem
+                  asChild
+                  className="gap-2 cursor-pointer rounded-lg py-2 focus:bg-slate-50 font-semibold text-slate-600 text-xs transition-colors"
+                >
+                  <Link href={`/admin/rooms/${room.id}`}>
+                    <Maximize2 className="w-3.5 h-3.5 text-slate-400" /> Xem chi
+                    tiết phòng
+                  </Link>
+                </DropdownMenuItem>
+              )}
+
               <RoomDialog
                 mode="update"
                 initialData={room}
                 onSubmit={onUpdate}
                 trigger={
                   <DropdownMenuItem
-                    className="gap-2.5 cursor-pointer rounded-lg py-2.5 focus:bg-slate-50 font-bold text-slate-600 text-xs transition-colors"
+                    className="gap-2 cursor-pointer rounded-lg py-2 focus:bg-slate-50 font-semibold text-slate-600 text-xs transition-colors"
                     onSelect={(e) => e.preventDefault()}
                   >
-                    <PencilLine className="w-4 h-4 text-slate-400" /> Chỉnh sửa
-                    thông tin
+                    <PencilLine className="w-3.5 h-3.5 text-slate-400" /> Sửa
+                    thông số vật lý
                   </DropdownMenuItem>
                 }
               />
-              <DropdownMenuItem className="gap-2.5 cursor-pointer rounded-lg py-2.5 focus:bg-slate-50 font-bold text-slate-600 text-xs transition-colors">
-                <FileText className="w-4 h-4 text-slate-400" /> Lập hợp đồng mới
-              </DropdownMenuItem>
+
               <DropdownMenuSeparator className="my-1 border-slate-100" />
-              <DropdownMenuItem className="gap-2.5 cursor-pointer rounded-lg py-2.5 focus:bg-rose-50 focus:text-rose-600 font-bold text-rose-500 text-xs transition-colors">
-                <AlertCircle className="w-4 h-4" /> Báo hỏng / Sửa chữa
+              <DropdownMenuItem className="gap-2 cursor-pointer rounded-lg py-2 focus:bg-rose-50 focus:text-rose-600 font-semibold text-rose-500 text-xs transition-colors">
+                <AlertCircle className="w-3.5 h-3.5" /> Ghi nhận sự cố hỏng
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

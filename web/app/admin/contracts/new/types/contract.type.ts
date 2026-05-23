@@ -1,12 +1,10 @@
 // app/admin/contracts/types/contract.type.ts
 import { VehicleType } from "@/app/admin/tenants/types/tenant.type";
-// ==============================
-// ENUM / TYPE
-// ==============================
+
 export type ContractStatus = "PENDING" | "ACTIVE" | "EXPIRED" | "TERMINATED";
-// ==============================
+export type DepositStatus = "PAID" | "UNPAID" | "PARTIAL";
+
 // SERVICE
-// ==============================
 export interface ContractService {
   serviceId?: string;
   quantity?: number;
@@ -15,9 +13,7 @@ export interface ContractService {
   unit?: string;
 }
 
-// ==============================
 // OCCUPANT
-// ==============================
 export interface ContractOccupant {
   name: string;
   phone?: string;
@@ -27,17 +23,14 @@ export interface ContractOccupant {
   occupation?: string;
   licensePlate?: string;
 }
-// ==============================
+
 // VEHICLE
-// ==============================
 export interface ContractVehicle {
   type: VehicleType | string;
   licensePlate: string;
 }
-// ==============================
-// CONTRACT
-// ==============================
 
+// CONTRACT
 export interface Contract {
   id: string;
   contractCode: string;
@@ -56,27 +49,21 @@ export interface Contract {
   updatedAt: string;
 }
 
-// ==============================
 // RESPONSE
-// ==============================
+// export interface GetAllContractsResponse {
+//   success: boolean;
+//   status: string;
+//   code: number;
+//   data: Contract[];
 
-export interface GetAllContractsResponse {
-  success: boolean;
-  status: string;
-  code: number;
-  data: Contract[];
+//   error?: {
+//     message: string;
+//   };
+//   message: string;
+//   timestamp: string;
+// }
 
-  error?: {
-    message: string;
-  };
-  message: string;
-  timestamp: string;
-}
-
-// ==============================
 // CREATE REQUEST
-// ==============================
-
 export interface CreateContractRequest {
   tenantName: string;
   phone: string;
@@ -101,3 +88,56 @@ export interface CreateContractRequest {
 
 // export interface UpdateContractRequest
 //   extends Partial<CreateContractRequest> {}
+
+export interface ContractTenant {
+  id: string;
+  userId: string;
+  isHost: boolean;
+  citizenId: string;
+  dateOfBirth: string;
+  permanentAddress: string | null;
+  hometownProvince: string;
+  hometownDistrict: string;
+  hometownWard: string;
+  hometownAddress: string;
+  occupation: string;
+  updatedAt: string;
+}
+
+export interface ContractRoom {
+  id: string;
+  roomNumber: string;
+  floor: number;
+  acreage: number;
+  roomPrice: string;
+  status: "AVAILABLE" | "OCCUPIED" | "MAINTENANCE";
+  description: string;
+  maxOccupants: number;
+  createdAt: string;
+}
+
+export interface ContractResponse {
+  id: string;
+  room: string;
+  tower: string;
+  tenant: string;
+  avatar: string | null;
+  startDate: string | Date;
+  endDate: string | Date;
+  deposit: number;
+  rent: number;
+  status: ContractStatus | string;
+  paymentStatus: DepositStatus | string;
+}
+
+export interface GetAllContractsResponse {
+  success: boolean;
+  status: string;
+  code: number;
+  data: ContractResponse[];
+  error?: {
+    message: string;
+  };
+  message: string;
+  timestamp: string;
+}

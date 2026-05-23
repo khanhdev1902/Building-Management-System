@@ -172,17 +172,17 @@ export function StatusBadge({ status }: { status: string }) {
 export function PaymentStatusBadge({ status }: { status: string }) {
   const configs: Record<string, { label: string; text: string; dot: string }> =
     {
-      paid: {
+      PAID: {
         label: "Đã giữ cọc",
         text: "text-emerald-600",
         dot: "bg-emerald-500",
       },
-      partial: {
+      PARTIAL: {
         label: "Cọc thiếu",
         text: "text-amber-600",
         dot: "bg-amber-500",
       },
-      unpaid: {
+      UNPAID: {
         label: "Chưa nộp cọc",
         text: "text-rose-600",
         dot: "bg-rose-500",

@@ -197,7 +197,7 @@ export function StepServicesForm() {
 
                     <div className="sm:col-span-3">
                       <FormGroup
-                        label="Biển số xe gắn máy cá nhân đăng ký hầm gửi xe"
+                        label="Quê quán"
                         error={occupantErrors?.licensePlate?.message}
                       >
                         <div className="relative group">
@@ -205,8 +205,8 @@ export function StepServicesForm() {
                             {...register(
                               `occupants.${idx}.licensePlate` as const,
                             )}
-                            placeholder="Ví dụ: 29N1-888.88"
-                            className="pl-8 mt-1 uppercase"
+                            placeholder="Nhập quê quán..."
+                            className="pl-8 mt-1"
                           />
                           <Bike
                             size={13}

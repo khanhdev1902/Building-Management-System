@@ -8,6 +8,7 @@ interface TenantStatsCounts {
   active: number;
   expiring: number;
   unverified: number;
+  pending: number;
 }
 
 interface TenantStatsBannerProps {
@@ -50,7 +51,7 @@ export function TenantStatsBanner({
     {
       key: "PENDING",
       label: "Chưa cư trú",
-      value: statsCounts.unverified,
+      value: statsCounts.pending,
       icon: <ShieldAlert size={15} className="stroke-[1.75]" />,
       style: "border-slate-200/80 hover:border-rose-300",
       activeStyle: "border-rose-500 bg-rose-50/20 ring-1 ring-rose-500",

@@ -29,9 +29,12 @@ export type RoommateMinAggregateOutputType = {
   contractId: string | null
   tenantId: string | null
   fullName: string | null
+  gender: string | null
+  occupation: string | null
   citizenId: string | null
   phone: string | null
   dateOfBirth: Date | null
+  hometownAddress: string | null
   isActive: boolean | null
   faceId: string | null
   moveInDate: Date | null
@@ -44,9 +47,12 @@ export type RoommateMaxAggregateOutputType = {
   contractId: string | null
   tenantId: string | null
   fullName: string | null
+  gender: string | null
+  occupation: string | null
   citizenId: string | null
   phone: string | null
   dateOfBirth: Date | null
+  hometownAddress: string | null
   isActive: boolean | null
   faceId: string | null
   moveInDate: Date | null
@@ -59,9 +65,12 @@ export type RoommateCountAggregateOutputType = {
   contractId: number
   tenantId: number
   fullName: number
+  gender: number
+  occupation: number
   citizenId: number
   phone: number
   dateOfBirth: number
+  hometownAddress: number
   isActive: number
   faceId: number
   moveInDate: number
@@ -76,9 +85,12 @@ export type RoommateMinAggregateInputType = {
   contractId?: true
   tenantId?: true
   fullName?: true
+  gender?: true
+  occupation?: true
   citizenId?: true
   phone?: true
   dateOfBirth?: true
+  hometownAddress?: true
   isActive?: true
   faceId?: true
   moveInDate?: true
@@ -91,9 +103,12 @@ export type RoommateMaxAggregateInputType = {
   contractId?: true
   tenantId?: true
   fullName?: true
+  gender?: true
+  occupation?: true
   citizenId?: true
   phone?: true
   dateOfBirth?: true
+  hometownAddress?: true
   isActive?: true
   faceId?: true
   moveInDate?: true
@@ -106,9 +121,12 @@ export type RoommateCountAggregateInputType = {
   contractId?: true
   tenantId?: true
   fullName?: true
+  gender?: true
+  occupation?: true
   citizenId?: true
   phone?: true
   dateOfBirth?: true
+  hometownAddress?: true
   isActive?: true
   faceId?: true
   moveInDate?: true
@@ -194,9 +212,12 @@ export type RoommateGroupByOutputType = {
   contractId: string
   tenantId: string | null
   fullName: string
+  gender: string | null
+  occupation: string | null
   citizenId: string
   phone: string | null
   dateOfBirth: Date | null
+  hometownAddress: string | null
   isActive: boolean
   faceId: string | null
   moveInDate: Date | null
@@ -230,9 +251,12 @@ export type RoommateWhereInput = {
   contractId?: Prisma.StringFilter<"Roommate"> | string
   tenantId?: Prisma.StringNullableFilter<"Roommate"> | string | null
   fullName?: Prisma.StringFilter<"Roommate"> | string
+  gender?: Prisma.StringNullableFilter<"Roommate"> | string | null
+  occupation?: Prisma.StringNullableFilter<"Roommate"> | string | null
   citizenId?: Prisma.StringFilter<"Roommate"> | string
   phone?: Prisma.StringNullableFilter<"Roommate"> | string | null
   dateOfBirth?: Prisma.DateTimeNullableFilter<"Roommate"> | Date | string | null
+  hometownAddress?: Prisma.StringNullableFilter<"Roommate"> | string | null
   isActive?: Prisma.BoolFilter<"Roommate"> | boolean
   faceId?: Prisma.StringNullableFilter<"Roommate"> | string | null
   moveInDate?: Prisma.DateTimeNullableFilter<"Roommate"> | Date | string | null
@@ -247,9 +271,12 @@ export type RoommateOrderByWithRelationInput = {
   contractId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrderInput | Prisma.SortOrder
   fullName?: Prisma.SortOrder
+  gender?: Prisma.SortOrderInput | Prisma.SortOrder
+  occupation?: Prisma.SortOrderInput | Prisma.SortOrder
   citizenId?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
+  hometownAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   faceId?: Prisma.SortOrderInput | Prisma.SortOrder
   moveInDate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -267,9 +294,12 @@ export type RoommateWhereUniqueInput = Prisma.AtLeast<{
   contractId?: Prisma.StringFilter<"Roommate"> | string
   tenantId?: Prisma.StringNullableFilter<"Roommate"> | string | null
   fullName?: Prisma.StringFilter<"Roommate"> | string
+  gender?: Prisma.StringNullableFilter<"Roommate"> | string | null
+  occupation?: Prisma.StringNullableFilter<"Roommate"> | string | null
   citizenId?: Prisma.StringFilter<"Roommate"> | string
   phone?: Prisma.StringNullableFilter<"Roommate"> | string | null
   dateOfBirth?: Prisma.DateTimeNullableFilter<"Roommate"> | Date | string | null
+  hometownAddress?: Prisma.StringNullableFilter<"Roommate"> | string | null
   isActive?: Prisma.BoolFilter<"Roommate"> | boolean
   faceId?: Prisma.StringNullableFilter<"Roommate"> | string | null
   moveInDate?: Prisma.DateTimeNullableFilter<"Roommate"> | Date | string | null
@@ -284,9 +314,12 @@ export type RoommateOrderByWithAggregationInput = {
   contractId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrderInput | Prisma.SortOrder
   fullName?: Prisma.SortOrder
+  gender?: Prisma.SortOrderInput | Prisma.SortOrder
+  occupation?: Prisma.SortOrderInput | Prisma.SortOrder
   citizenId?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
+  hometownAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   faceId?: Prisma.SortOrderInput | Prisma.SortOrder
   moveInDate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -305,9 +338,12 @@ export type RoommateScalarWhereWithAggregatesInput = {
   contractId?: Prisma.StringWithAggregatesFilter<"Roommate"> | string
   tenantId?: Prisma.StringNullableWithAggregatesFilter<"Roommate"> | string | null
   fullName?: Prisma.StringWithAggregatesFilter<"Roommate"> | string
+  gender?: Prisma.StringNullableWithAggregatesFilter<"Roommate"> | string | null
+  occupation?: Prisma.StringNullableWithAggregatesFilter<"Roommate"> | string | null
   citizenId?: Prisma.StringWithAggregatesFilter<"Roommate"> | string
   phone?: Prisma.StringNullableWithAggregatesFilter<"Roommate"> | string | null
   dateOfBirth?: Prisma.DateTimeNullableWithAggregatesFilter<"Roommate"> | Date | string | null
+  hometownAddress?: Prisma.StringNullableWithAggregatesFilter<"Roommate"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"Roommate"> | boolean
   faceId?: Prisma.StringNullableWithAggregatesFilter<"Roommate"> | string | null
   moveInDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Roommate"> | Date | string | null
@@ -318,9 +354,12 @@ export type RoommateScalarWhereWithAggregatesInput = {
 export type RoommateCreateInput = {
   id?: string
   fullName: string
+  gender?: string | null
+  occupation?: string | null
   citizenId: string
   phone?: string | null
   dateOfBirth?: Date | string | null
+  hometownAddress?: string | null
   isActive?: boolean
   faceId?: string | null
   moveInDate?: Date | string | null
@@ -335,9 +374,12 @@ export type RoommateUncheckedCreateInput = {
   contractId: string
   tenantId?: string | null
   fullName: string
+  gender?: string | null
+  occupation?: string | null
   citizenId: string
   phone?: string | null
   dateOfBirth?: Date | string | null
+  hometownAddress?: string | null
   isActive?: boolean
   faceId?: string | null
   moveInDate?: Date | string | null
@@ -348,9 +390,12 @@ export type RoommateUncheckedCreateInput = {
 export type RoommateUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moveInDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -365,9 +410,12 @@ export type RoommateUncheckedUpdateInput = {
   contractId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moveInDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -380,9 +428,12 @@ export type RoommateCreateManyInput = {
   contractId: string
   tenantId?: string | null
   fullName: string
+  gender?: string | null
+  occupation?: string | null
   citizenId: string
   phone?: string | null
   dateOfBirth?: Date | string | null
+  hometownAddress?: string | null
   isActive?: boolean
   faceId?: string | null
   moveInDate?: Date | string | null
@@ -393,9 +444,12 @@ export type RoommateCreateManyInput = {
 export type RoommateUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moveInDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -408,9 +462,12 @@ export type RoommateUncheckedUpdateManyInput = {
   contractId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moveInDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -433,9 +490,12 @@ export type RoommateCountOrderByAggregateInput = {
   contractId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   fullName?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  occupation?: Prisma.SortOrder
   citizenId?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
+  hometownAddress?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   faceId?: Prisma.SortOrder
   moveInDate?: Prisma.SortOrder
@@ -448,9 +508,12 @@ export type RoommateMaxOrderByAggregateInput = {
   contractId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   fullName?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  occupation?: Prisma.SortOrder
   citizenId?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
+  hometownAddress?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   faceId?: Prisma.SortOrder
   moveInDate?: Prisma.SortOrder
@@ -463,9 +526,12 @@ export type RoommateMinOrderByAggregateInput = {
   contractId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   fullName?: Prisma.SortOrder
+  gender?: Prisma.SortOrder
+  occupation?: Prisma.SortOrder
   citizenId?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
+  hometownAddress?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   faceId?: Prisma.SortOrder
   moveInDate?: Prisma.SortOrder
@@ -564,9 +630,12 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
 export type RoommateCreateWithoutTenantInput = {
   id?: string
   fullName: string
+  gender?: string | null
+  occupation?: string | null
   citizenId: string
   phone?: string | null
   dateOfBirth?: Date | string | null
+  hometownAddress?: string | null
   isActive?: boolean
   faceId?: string | null
   moveInDate?: Date | string | null
@@ -579,9 +648,12 @@ export type RoommateUncheckedCreateWithoutTenantInput = {
   id?: string
   contractId: string
   fullName: string
+  gender?: string | null
+  occupation?: string | null
   citizenId: string
   phone?: string | null
   dateOfBirth?: Date | string | null
+  hometownAddress?: string | null
   isActive?: boolean
   faceId?: string | null
   moveInDate?: Date | string | null
@@ -623,9 +695,12 @@ export type RoommateScalarWhereInput = {
   contractId?: Prisma.StringFilter<"Roommate"> | string
   tenantId?: Prisma.StringNullableFilter<"Roommate"> | string | null
   fullName?: Prisma.StringFilter<"Roommate"> | string
+  gender?: Prisma.StringNullableFilter<"Roommate"> | string | null
+  occupation?: Prisma.StringNullableFilter<"Roommate"> | string | null
   citizenId?: Prisma.StringFilter<"Roommate"> | string
   phone?: Prisma.StringNullableFilter<"Roommate"> | string | null
   dateOfBirth?: Prisma.DateTimeNullableFilter<"Roommate"> | Date | string | null
+  hometownAddress?: Prisma.StringNullableFilter<"Roommate"> | string | null
   isActive?: Prisma.BoolFilter<"Roommate"> | boolean
   faceId?: Prisma.StringNullableFilter<"Roommate"> | string | null
   moveInDate?: Prisma.DateTimeNullableFilter<"Roommate"> | Date | string | null
@@ -636,9 +711,12 @@ export type RoommateScalarWhereInput = {
 export type RoommateCreateWithoutContractInput = {
   id?: string
   fullName: string
+  gender?: string | null
+  occupation?: string | null
   citizenId: string
   phone?: string | null
   dateOfBirth?: Date | string | null
+  hometownAddress?: string | null
   isActive?: boolean
   faceId?: string | null
   moveInDate?: Date | string | null
@@ -651,9 +729,12 @@ export type RoommateUncheckedCreateWithoutContractInput = {
   id?: string
   tenantId?: string | null
   fullName: string
+  gender?: string | null
+  occupation?: string | null
   citizenId: string
   phone?: string | null
   dateOfBirth?: Date | string | null
+  hometownAddress?: string | null
   isActive?: boolean
   faceId?: string | null
   moveInDate?: Date | string | null
@@ -691,9 +772,12 @@ export type RoommateCreateManyTenantInput = {
   id?: string
   contractId: string
   fullName: string
+  gender?: string | null
+  occupation?: string | null
   citizenId: string
   phone?: string | null
   dateOfBirth?: Date | string | null
+  hometownAddress?: string | null
   isActive?: boolean
   faceId?: string | null
   moveInDate?: Date | string | null
@@ -704,9 +788,12 @@ export type RoommateCreateManyTenantInput = {
 export type RoommateUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moveInDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -719,9 +806,12 @@ export type RoommateUncheckedUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   contractId?: Prisma.StringFieldUpdateOperationsInput | string
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moveInDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -733,9 +823,12 @@ export type RoommateUncheckedUpdateManyWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   contractId?: Prisma.StringFieldUpdateOperationsInput | string
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moveInDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -747,9 +840,12 @@ export type RoommateCreateManyContractInput = {
   id?: string
   tenantId?: string | null
   fullName: string
+  gender?: string | null
+  occupation?: string | null
   citizenId: string
   phone?: string | null
   dateOfBirth?: Date | string | null
+  hometownAddress?: string | null
   isActive?: boolean
   faceId?: string | null
   moveInDate?: Date | string | null
@@ -760,9 +856,12 @@ export type RoommateCreateManyContractInput = {
 export type RoommateUpdateWithoutContractInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moveInDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -775,9 +874,12 @@ export type RoommateUncheckedUpdateWithoutContractInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moveInDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -789,9 +891,12 @@ export type RoommateUncheckedUpdateManyWithoutContractInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occupation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   citizenId?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hometownAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   faceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moveInDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -806,9 +911,12 @@ export type RoommateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   contractId?: boolean
   tenantId?: boolean
   fullName?: boolean
+  gender?: boolean
+  occupation?: boolean
   citizenId?: boolean
   phone?: boolean
   dateOfBirth?: boolean
+  hometownAddress?: boolean
   isActive?: boolean
   faceId?: boolean
   moveInDate?: boolean
@@ -823,9 +931,12 @@ export type RoommateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   contractId?: boolean
   tenantId?: boolean
   fullName?: boolean
+  gender?: boolean
+  occupation?: boolean
   citizenId?: boolean
   phone?: boolean
   dateOfBirth?: boolean
+  hometownAddress?: boolean
   isActive?: boolean
   faceId?: boolean
   moveInDate?: boolean
@@ -840,9 +951,12 @@ export type RoommateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   contractId?: boolean
   tenantId?: boolean
   fullName?: boolean
+  gender?: boolean
+  occupation?: boolean
   citizenId?: boolean
   phone?: boolean
   dateOfBirth?: boolean
+  hometownAddress?: boolean
   isActive?: boolean
   faceId?: boolean
   moveInDate?: boolean
@@ -857,9 +971,12 @@ export type RoommateSelectScalar = {
   contractId?: boolean
   tenantId?: boolean
   fullName?: boolean
+  gender?: boolean
+  occupation?: boolean
   citizenId?: boolean
   phone?: boolean
   dateOfBirth?: boolean
+  hometownAddress?: boolean
   isActive?: boolean
   faceId?: boolean
   moveInDate?: boolean
@@ -867,7 +984,7 @@ export type RoommateSelectScalar = {
   note?: boolean
 }
 
-export type RoommateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "contractId" | "tenantId" | "fullName" | "citizenId" | "phone" | "dateOfBirth" | "isActive" | "faceId" | "moveInDate" | "moveOutDate" | "note", ExtArgs["result"]["roommate"]>
+export type RoommateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "contractId" | "tenantId" | "fullName" | "gender" | "occupation" | "citizenId" | "phone" | "dateOfBirth" | "hometownAddress" | "isActive" | "faceId" | "moveInDate" | "moveOutDate" | "note", ExtArgs["result"]["roommate"]>
 export type RoommateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   contract?: boolean | Prisma.ContractDefaultArgs<ExtArgs>
   tenant?: boolean | Prisma.Roommate$tenantArgs<ExtArgs>
@@ -892,9 +1009,12 @@ export type $RoommatePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     contractId: string
     tenantId: string | null
     fullName: string
+    gender: string | null
+    occupation: string | null
     citizenId: string
     phone: string | null
     dateOfBirth: Date | null
+    hometownAddress: string | null
     isActive: boolean
     faceId: string | null
     moveInDate: Date | null
@@ -1329,9 +1449,12 @@ export interface RoommateFieldRefs {
   readonly contractId: Prisma.FieldRef<"Roommate", 'String'>
   readonly tenantId: Prisma.FieldRef<"Roommate", 'String'>
   readonly fullName: Prisma.FieldRef<"Roommate", 'String'>
+  readonly gender: Prisma.FieldRef<"Roommate", 'String'>
+  readonly occupation: Prisma.FieldRef<"Roommate", 'String'>
   readonly citizenId: Prisma.FieldRef<"Roommate", 'String'>
   readonly phone: Prisma.FieldRef<"Roommate", 'String'>
   readonly dateOfBirth: Prisma.FieldRef<"Roommate", 'DateTime'>
+  readonly hometownAddress: Prisma.FieldRef<"Roommate", 'String'>
   readonly isActive: Prisma.FieldRef<"Roommate", 'Boolean'>
   readonly faceId: Prisma.FieldRef<"Roommate", 'String'>
   readonly moveInDate: Prisma.FieldRef<"Roommate", 'DateTime'>
