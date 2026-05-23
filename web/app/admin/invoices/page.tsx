@@ -168,6 +168,11 @@ export default function InvoiceManagementPage() {
           <Button
             variant="outline"
             className="h-9 text-xs font-semibold border-slate-200 text-slate-600 bg-white hover:bg-slate-50 shadow-2xs rounded-lg flex-1 sm:flex-none"
+            onClick={() => {
+              toast.info("Thông báo hệ thống!", {
+                description: "Chức năng này đang trong quá trình phát triển...",
+              });
+            }}
           >
             <Printer className="w-3.5 h-3.5 mr-1.5 text-slate-400" /> In hàng
             loạt
@@ -253,6 +258,11 @@ export default function InvoiceManagementPage() {
           <Button
             variant="outline"
             className="h-9 text-xs border-slate-200 bg-white text-slate-600 font-semibold gap-1.5 rounded-lg shadow-2xs"
+            onClick={() => {
+              toast.info("Thông báo hệ thống!", {
+                description: "Chức năng này đang trong quá trình phát triển...",
+              });
+            }}
           >
             <FileDown className="w-3.5 h-3.5 text-slate-400" /> Xuất Excel
           </Button>
@@ -260,7 +270,7 @@ export default function InvoiceManagementPage() {
       </div>
 
       {/* 4. BẢNG HIỂN THỊ CHỨNG TỪ NÉN MẬT ĐỘ THÔNG TIN CHUYÊN SÂU */}
-      <div className="rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.01)] bg-white overflow-hidden flex flex-col min-h-100">
+      <div className=" relative rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.01)] bg-white overflow-hidden flex flex-col min-h-100">
         {/* Action Console đen sẫm phẳng lì khi có checkbox được tick */}
         {selectedIds.length > 0 && (
           <div className="bg-slate-900 px-5 py-2.5 flex items-center justify-between text-white animate-in fade-in slide-in-from-top-2 duration-200 select-none">
@@ -401,7 +411,7 @@ export default function InvoiceManagementPage() {
                     </div>
                     {inv.status === "Overdue" && (
                       <div className="text-[9px] text-rose-500 font-bold font-sans mt-0.5 flex items-center gap-0.5">
-                        ⚠️ Đã trễ 4 ngày
+                        Đã trễ 4 ngày
                       </div>
                     )}
                   </TableCell>
@@ -468,7 +478,7 @@ export default function InvoiceManagementPage() {
         </Table>
 
         {/* CỤM ĐIỀU HƯỚNG PHÂN TRANG GẮN CHÂN TABLE */}
-        <div className="px-4 py-2.5 border-t border-slate-100 bg-white flex items-center justify-between shrink-0 select-none">
+        <div className=" absolute bottom-0 left-0 right-0 px-4 py-2.5 border-t border-slate-100 bg-white flex items-center justify-between shrink-0 select-none">
           <p className="text-[11px] font-medium text-slate-400">
             Hiển thị{" "}
             <span className="text-slate-800 font-semibold font-mono">

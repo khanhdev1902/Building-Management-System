@@ -90,9 +90,10 @@ export const navigation = {
       title: "Nhân sự & Công việc",
       icon: Users,
       children: [
-        { title: "Danh sách nhân viên", url: "/admin/staffs" },
-        { title: "Lịch trực kỹ thuật/BV", icon: Clock, url: "/admin/staffs/shifts" },
-        { title: "Quản lý kho vật tư", url: "/admin/inventory" },
+        { title: "Quản lý nhân viên", url: "/admin/staffs" },
+        { title: "Quản lý vị trí", url: "/admin/option" },
+        { title: "Quản lý lịch trực", url: "/admin/staffs/shifts" },
+        // { title: "Quản lý kho vật tư", url: "/admin/inventory" },
       ],
     },
     {
@@ -109,7 +110,7 @@ export const navigation = {
   // 5. CẤU HÌNH
   system: [
     { title: "Cài đặt chung", icon: Settings, url: "/admin/settings" },
-    { title: "Phân quyền (RBAC)", icon: ShieldCheck, url: "/admin/roles" },
+    // { title: "Phân quyền (RBAC)", icon: ShieldCheck, url: "/admin/roles" },
     { title: "Log hệ thống", icon: History, url: "/admin/logs" },
   ],
 };

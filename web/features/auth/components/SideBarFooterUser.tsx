@@ -77,7 +77,7 @@ export function SidebarFooterUser() {
               align="end"
               side="top"
             >
-              <Link href="/profile">
+              <Link href="/admin/profile">
                 <DropdownMenuItem>
                   <UserCircle className="mr-2 size-4" />
                   Hồ sơ cá nhân

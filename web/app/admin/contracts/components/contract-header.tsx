@@ -5,6 +5,7 @@ import { Plus, Download, Home, RefreshCw } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/shared/utils/cn";
+import { toast } from "sonner";
 
 interface ContractHeaderProps {
   totalContracts?: number;
@@ -15,7 +16,11 @@ interface ContractHeaderProps {
 
 export function ContractHeader({
   totalContracts = 45,
-  onExport = () => {},
+  onExport = () => {
+    toast.info("Thông báo hệ thống!", {
+      description: "Chức năng này đang trong quá trình phát triển...",
+    });
+  },
   onRefresh = () => {},
   isRefreshing = false,
 }: ContractHeaderProps) {

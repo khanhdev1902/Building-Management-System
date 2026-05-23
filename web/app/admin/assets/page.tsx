@@ -28,7 +28,7 @@ export default function AssetPage() {
           setTotal(res.data.totalAsset ?? 0);
           setActive(res.data.activeAsset ?? 0);
         }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         toast.error(error?.message || "Không thể tải danh sách thiết bị");
       }
@@ -85,7 +85,12 @@ export default function AssetPage() {
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
-            className="h-8 px-2.5 text-slate-500 font-medium text-xs hover:bg-slate-100 hover:text-slate-900 rounded-lg transition-colors"
+            className=" cursor-pointer h-8 px-2.5 text-slate-500 font-medium text-xs hover:bg-slate-100 hover:text-slate-900 rounded-lg transition-colors"
+            onClick={() => {
+              toast.info("Thông báo hệ thống!", {
+                description: "Chức năng này đang trong quá trình phát triển...",
+              });
+            }}
           >
             <QrCode size={14} className="mr-1.5 text-slate-400 stroke-[1.8]" />
             Quét mã QR

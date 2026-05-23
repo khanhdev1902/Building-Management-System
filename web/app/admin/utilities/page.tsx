@@ -18,6 +18,7 @@ import { MOCK_ROOMS } from "./mockup-data";
 import { UtilityStatsBanner } from "./components/utility-stats-banner";
 import { UtilityTableRow } from "./components/utility-table-row";
 import { UtilityHeader } from "./components/utility-header";
+import { toast } from "sonner";
 
 const UNIT_PRICES = { electric: 3500, water: 15000 };
 const ITEMS_PER_PAGE = 10;
@@ -70,8 +71,16 @@ export default function UtilityReadingPage() {
         <UtilityHeader
           currentMonth="T03/2026"
           deadline="30/03"
-          onExport={() => {}}
-          onSaveAll={() => {}}
+          onExport={() => {
+            toast.info("Thông báo hệ thống!", {
+              description: "Chức năng này đang trong quá trình phát triển...",
+            });
+          }}
+          onSaveAll={() => {
+            toast.info("Thông báo hệ thống!", {
+              description: "Chức năng này đang trong quá trình phát triển...",
+            });
+          }}
         />
 
         {/* 2. Tuyến hai: Khối thống kê tiến độ chốt số */}
