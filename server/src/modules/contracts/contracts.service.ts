@@ -5,9 +5,49 @@ import { CreateContractDto } from './dto/create-contract.dto';
 import { PrismaService } from 'src/database/prisma.service';
 import * as bcrypt from 'bcrypt';
 
+import { Cron, CronExpression } from '@nestjs/schedule';
+
 @Injectable()
 export class ContractsService {
   constructor(private prismaService: PrismaService) {}
+
+  // Chạy mỗi ngày lúc 00:00
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async syncContractStatus() {
+    const now = new Date();
+
+    const thirtyDaysLater = new Date();
+    thirtyDaysLater.setDate(now.getDate() + 30);
+
+    // Hết hạn
+    await this.prismaService.contract.updateMany({
+      where: {
+        endDate: {
+          lt: now,
+        },
+        status: {
+          not: 'EXPIRED',
+        },
+      },
+      data: {
+        status: 'EXPIRED',
+      },
+    });
+
+    // Sắp hết hạn
+    await this.prismaService.contract.updateMany({
+      where: {
+        endDate: {
+          gte: now,
+          lte: thirtyDaysLater,
+        },
+        status: 'ACTIVE',
+      },
+      data: {
+        status: 'EXPIRING',
+      },
+    });
+  }
 
   async createContract(dto: CreateContractDto) {
     return await this.prismaService.$transaction(async (tx) => {

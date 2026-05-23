@@ -8,6 +8,7 @@ import { UserModule } from './modules/users/user.module';
 import { ServicesModule } from './modules/services/service.module';
 import { AssetModule } from './modules/assets/asset.module';
 import { ContractsModule } from './modules/contracts/contracts.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ContractsModule } from './modules/contracts/contracts.module';
       // used for read env
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     PrismaModule,
     RedisModule,
     AuthModule,

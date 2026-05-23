@@ -84,10 +84,10 @@ export function ContractTableRow({
   };
 
   const timeProgress = calculateTimeProgress(item.startDate, item.endDate);
-  const currentTime = new Date().getTime();
 
-  const isExpiring =
-    new Date(item.endDate).getTime() - currentTime <= 1000 * 60 * 60 * 24 * 30;
+  // const currentTime = new Date().getTime();
+  // const isExpiring =
+  //   new Date(item.endDate).getTime() - currentTime <= 1000 * 60 * 60 * 24 * 30;
   return (
     <TableRow className="group hover:bg-slate-50/40 transition-colors">
       <TableCell className="uppercase text-xs font-semibold text-slate-400 py-3.5 pl-5">
@@ -150,7 +150,7 @@ export function ContractTableRow({
       <TableCell className="text-right py-3.5">
         <div className="flex flex-col">
           <span className="font-bold text-slate-800 font-mono text-xs">
-            {item.rent.toLocaleString("vi-VN")} đ
+            {Number(item.rent).toLocaleString("vi-VN")} đ
           </span>
           <span className="text-[9px] font-medium text-slate-400 uppercase tracking-normal mt-0.5">
             mỗi tháng
@@ -159,15 +159,7 @@ export function ContractTableRow({
       </TableCell>
 
       <TableCell className="text-center py-3.5">
-        <StatusBadge
-          status={
-            item.status === "ACTIVE"
-              ? isExpiring
-                ? "EXPIRING"
-                : "ACTIVE"
-              : item.status
-          }
-        />
+        <StatusBadge status={item.status} />
       </TableCell>
 
       <TableCell className="text-right pr-5 py-3.5">
