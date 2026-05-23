@@ -41,7 +41,7 @@ export class AuthController {
     res.cookie('refreshToken', auth.refreshToken, {
       httpOnly: true,
       secure: true, // production: true
-      sameSite: 'strict',
+      sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày (milliseconds)
     });
     return ApiResponse.success(auth, 'Xác thực thành công', 200);
@@ -65,7 +65,7 @@ export class AuthController {
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
       secure: true, // production: true
-      sameSite: 'strict',
+      sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày (milliseconds)
     });
     return ApiResponse.success(result, 'Lấy Access Token mới thành công', 200);
@@ -82,7 +82,7 @@ export class AuthController {
     res.clearCookie('refreshToken', {
       httpOnly: true,
       secure: true, // production: true
-      sameSite: 'strict',
+      sameSite: 'none',
     });
 
     return ApiResponse.message(result.message, 200);
