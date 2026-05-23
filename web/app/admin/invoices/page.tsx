@@ -5,7 +5,6 @@ import React, { useState, useMemo } from "react";
 import {
   Receipt,
   Search,
-  Filter,
   FileDown,
   Mail,
   MoreHorizontal,
@@ -43,6 +42,8 @@ import {
   DropdownMenuSeparator,
 } from "@/shared/components/ui/dropdown-menu";
 import { Checkbox } from "@/shared/components/ui/checkbox";
+import { InvoiceDetailDialog } from "./components/InvoiceDetailDialog";
+import { toast } from "sonner";
 
 // Mock Data bóc tách chi phí đậm đặc nghiệp vụ chuỗi CCMN Danjin 2026
 const MOCK_INVOICES = [
@@ -108,6 +109,15 @@ export default function InvoiceManagementPage() {
     "all" | "Paid" | "Pending" | "Overdue"
   >("all");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  // Thêm 2 dòng state này vào đầu component InvoiceManagementPage
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState<any | null>(null);
+
+  const handleOpenDetail = (invoice: any) => {
+    setSelectedInvoice(invoice);
+    setIsDetailOpen(true);
+  };
 
   // 1. Luồng xử lý bộ lọc tập trung
   const filteredInvoices = useMemo(() => {
@@ -338,7 +348,7 @@ export default function InvoiceManagementPage() {
                     <span className="font-bold text-slate-800 text-xs font-mono">
                       P.{inv.room}
                     </span>
-                    <span className="text-[10px] text-slate-400 font-sans block mt-0.5 truncate max-w-[120px] font-medium">
+                    <span className="text-[10px] text-slate-400 font-sans block mt-0.5 truncate max-w-30 font-medium">
                       {inv.tenant}
                     </span>
                   </TableCell>
@@ -426,7 +436,12 @@ export default function InvoiceManagementPage() {
                           align="end"
                           className="w-48 p-1 rounded-lg border border-slate-200/70 bg-white shadow-md"
                         >
-                          <DropdownMenuItem className="gap-2 rounded py-2 text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer">
+                          {/* // Tìm đến DropdownMenuItem "Chi tiết hóa đơn" trong
+                          bảng Table của anh và gắn lệnh: */}
+                          <DropdownMenuItem
+                            onClick={() => handleOpenDetail(inv)} // Bắn toàn bộ Object hóa đơn vào state kích hoạt
+                            className="gap-2 rounded py-2 text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer"
+                          >
                             <ArrowUpRight className="w-3.5 h-3.5 text-slate-400" />{" "}
                             Chi tiết hóa đơn
                           </DropdownMenuItem>
@@ -486,6 +501,15 @@ export default function InvoiceManagementPage() {
           </div>
         </div>
       </div>
+      <InvoiceDetailDialog
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        invoice={selectedInvoice}
+        onConfirmPayment={(id) => {
+          // Luồng xử lý gọi API cập nhật trạng thái hóa đơn sang "Paid"
+          toast.success(`Đã tất toán và khóa sổ công nợ chứng từ ${id}!`);
+        }}
+      />
     </div>
   );
 }

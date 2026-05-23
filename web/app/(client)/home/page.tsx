@@ -104,7 +104,7 @@ export default function CustomerHomePage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6 bg-slate-50/20 min-h-screen antialiased selection:bg-indigo-50 font-sans">
+    <div className="max-w-6xl p-6 space-y-6 bg-slate-50/20 min-h-screen antialiased selection:bg-indigo-50 font-sans">
       {/* 1. KHAY CHÀO MỪNG ĐỊNH DANH SỐ HÓA PHẲNG TRẦN */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 select-none border-b border-slate-100 pb-4">
         <div className="space-y-1">
