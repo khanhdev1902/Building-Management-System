@@ -64,7 +64,7 @@ export class AuthController {
     const result = await this.authService.refreshTokens(refreshToken);
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
-      secure: false, // production: true
+      secure: true, // production: true
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày (milliseconds)
     });
@@ -81,7 +81,7 @@ export class AuthController {
 
     res.clearCookie('refreshToken', {
       httpOnly: true,
-      secure: false, // production: true
+      secure: true, // production: true
       sameSite: 'strict',
     });
 
