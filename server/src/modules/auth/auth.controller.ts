@@ -40,7 +40,7 @@ export class AuthController {
     const auth = await this.authService.login(dto);
     res.cookie('refreshToken', auth.refreshToken, {
       httpOnly: true,
-      secure: false, // production: true
+      secure: true, // production: true
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày (milliseconds)
     });
