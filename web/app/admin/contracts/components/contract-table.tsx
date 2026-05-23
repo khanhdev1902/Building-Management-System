@@ -139,17 +139,17 @@ export function ContractTable({
 export function StatusBadge({ status }: { status: string }) {
   const configs: Record<string, { label: string; class: string; dot: string }> =
     {
-      active: {
+        ACTIVE: {
         label: "Đang hiệu lực",
         class: "bg-emerald-50 text-emerald-700 border-emerald-100/70",
         dot: "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.4)]",
       },
-      expiring: {
+      EXPIRING: {
         label: "Sắp hết hạn",
         class: "bg-amber-50 text-amber-700 border-amber-100/70",
         dot: "bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.4)]",
       },
-      expired: {
+      EXPIRED: {
         label: "Đã kết thúc",
         class: "bg-slate-50 text-slate-500 border-slate-200/60",
         dot: "bg-slate-400",

@@ -54,7 +54,11 @@ export function ContractTableRow({
     try {
       // Ví dụ gọi API thật:
       // await contractApi.terminateEarly(formData);
-      console.log("Payload gửi lên API NestJS chuẩn chỉ Zod:", formData, item.id);
+      console.log(
+        "Payload gửi lên API NestJS chuẩn chỉ Zod:",
+        formData,
+        item.id,
+      );
 
       // Load lại grid danh sách ở màn hình lớn
       onRefreshData();
@@ -67,7 +71,7 @@ export function ContractTableRow({
   const calculateTimeProgress = (start: string, end: string) => {
     const startDate = new Date(start).getTime();
     const endDate = new Date(end).getTime();
-    const currentDate = new Date("2026-05-18").getTime();
+    const currentDate = new Date().getTime();
 
     if (endDate <= startDate) return 0;
     const totalDuration = endDate - startDate;
@@ -80,7 +84,10 @@ export function ContractTableRow({
   };
 
   const timeProgress = calculateTimeProgress(item.startDate, item.endDate);
+  const currentTime = new Date().getTime();
 
+  const isExpiring =
+    new Date(item.endDate).getTime() - currentTime <= 1000 * 60 * 60 * 24 * 30;
   return (
     <TableRow className="group hover:bg-slate-50/40 transition-colors">
       <TableCell className="uppercase text-xs font-semibold text-slate-400 py-3.5 pl-5">
@@ -152,7 +159,15 @@ export function ContractTableRow({
       </TableCell>
 
       <TableCell className="text-center py-3.5">
-        <StatusBadge status={item.status} />
+        <StatusBadge
+          status={
+            item.status === "ACTIVE"
+              ? isExpiring
+                ? "EXPIRING"
+                : "ACTIVE"
+              : item.status
+          }
+        />
       </TableCell>
 
       <TableCell className="text-right pr-5 py-3.5">
