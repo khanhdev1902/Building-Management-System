@@ -8,7 +8,6 @@ import {
   BellRing,
   Zap,
   Droplets,
-  ShieldAlert,
   Save,
   RefreshCw,
   SlidersHorizontal,

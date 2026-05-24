@@ -6,17 +6,19 @@ import {
   Users,
   Receipt,
   Settings,
-  ShieldCheck,
   History,
   CreditCard,
-  BarChart3, // Thống kê
-  Clock, // Ca làm việc
+  BarChart3,
 } from "lucide-react";
 
 export const navigation = {
   // 1. QUẢN TRỊ CHIẾN LƯỢC
   analytics: [
-    { title: "Tổng quan chung cư", icon: LayoutDashboard, url: "/admin/dashboard" },
+    {
+      title: "Tổng quan chung cư",
+      icon: LayoutDashboard,
+      url: "/admin/dashboard",
+    },
     {
       title: "Báo cáo & Thống kê",
       icon: BarChart3,
@@ -91,8 +93,8 @@ export const navigation = {
       icon: Users,
       children: [
         { title: "Quản lý nhân viên", url: "/admin/staffs" },
-        { title: "Quản lý vị trí", url: "/admin/option" },
-        { title: "Quản lý lịch trực", url: "/admin/staffs/shifts" },
+        { title: "Quản lý vị trí", url: "/admin/positions" },
+        { title: "Quản lý lịch trực", url: "/admin/shifts" },
         // { title: "Quản lý kho vật tư", url: "/admin/inventory" },
       ],
     },
@@ -100,9 +102,9 @@ export const navigation = {
       title: "Kế toán & Tài chính",
       icon: CreditCard,
       children: [
-        { title: "Phiếu thu", url: "/admin/finance/income" },
-        { title: "Phiếu chi", url: "/admin/finance/outcome" },
-        { title: "Sổ quỹ tiền mặt/NH", url: "/admin/finance/transactions" },
+        { title: "Quản lý phiếu thu", url: "/admin/receipts" },
+        { title: "Quản lý phiếu chi", url: "/admin/expenses" },
+        // { title: "Sổ quỹ tiền mặt/NH", url: "/admin/finance/transactions" },
       ],
     },
   ],
