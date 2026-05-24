@@ -120,7 +120,7 @@ export default function TenantLayout({
   }, []);
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={["TENANT"]}>
       <TooltipProvider delayDuration={0}>
         <SidebarProvider>
           <div className="flex min-h-screen w-full bg-slate-50/40 antialiased selection:bg-indigo-50">

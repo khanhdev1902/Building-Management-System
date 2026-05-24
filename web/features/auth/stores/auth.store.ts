@@ -3,7 +3,7 @@ import { create } from "zustand";
 type User = {
   id: string;
   email: string | null;
-  role: string;
+  role: "TENANT" | "ADMIN" | "STAFF";
   firstName: string;
   lastName: string;
   avatarUrl: string | null;
