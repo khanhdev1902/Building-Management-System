@@ -99,8 +99,20 @@ export class AssetService {
   }
 
   async getAllRoomAssets() {
-    const roomAssets = await this.prismaService.roomAsset.findMany();
-    return roomAssets;
+    const roomAssets = await this.prismaService.roomAsset.findMany({
+      include: {
+        room: { select: { roomNumber: true } },
+        asset: { select: { name: true } },
+      },
+    });
+    return roomAssets.map((ra) => ({
+      assetId: ra.assetId,
+      roomId: ra.roomId,
+      roomNumber: ra.room.roomNumber,
+      assetName: ra.asset.name,
+      assetQuantity: ra.quantity,
+      assetStatus: ra.status,
+    }));
   }
 
   async getRoomAssetById(assetId: string, roomId: string) {

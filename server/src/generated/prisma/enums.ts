@@ -37,3 +37,11 @@ export const RoomStatus = {
 } as const
 
 export type RoomStatus = (typeof RoomStatus)[keyof typeof RoomStatus]
+
+
+export const MeterService = {
+  ELECTRIC: 'ELECTRIC',
+  WATER: 'WATER'
+} as const
+
+export type MeterService = (typeof MeterService)[keyof typeof MeterService]

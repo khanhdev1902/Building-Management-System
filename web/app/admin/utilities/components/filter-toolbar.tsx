@@ -24,8 +24,8 @@ import { ScrollArea } from "@/shared/components/ui/scroll-area";
 interface FilterToolbarProps {
   searchTerm: string;
   setSearchTerm: (val: string) => void;
-  activeFloor: string;
-  setActiveFloor: (val: string) => void;
+  activeFloor: string | number;
+  setActiveFloor: (val: string | number) => void;
   activeStatus: string;
   setActiveStatus: (val: string) => void;
   onReset: () => void;
@@ -41,7 +41,7 @@ export const FilterToolbar = ({
   onReset,
 }: FilterToolbarProps) => {
   // Tạo mảng danh sách 100 tầng
-  const floors = Array.from({ length: 100 }, (_, i) => (i + 1).toString());
+  const floors = Array.from({ length: 50 }, (_, i) => (i + 1));
   const hasFilter =
     searchTerm || activeFloor !== "all" || activeStatus !== "all";
 

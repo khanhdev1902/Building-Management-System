@@ -1,15 +1,25 @@
 "use client";
 
 import React from "react";
-import { FileDown, Save, Calendar, Clock3, LayoutGrid } from "lucide-react";
+import {
+  FileDown,
+  Save,
+  Calendar,
+  Clock3,
+  LayoutGrid,
+  RefreshCw,
+} from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
+import { cn } from "@/shared/utils/cn";
 
 interface UtilityHeaderProps {
   currentMonth: string;
   deadline: string;
+  isLoading: boolean;
   onExport: () => void;
   onSaveAll: () => void;
+  onRefresh: () => void;
 }
 
 export const UtilityHeader = ({
@@ -17,7 +27,10 @@ export const UtilityHeader = ({
   deadline = "30/03",
   onExport,
   onSaveAll,
+  onRefresh,
+  isLoading = false,
 }: UtilityHeaderProps) => {
+  
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4 border-b border-slate-200/60 mb-3 w-full selection:bg-indigo-50">
       {/* Khối bên trái: Tiêu đề & Thông tin tiến trình chốt sổ */}
@@ -75,13 +88,16 @@ export const UtilityHeader = ({
           <FileDown className="w-3.5 h-3.5 text-slate-400 stroke-[1.75]" />
           <span>Xuất báo cáo Excel</span>
         </Button>
+        <Button variant="outline" onClick={onRefresh} disabled={isLoading}>
+          <RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} />
+        </Button>
 
         <Button
           onClick={onSaveAll}
           className="h-9 px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium gap-1.5 shadow-2xs transition-all active:scale-[0.99]"
         >
           <Save className="w-3.5 h-3.5 stroke-[1.75]" />
-          <span>Lưu lại kết quả</span>
+          <span>Khóa sổ</span>
         </Button>
       </div>
     </div>

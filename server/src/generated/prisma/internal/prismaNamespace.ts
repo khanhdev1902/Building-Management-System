@@ -2825,6 +2825,20 @@ export type ListEnumRoomStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
 
 
 /**
+ * Reference to a field of type 'MeterService'
+ */
+export type EnumMeterServiceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeterService'>
+    
+
+
+/**
+ * Reference to a field of type 'MeterService[]'
+ */
+export type ListEnumMeterServiceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeterService[]'>
+    
+
+
+/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>

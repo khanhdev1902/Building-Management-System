@@ -14,45 +14,53 @@ import { Button } from "@/shared/components/ui/button";
 
 // Import hệ thống component đã được tối ưu hóa đồng bộ
 import { FilterToolbar } from "./components/filter-toolbar";
-import { MOCK_ROOMS } from "./mockup-data";
 import { UtilityStatsBanner } from "./components/utility-stats-banner";
 import { UtilityTableRow } from "./components/utility-table-row";
 import { UtilityHeader } from "./components/utility-header";
 import { toast } from "sonner";
+import { Utility } from "./types/utility.type";
+import { utilityApi } from "./apis/utility.api";
 
-const UNIT_PRICES = { electric: 3500, water: 15000 };
 const ITEMS_PER_PAGE = 10;
-
 export default function UtilityReadingPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeFloor, setActiveFloor] = useState("all");
+  const [activeFloor, setActiveFloor] = useState<string | number>("all");
   const [activeStatus, setActiveStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-
-  // KHẮC PHỤC: Bổ sung biến trạng thái Loading hệ thống
+  const [roomUtilities, setRoomUtitlities] = useState<Utility[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Giả lập trạng thái đồng bộ dữ liệu ban đầu
-  useEffect(() => {
-    const timer = setTimeout(() => {
+  const fetchUtilities = async () => {
+    setIsLoading(true);
+    try {
+      const res = await utilityApi.getAllUtilities();
+      if (res?.success) {
+        setRoomUtitlities(res.data ?? []);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
       setIsLoading(false);
-    }, 600); // Hiệu ứng Shimmer chạy lướt nhẹ 600ms rất chuyên nghiệp
-    return () => clearTimeout(timer);
+    }
+  };
+  useEffect(() => {
+    fetchUtilities();
   }, []);
 
   // Lọc dữ liệu mượt mà ở Client-side
   const filteredRooms = useMemo(() => {
-    return MOCK_ROOMS.filter((room) => {
+    return roomUtilities.filter((room) => {
       const matchesSearch =
         room.roomNumber.includes(searchTerm) ||
         room.tenantName.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesFloor = activeFloor === "all" || room.floor === activeFloor;
+      console.log(room.floor, activeFloor);
       const matchesStatus =
         activeStatus === "all" ||
         (activeStatus === "done" ? room.isLocked : !room.isLocked);
       return matchesSearch && matchesFloor && matchesStatus;
     });
-  }, [searchTerm, activeFloor, activeStatus]);
+  }, [searchTerm, activeFloor, activeStatus, roomUtilities]);
 
   // Logic Phân trang
   const totalPages = Math.ceil(filteredRooms.length / ITEMS_PER_PAGE);
@@ -63,14 +71,52 @@ export default function UtilityReadingPage() {
     );
   }, [filteredRooms, currentPage]);
 
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(1);
+    }
+  }, [totalPages, currentPage]);
+
+  const projectedRevenue = roomUtilities.reduce((total, room) => {
+    const electricUsage =
+      room.electricCurrentReading - room.electricPreviousReading;
+    const waterUsage = room.waterCurrentReading - room.waterPreviousReading;
+    const electricMoney = electricUsage * (room.electricService?.price ?? 0);
+    const waterMoney = waterUsage * (room.waterService?.price ?? 0);
+    return total + electricMoney + waterMoney;
+  }, 0);
+
+  const handleUpdateRoomUtilities = (
+    roomId: string,
+    isLocked: boolean,
+    eNew: number,
+    wNew: number,
+  ) => {
+    setRoomUtitlities((prev) =>
+      prev.map((r) =>
+        r.roomId === roomId
+          ? {
+              ...r,
+              isLocked,
+              electricCurrentReading: eNew,
+              waterCurrentReading: wNew,
+            }
+          : r,
+      ),
+    );
+  };
+
+  const now = new Date();
   return (
     <div className="bg-slate-50/40 min-h-screen antialiased selection:bg-indigo-50">
       {/* KHẮC PHỤC: Ép space-y từ 6 xuống 4 để kéo sát Header và Banner lại gần nhau */}
       <div className="max-w-7xl mx-auto px-4 space-y-4 w-full">
         {/* 1. Tuyến đầu: Header chốt kỳ hạn */}
         <UtilityHeader
-          currentMonth="T03/2026"
-          deadline="30/03"
+          onRefresh={fetchUtilities}
+          isLoading={isLoading}
+          currentMonth={`T${now.getMonth() + 1}/${now.getFullYear()}`}
+          deadline={`30/${now.getMonth() + 1}/${now.getFullYear()}`}
           onExport={() => {
             toast.info("Thông báo hệ thống!", {
               description: "Chức năng này đang trong quá trình phát triển...",
@@ -85,11 +131,11 @@ export default function UtilityReadingPage() {
 
         {/* 2. Tuyến hai: Khối thống kê tiến độ chốt số */}
         <UtilityStatsBanner
-          totalRooms={MOCK_ROOMS.length}
-          electricDone={MOCK_ROOMS.filter((r) => r.isLocked).length}
-          waterDone={38}
-          issueCount={8}
-          estimatedRevenue="142.5"
+          totalRooms={roomUtilities.length}
+          electricDone={roomUtilities.filter((r) => r.isLocked).length}
+          waterDone={roomUtilities.filter((r) => r.isLocked).length}
+          issueCount={roomUtilities.filter((r) => r.isWarning).length}
+          estimatedRevenue={projectedRevenue}
         />
 
         {/* 3. Tuyến ba: Thanh công cụ tìm kiếm và lọc tầng thông minh (h-10) */}
@@ -141,7 +187,6 @@ export default function UtilityReadingPage() {
                 </TableRow>
               </TableHeader>
               <TableBody className="divide-y divide-slate-100/60">
-                {/* KHẮC PHỤC: Tích hợp hiệu ứng Loading Skeleton động cho Table Row */}
                 {isLoading ? (
                   Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
                     <TableRow
@@ -168,12 +213,20 @@ export default function UtilityReadingPage() {
                 ) : paginatedRooms.length > 0 ? (
                   paginatedRooms.map((room) => (
                     <UtilityTableRow
-                      key={room.id}
+                      key={room.roomId}
+                      roomId={room.roomId}
                       room={room.roomNumber}
                       tenant={room.tenantName}
-                      eOld={room.eOld}
-                      wOld={room.wOld}
-                      unitPrices={UNIT_PRICES}
+                      eOld={room.electricPreviousReading}
+                      wOld={room.waterPreviousReading}
+                      eCurrent={room.electricCurrentReading}
+                      wCurrent={room.waterCurrentReading}
+                      isLock={room.isLocked}
+                      unitPrices={{
+                        water: room.waterService?.price ?? 0,
+                        electric: room.electricService?.price ?? 0,
+                      }}
+                      handleUpdateRoomUtilities={handleUpdateRoomUtilities}
                     />
                   ))
                 ) : (

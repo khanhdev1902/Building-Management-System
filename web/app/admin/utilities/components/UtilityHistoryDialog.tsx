@@ -37,7 +37,7 @@ import { Button } from "@/shared/components/ui/button";
 interface UtilityHistoryDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  roomNumber: string;
+  roomNumber: string | number;
 }
 
 // Giả lập phôi dữ liệu dày đặc từ Server Danjin qua nhiều năm (2024 - 2026)

@@ -11,15 +11,14 @@ export interface AssetCategory {
   updatedAt?: string;
 }
 
-export interface AssetItem {
-  id: string; // Serial Number
-  name: string;
-  category: string; // Tên danh mục hoặc Category ID
-  categoryId: string;
-  room: string; // Vị trí/Phòng (e.g., "101", "Chưa gán")
-  status: "Ổn định" | "Bảo trì" | "Cần sửa chữa";
-  createdAt?: string;
-  updatedAt?: string;
+export interface RoomAsset {
+  status: string;
+  assetId: string;
+  roomId: string;
+  roomNumber: string;
+  assetName: string;
+  assetQuantity: number;
+  assetStatus: "Ổn định" | "Bảo trì" | "Cần sửa chữa";
 }
 
 // --- Requests Payload ---

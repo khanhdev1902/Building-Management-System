@@ -21,7 +21,7 @@ export const API_ENDPOINTS = {
 
   ASSETS: "/assets",
   ASSET_DETAIL: (id: string) => `/assets/${id}`,
-  ROOM_ASSETS: "/assets/room-assets",
+  ROOM_ASSETS: "/assets/room-assets/all",
   ROOM_ASSETS_DETAIL: (id: string) => `/assets/room-assets/${id}`,
 
   TENANTS: "users/tenants",
@@ -32,4 +32,8 @@ export const API_ENDPOINTS = {
   CONTRACT_DETAIL: (id: string) => `/contracts/${id}`,
   CONTRACT_RENEW: (id: string) => `/contracts/${id}/renew`,
   CONTRACT_TERMINATE: (id: string) => `/contracts/${id}/terminate`,
+
+  UTILITIES: "/utilities",
+  UTILITY_DETAIL: (roomId: string) => `/utilities/${roomId}`,
+  UTILITY_METER_READING: "/utilities/meter-reading",
 } as const;

@@ -3,12 +3,12 @@ import { apiHandler } from "@/helpers/api.helper";
 import http from "@/services/http";
 import {
   AssetCategory,
-  AssetItem,
   CreateAssetCategoryRequest,
   UpdateAssetCategoryRequest,
   CreateAssetItemRequest,
   UpdateAssetItemRequest,
 } from "../types/asset.type";
+import { APIResponse } from "@/types/api-response.type";
 
 const getAllAssets = () => apiHandler(http.get(API_ENDPOINTS.ASSETS));
 const getAssetById = (id: string) =>
@@ -26,13 +26,13 @@ const deleteAsset = (id: string) =>
 
 // --- Assets --------------------------------------------------------------
 const getAllRoomAssets = () =>
-  apiHandler<AssetItem[]>(http.get(API_ENDPOINTS.ASSETS));
+  apiHandler<APIResponse>(http.get(API_ENDPOINTS.ROOM_ASSETS));
 const getRoomAssetById = (id: string) =>
-  apiHandler<AssetItem>(http.get(API_ENDPOINTS.ASSET_DETAIL(id)));
+  apiHandler<APIResponse>(http.get(API_ENDPOINTS.ASSET_DETAIL(id)));
 const createRoomAsset = (data: CreateAssetItemRequest) =>
-  apiHandler<AssetItem>(http.post(API_ENDPOINTS.ASSETS, data));
+  apiHandler<APIResponse>(http.post(API_ENDPOINTS.ASSETS, data));
 const updateRoomAsset = (id: string, data: UpdateAssetItemRequest) =>
-  apiHandler<AssetItem>(http.patch(API_ENDPOINTS.ASSET_DETAIL(id), data));
+  apiHandler<APIResponse>(http.patch(API_ENDPOINTS.ASSET_DETAIL(id), data));
 const deleteRoomAsset = (id: string) =>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   apiHandler<any>(http.delete(API_ENDPOINTS.ASSET_DETAIL(id)));

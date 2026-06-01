@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Receipt,
   Search,
@@ -11,7 +11,6 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
-  Plus,
   Send,
   Printer,
   CreditCard,
@@ -21,6 +20,8 @@ import {
   Droplets,
   ChevronLeft,
   ChevronRight,
+  RefreshCw,
+  Plus,
 } from "lucide-react";
 
 import { Input } from "@/shared/components/ui/input";
@@ -44,64 +45,13 @@ import {
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { InvoiceDetailDialog } from "./components/InvoiceDetailDialog";
 import { toast } from "sonner";
+import { CreateInvoiceDialog } from "./components/CreateInvoiceDialog";
+import { cn } from "@/shared/utils/cn";
+import { InvoicingCountdown } from "./components/InvoicingCountdown";
+import { MOCK_INVOICES } from "./data";
 
 // Mock Data bóc tách chi phí đậm đặc nghiệp vụ chuỗi CCMN Danjin 2026
-const MOCK_INVOICES = [
-  {
-    id: "INV-2026-0501",
-    room: "101",
-    tenant: "Trần Bình An",
-    amount: 5270000,
-    dueDate: "15/05/2026",
-    status: "Pending",
-    counters: {
-      electric: { old: 2100, new: 2220, used: 120 },
-      water: { old: 800, new: 812, used: 12 },
-    },
-    breakdown: {
-      rent: 4500000,
-      electric: 420000,
-      water: 200000,
-      service: 150000,
-    },
-  },
-  {
-    id: "INV-2026-0502",
-    room: "202",
-    tenant: "Trần Thị Bình",
-    amount: 5650000,
-    dueDate: "15/05/2026",
-    status: "Paid",
-    counters: {
-      electric: { old: 3410, new: 3530, used: 120 },
-      water: { old: 1105, new: 1115, used: 10 },
-    },
-    breakdown: {
-      rent: 4800000,
-      electric: 420000,
-      water: 280000,
-      service: 150000,
-    },
-  },
-  {
-    id: "INV-2026-0412",
-    room: "405",
-    tenant: "Lê Minh Công",
-    amount: 5120000,
-    dueDate: "15/04/2026",
-    status: "Overdue",
-    counters: {
-      electric: { old: 1850, new: 1940, used: 90 },
-      water: { old: 640, new: 648, used: 8 },
-    },
-    breakdown: {
-      rent: 4500000,
-      electric: 315000,
-      water: 155000,
-      service: 100000,
-    },
-  },
-];
+
 
 export default function InvoiceManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -113,6 +63,7 @@ export default function InvoiceManagementPage() {
   // Thêm 2 dòng state này vào đầu component InvoiceManagementPage
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<any | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleOpenDetail = (invoice: any) => {
     setSelectedInvoice(invoice);
@@ -150,37 +101,125 @@ export default function InvoiceManagementPage() {
     }
   };
 
+  const fetchInvoices = async () => {
+    try {
+      setIsLoading(true);
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchInvoices();
+  }, []);
+
+  const now = new Date();
+
+  // Giả lập state lưu trữ mốc thời gian nhận về từ API Backend
+  // Đúng nửa đêm ngày 05/06/2026 hệ thống sẽ tự chạy Cron Job
+  const [targetDate, setTargetDate] = useState<string>(
+    "2026-06-03T00:00:00.000Z",
+  );
+  const [isSystemRunning, setIsSystemRunning] = useState(false);
+
+  // Giả lập hàm gọi API lấy thời gian thực tế từ server
+  useEffect(() => {
+    // fetch('/api/invoice-scheduler/next-date')
+    //   .then(res => res.json())
+    //   .then(data => setTargetDate(data.targetDate))
+  }, []);
+
+  // Callback kích hoạt khi đồng hồ đếm ngược về 0
+  const handleAutomaticTrigger = () => {
+    setIsSystemRunning(true);
+    toast.loading(
+      "⏰ Hệ thống tự động: Đang tiến hành quét chỉ số và phát hành hóa đơn...",
+    );
+
+    // Giả lập lệnh gọi reload data sau khi Cron Job xử lý xong
+    setTimeout(() => {
+      setIsSystemRunning(false);
+      toast.success("✓ Đã hoàn tất luồng tự động phát hành hóa đơn kỳ mới!");
+    }, 3000);
+  };
+
+  // Nút khẩn cấp dùng khi Admin muốn ép hệ thống chốt số luôn lập tức bằng tay
+  const handleForceInvoicingByHand = () => {
+    const confirmForce = window.confirm(
+      "Cảnh báo: Hành động này sẽ ép hệ thống chốt số và phát hành hóa đơn ngay lập tức trước thời hạn. Bạn có chắc chắn không?",
+    );
+    if (!confirmForce) return;
+
+    toast.loading("Đang phát hành hóa đơn cư dân thủ công...");
+    setTimeout(() => {
+      toast.success(
+        "✓ Cư dân toàn bộ hệ thống tòa nhà đã nhận được thông báo hóa đơn kỳ mới!",
+      );
+    }, 1500);
+    toast.dismiss();
+  };
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-5 bg-slate-50/20 min-h-screen antialiased selection:bg-indigo-50">
+    <div className="max-w-7xl mx-auto px-4 py-2 space-y-5 bg-slate-50/20 min-h-screen antialiased selection:bg-indigo-50">
       {/* 1. TOP BAR CHỨNG TỪ TÁC VỤ */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200/60 pb-4 select-none">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200/60 select-none">
         <div className="space-y-0.5">
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
             <Receipt className="w-5 h-5 text-slate-400 stroke-[1.8]" />
             Sổ gốc Hóa đơn & Công nợ
           </h1>
           <p className="text-xs text-slate-500 font-medium">
-            Kỳ chu kỳ đối soát hệ thống tháng này • Đang kiểm soát{" "}
-            {MOCK_INVOICES.length} chứng từ lõi.
+            Kỳ chu kỳ đối soát hệ thống tháng này • Tổng hóa đơn{" "}
+            {MOCK_INVOICES.length}.
           </p>
+          <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto pt-2">
+            <Button className="h-8 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-2xs flex-1 sm:flex-none">
+              {/* <Plus className="w-3.5 h-3.5 mr-1.5" /> Khởi tạo hóa đơn lẻ */}
+              <CreateInvoiceDialog />
+            </Button>
+            <Button
+              onClick={() => handleForceInvoicingByHand()}
+              className="h-8 text-xs cursor-pointer font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-2xs flex-1 sm:flex-none"
+            >
+              <Plus className="mx-1" /> Tạo tất cả hóa kỳ {now.getMonth() + 1}/
+              {now.getFullYear()}
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-8 text-xs cursor-pointer font-semibold border-slate-200 text-slate-600 bg-white hover:bg-slate-50 shadow-2xs rounded-lg flex-1 sm:flex-none"
+              onClick={() => {
+                toast.info("Thông báo hệ thống!", {
+                  description:
+                    "Chức năng này đang trong quá trình phát triển...",
+                });
+              }}
+            >
+              <Printer className="w-3.5 h-3.5 mr-1.5 text-slate-400" /> In hàng
+              loạt
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => setIsLoading(true)}
+              disabled={isLoading}
+            >
+              <RefreshCw
+                className={cn(
+                  " cursor-pointer w-4 h-4",
+                  isLoading && "animate-spin",
+                )}
+              />
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
-          <Button
-            variant="outline"
-            className="h-9 text-xs font-semibold border-slate-200 text-slate-600 bg-white hover:bg-slate-50 shadow-2xs rounded-lg flex-1 sm:flex-none"
-            onClick={() => {
-              toast.info("Thông báo hệ thống!", {
-                description: "Chức năng này đang trong quá trình phát triển...",
-              });
-            }}
-          >
-            <Printer className="w-3.5 h-3.5 mr-1.5 text-slate-400" /> In hàng
-            loạt
-          </Button>
-          <Button className="h-9 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-2xs flex-1 sm:flex-none">
-            <Plus className="w-3.5 h-3.5 mr-1.5" /> Khởi tạo hóa đơn lẻ
-          </Button>
-        </div>
+        <InvoicingCountdown
+          targetTargetDate={targetDate}
+          onTimerEnd={handleAutomaticTrigger}
+        />
       </div>
 
       {/* 2. KHỐI THỐNG KÊ KPI CARDS FLAT, LIỀN MẠCH */}

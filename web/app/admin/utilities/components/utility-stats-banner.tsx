@@ -15,15 +15,15 @@ interface StatsProps {
   electricDone: number;
   waterDone: number;
   issueCount: number;
-  estimatedRevenue: string;
+  estimatedRevenue: number;
 }
 
 export const UtilityStatsBanner = ({
-  totalRooms = 120,
-  electricDone = 45,
-  waterDone = 38,
-  issueCount = 8,
-  estimatedRevenue = "142.5",
+  totalRooms = 0,
+  electricDone = 0,
+  waterDone = 0,
+  issueCount = 0,
+  estimatedRevenue = 0,
 }: StatsProps) => {
   const stats = [
     {
@@ -143,12 +143,20 @@ export const UtilityStatsBanner = ({
           {/* Tuyến hai: Số tiền dự thu */}
           <div className="space-y-0.5 w-full">
             <div className="flex items-baseline gap-1">
-              <span className="text-xl font-bold font-sans text-slate-900 tracking-tight leading-none">
-                {estimatedRevenue}
-              </span>
-              <span className="text-[10px] font-semibold text-indigo-600 font-mono uppercase tracking-tight">
-                Triệu đ
-              </span>
+              {estimatedRevenue > 1000000000 ? (
+                <div>
+                  <span className="text-xl font-bold font-sans text-slate-900 tracking-tight leading-none">
+                    {(estimatedRevenue / 1000000000).toLocaleString("vi-VN")}
+                  </span>
+                  <span className="text-xs pl-2 font-semibold text-indigo-600 font-mono uppercase tracking-tight">
+                    Tỷ đ
+                  </span>
+                </div>
+              ) : (
+                <span className="text-xl font-bold font-sans text-slate-900 tracking-tight leading-none">
+                  {estimatedRevenue.toLocaleString("vi-VN")}đ
+                </span>
+              )}
             </div>
             <p className="text-xs font-medium text-slate-400 tracking-tight">
               Doanh thu dịch vụ dự kiến

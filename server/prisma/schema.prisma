@@ -230,11 +230,15 @@ model EmergencyContact {
 }
 
 // --- 4. BILLING & METERS ---
+enum MeterService {
+  ELECTRIC
+  WATER
+}
 model Meter {
-  id            String   @id @default(uuid())
+  id            Int   @id @default(autoincrement())
   roomId        String
   room          Room     @relation(fields: [roomId], references: [id])
-  service       String   // e.g., Electric, Water
+  service       MeterService   // e.g., Electric, Water
   previousValue Float
   currentValue  Float
   recordedDate  DateTime
@@ -242,6 +246,8 @@ model Meter {
   isBilled      Boolean  @default(false)
   imageEvidence String?
   createdAt     DateTime @default(now())
+  
+  @@unique([roomId, service, billingPeriod])
 }
 
 model Invoice {

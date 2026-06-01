@@ -27,19 +27,21 @@ export type AggregateMeter = {
 }
 
 export type MeterAvgAggregateOutputType = {
+  id: number | null
   previousValue: number | null
   currentValue: number | null
 }
 
 export type MeterSumAggregateOutputType = {
+  id: number | null
   previousValue: number | null
   currentValue: number | null
 }
 
 export type MeterMinAggregateOutputType = {
-  id: string | null
+  id: number | null
   roomId: string | null
-  service: string | null
+  service: $Enums.MeterService | null
   previousValue: number | null
   currentValue: number | null
   recordedDate: Date | null
@@ -50,9 +52,9 @@ export type MeterMinAggregateOutputType = {
 }
 
 export type MeterMaxAggregateOutputType = {
-  id: string | null
+  id: number | null
   roomId: string | null
-  service: string | null
+  service: $Enums.MeterService | null
   previousValue: number | null
   currentValue: number | null
   recordedDate: Date | null
@@ -78,11 +80,13 @@ export type MeterCountAggregateOutputType = {
 
 
 export type MeterAvgAggregateInputType = {
+  id?: true
   previousValue?: true
   currentValue?: true
 }
 
 export type MeterSumAggregateInputType = {
+  id?: true
   previousValue?: true
   currentValue?: true
 }
@@ -214,9 +218,9 @@ export type MeterGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 }
 
 export type MeterGroupByOutputType = {
-  id: string
+  id: number
   roomId: string
-  service: string
+  service: $Enums.MeterService
   previousValue: number
   currentValue: number
   recordedDate: Date
@@ -250,9 +254,9 @@ export type MeterWhereInput = {
   AND?: Prisma.MeterWhereInput | Prisma.MeterWhereInput[]
   OR?: Prisma.MeterWhereInput[]
   NOT?: Prisma.MeterWhereInput | Prisma.MeterWhereInput[]
-  id?: Prisma.StringFilter<"Meter"> | string
+  id?: Prisma.IntFilter<"Meter"> | number
   roomId?: Prisma.StringFilter<"Meter"> | string
-  service?: Prisma.StringFilter<"Meter"> | string
+  service?: Prisma.EnumMeterServiceFilter<"Meter"> | $Enums.MeterService
   previousValue?: Prisma.FloatFilter<"Meter"> | number
   currentValue?: Prisma.FloatFilter<"Meter"> | number
   recordedDate?: Prisma.DateTimeFilter<"Meter"> | Date | string
@@ -278,12 +282,13 @@ export type MeterOrderByWithRelationInput = {
 }
 
 export type MeterWhereUniqueInput = Prisma.AtLeast<{
-  id?: string
+  id?: number
+  roomId_service_billingPeriod?: Prisma.MeterRoomIdServiceBillingPeriodCompoundUniqueInput
   AND?: Prisma.MeterWhereInput | Prisma.MeterWhereInput[]
   OR?: Prisma.MeterWhereInput[]
   NOT?: Prisma.MeterWhereInput | Prisma.MeterWhereInput[]
   roomId?: Prisma.StringFilter<"Meter"> | string
-  service?: Prisma.StringFilter<"Meter"> | string
+  service?: Prisma.EnumMeterServiceFilter<"Meter"> | $Enums.MeterService
   previousValue?: Prisma.FloatFilter<"Meter"> | number
   currentValue?: Prisma.FloatFilter<"Meter"> | number
   recordedDate?: Prisma.DateTimeFilter<"Meter"> | Date | string
@@ -292,7 +297,7 @@ export type MeterWhereUniqueInput = Prisma.AtLeast<{
   imageEvidence?: Prisma.StringNullableFilter<"Meter"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Meter"> | Date | string
   room?: Prisma.XOR<Prisma.RoomScalarRelationFilter, Prisma.RoomWhereInput>
-}, "id">
+}, "id" | "roomId_service_billingPeriod">
 
 export type MeterOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -316,9 +321,9 @@ export type MeterScalarWhereWithAggregatesInput = {
   AND?: Prisma.MeterScalarWhereWithAggregatesInput | Prisma.MeterScalarWhereWithAggregatesInput[]
   OR?: Prisma.MeterScalarWhereWithAggregatesInput[]
   NOT?: Prisma.MeterScalarWhereWithAggregatesInput | Prisma.MeterScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"Meter"> | string
+  id?: Prisma.IntWithAggregatesFilter<"Meter"> | number
   roomId?: Prisma.StringWithAggregatesFilter<"Meter"> | string
-  service?: Prisma.StringWithAggregatesFilter<"Meter"> | string
+  service?: Prisma.EnumMeterServiceWithAggregatesFilter<"Meter"> | $Enums.MeterService
   previousValue?: Prisma.FloatWithAggregatesFilter<"Meter"> | number
   currentValue?: Prisma.FloatWithAggregatesFilter<"Meter"> | number
   recordedDate?: Prisma.DateTimeWithAggregatesFilter<"Meter"> | Date | string
@@ -329,8 +334,7 @@ export type MeterScalarWhereWithAggregatesInput = {
 }
 
 export type MeterCreateInput = {
-  id?: string
-  service: string
+  service: $Enums.MeterService
   previousValue: number
   currentValue: number
   recordedDate: Date | string
@@ -342,9 +346,9 @@ export type MeterCreateInput = {
 }
 
 export type MeterUncheckedCreateInput = {
-  id?: string
+  id?: number
   roomId: string
-  service: string
+  service: $Enums.MeterService
   previousValue: number
   currentValue: number
   recordedDate: Date | string
@@ -355,8 +359,7 @@ export type MeterUncheckedCreateInput = {
 }
 
 export type MeterUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  service?: Prisma.StringFieldUpdateOperationsInput | string
+  service?: Prisma.EnumMeterServiceFieldUpdateOperationsInput | $Enums.MeterService
   previousValue?: Prisma.FloatFieldUpdateOperationsInput | number
   currentValue?: Prisma.FloatFieldUpdateOperationsInput | number
   recordedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -368,9 +371,9 @@ export type MeterUpdateInput = {
 }
 
 export type MeterUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.IntFieldUpdateOperationsInput | number
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
-  service?: Prisma.StringFieldUpdateOperationsInput | string
+  service?: Prisma.EnumMeterServiceFieldUpdateOperationsInput | $Enums.MeterService
   previousValue?: Prisma.FloatFieldUpdateOperationsInput | number
   currentValue?: Prisma.FloatFieldUpdateOperationsInput | number
   recordedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -381,9 +384,9 @@ export type MeterUncheckedUpdateInput = {
 }
 
 export type MeterCreateManyInput = {
-  id?: string
+  id?: number
   roomId: string
-  service: string
+  service: $Enums.MeterService
   previousValue: number
   currentValue: number
   recordedDate: Date | string
@@ -394,8 +397,7 @@ export type MeterCreateManyInput = {
 }
 
 export type MeterUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  service?: Prisma.StringFieldUpdateOperationsInput | string
+  service?: Prisma.EnumMeterServiceFieldUpdateOperationsInput | $Enums.MeterService
   previousValue?: Prisma.FloatFieldUpdateOperationsInput | number
   currentValue?: Prisma.FloatFieldUpdateOperationsInput | number
   recordedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -406,9 +408,9 @@ export type MeterUpdateManyMutationInput = {
 }
 
 export type MeterUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.IntFieldUpdateOperationsInput | number
   roomId?: Prisma.StringFieldUpdateOperationsInput | string
-  service?: Prisma.StringFieldUpdateOperationsInput | string
+  service?: Prisma.EnumMeterServiceFieldUpdateOperationsInput | $Enums.MeterService
   previousValue?: Prisma.FloatFieldUpdateOperationsInput | number
   currentValue?: Prisma.FloatFieldUpdateOperationsInput | number
   recordedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -428,6 +430,12 @@ export type MeterOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type MeterRoomIdServiceBillingPeriodCompoundUniqueInput = {
+  roomId: string
+  service: $Enums.MeterService
+  billingPeriod: string
+}
+
 export type MeterCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   roomId?: Prisma.SortOrder
@@ -442,6 +450,7 @@ export type MeterCountOrderByAggregateInput = {
 }
 
 export type MeterAvgOrderByAggregateInput = {
+  id?: Prisma.SortOrder
   previousValue?: Prisma.SortOrder
   currentValue?: Prisma.SortOrder
 }
@@ -473,6 +482,7 @@ export type MeterMinOrderByAggregateInput = {
 }
 
 export type MeterSumOrderByAggregateInput = {
+  id?: Prisma.SortOrder
   previousValue?: Prisma.SortOrder
   currentValue?: Prisma.SortOrder
 }
@@ -519,9 +529,12 @@ export type MeterUncheckedUpdateManyWithoutRoomNestedInput = {
   deleteMany?: Prisma.MeterScalarWhereInput | Prisma.MeterScalarWhereInput[]
 }
 
+export type EnumMeterServiceFieldUpdateOperationsInput = {
+  set?: $Enums.MeterService
+}
+
 export type MeterCreateWithoutRoomInput = {
-  id?: string
-  service: string
+  service: $Enums.MeterService
   previousValue: number
   currentValue: number
   recordedDate: Date | string
@@ -532,8 +545,8 @@ export type MeterCreateWithoutRoomInput = {
 }
 
 export type MeterUncheckedCreateWithoutRoomInput = {
-  id?: string
-  service: string
+  id?: number
+  service: $Enums.MeterService
   previousValue: number
   currentValue: number
   recordedDate: Date | string
@@ -573,9 +586,9 @@ export type MeterScalarWhereInput = {
   AND?: Prisma.MeterScalarWhereInput | Prisma.MeterScalarWhereInput[]
   OR?: Prisma.MeterScalarWhereInput[]
   NOT?: Prisma.MeterScalarWhereInput | Prisma.MeterScalarWhereInput[]
-  id?: Prisma.StringFilter<"Meter"> | string
+  id?: Prisma.IntFilter<"Meter"> | number
   roomId?: Prisma.StringFilter<"Meter"> | string
-  service?: Prisma.StringFilter<"Meter"> | string
+  service?: Prisma.EnumMeterServiceFilter<"Meter"> | $Enums.MeterService
   previousValue?: Prisma.FloatFilter<"Meter"> | number
   currentValue?: Prisma.FloatFilter<"Meter"> | number
   recordedDate?: Prisma.DateTimeFilter<"Meter"> | Date | string
@@ -586,8 +599,8 @@ export type MeterScalarWhereInput = {
 }
 
 export type MeterCreateManyRoomInput = {
-  id?: string
-  service: string
+  id?: number
+  service: $Enums.MeterService
   previousValue: number
   currentValue: number
   recordedDate: Date | string
@@ -598,8 +611,7 @@ export type MeterCreateManyRoomInput = {
 }
 
 export type MeterUpdateWithoutRoomInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  service?: Prisma.StringFieldUpdateOperationsInput | string
+  service?: Prisma.EnumMeterServiceFieldUpdateOperationsInput | $Enums.MeterService
   previousValue?: Prisma.FloatFieldUpdateOperationsInput | number
   currentValue?: Prisma.FloatFieldUpdateOperationsInput | number
   recordedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -610,8 +622,8 @@ export type MeterUpdateWithoutRoomInput = {
 }
 
 export type MeterUncheckedUpdateWithoutRoomInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  service?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  service?: Prisma.EnumMeterServiceFieldUpdateOperationsInput | $Enums.MeterService
   previousValue?: Prisma.FloatFieldUpdateOperationsInput | number
   currentValue?: Prisma.FloatFieldUpdateOperationsInput | number
   recordedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -622,8 +634,8 @@ export type MeterUncheckedUpdateWithoutRoomInput = {
 }
 
 export type MeterUncheckedUpdateManyWithoutRoomInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  service?: Prisma.StringFieldUpdateOperationsInput | string
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  service?: Prisma.EnumMeterServiceFieldUpdateOperationsInput | $Enums.MeterService
   previousValue?: Prisma.FloatFieldUpdateOperationsInput | number
   currentValue?: Prisma.FloatFieldUpdateOperationsInput | number
   recordedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -707,9 +719,9 @@ export type $MeterPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     room: Prisma.$RoomPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: string
+    id: number
     roomId: string
-    service: string
+    service: $Enums.MeterService
     previousValue: number
     currentValue: number
     recordedDate: Date
@@ -1141,9 +1153,9 @@ export interface Prisma__MeterClient<T, Null = never, ExtArgs extends runtime.Ty
  * Fields of the Meter model
  */
 export interface MeterFieldRefs {
-  readonly id: Prisma.FieldRef<"Meter", 'String'>
+  readonly id: Prisma.FieldRef<"Meter", 'Int'>
   readonly roomId: Prisma.FieldRef<"Meter", 'String'>
-  readonly service: Prisma.FieldRef<"Meter", 'String'>
+  readonly service: Prisma.FieldRef<"Meter", 'MeterService'>
   readonly previousValue: Prisma.FieldRef<"Meter", 'Float'>
   readonly currentValue: Prisma.FieldRef<"Meter", 'Float'>
   readonly recordedDate: Prisma.FieldRef<"Meter", 'DateTime'>

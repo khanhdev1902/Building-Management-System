@@ -307,6 +307,23 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
+export type EnumMeterServiceFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeterService | Prisma.EnumMeterServiceFieldRefInput<$PrismaModel>
+  in?: $Enums.MeterService[] | Prisma.ListEnumMeterServiceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeterService[] | Prisma.ListEnumMeterServiceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeterServiceFilter<$PrismaModel> | $Enums.MeterService
+}
+
+export type EnumMeterServiceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeterService | Prisma.EnumMeterServiceFieldRefInput<$PrismaModel>
+  in?: $Enums.MeterService[] | Prisma.ListEnumMeterServiceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeterService[] | Prisma.ListEnumMeterServiceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeterServiceWithAggregatesFilter<$PrismaModel> | $Enums.MeterService
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMeterServiceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMeterServiceFilter<$PrismaModel>
+}
+
 export type JsonNullableFilter<$PrismaModel = never> =
 | Prisma.PatchUndefined<
     Prisma.Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
@@ -651,6 +668,23 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumMeterServiceFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeterService | Prisma.EnumMeterServiceFieldRefInput<$PrismaModel>
+  in?: $Enums.MeterService[] | Prisma.ListEnumMeterServiceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeterService[] | Prisma.ListEnumMeterServiceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeterServiceFilter<$PrismaModel> | $Enums.MeterService
+}
+
+export type NestedEnumMeterServiceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MeterService | Prisma.EnumMeterServiceFieldRefInput<$PrismaModel>
+  in?: $Enums.MeterService[] | Prisma.ListEnumMeterServiceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MeterService[] | Prisma.ListEnumMeterServiceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMeterServiceWithAggregatesFilter<$PrismaModel> | $Enums.MeterService
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMeterServiceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMeterServiceFilter<$PrismaModel>
 }
 
 export type NestedJsonNullableFilter<$PrismaModel = never> =

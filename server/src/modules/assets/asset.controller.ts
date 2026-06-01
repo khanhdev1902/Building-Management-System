@@ -58,8 +58,14 @@ export class AssetController {
   // =========================
 
   @Get('room-assets/all')
-  getAllRoomAssets() {
-    return this.assetService.getAllRoomAssets();
+  async getAllRoomAssets() {
+    console.log('room-assets');
+    const roomAssets = await this.assetService.getAllRoomAssets();
+    return ApiResponse.success(
+      roomAssets,
+      'Lấy danh sách thiết bị theo phòng thành công!',
+      200,
+    );
   }
 
   @Get('room-assets/:assetId/:roomId')

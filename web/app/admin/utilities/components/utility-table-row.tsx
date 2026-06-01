@@ -26,36 +26,82 @@ import {
 } from "@/shared/components/ui/dropdown-menu";
 import { UtilityHistoryDialog } from "./UtilityHistoryDialog";
 import { toast } from "sonner";
+import { utilityApi } from "../apis/utility.api";
 
 interface UtilityRowProps {
-  room: string;
+  room: string | number;
+  roomId: string;
   tenant: string;
   eOld: number;
   wOld: number;
+  eCurrent: number;
+  wCurrent: number;
+  isLock: boolean;
   unitPrices: { electric: number; water: number };
+  handleUpdateRoomUtilities: (
+    roomId: string,
+    isLocked: boolean,
+    eNew: number,
+    wNew: number,
+  ) => void;
 }
 
 export const UtilityTableRow = ({
   room,
+  roomId,
   tenant,
   eOld,
   wOld,
+  eCurrent,
+  wCurrent,
   unitPrices,
+  isLock = false,
+  handleUpdateRoomUtilities,
 }: UtilityRowProps) => {
-  const [eNew, setENew] = useState("");
-  const [wNew, setWNew] = useState("");
-  const [isLocked, setIsLocked] = useState(false);
+  const [eNew, setENew] = useState<string | number>(
+    eCurrent === 0 ? "" : eCurrent,
+  );
+  const [wNew, setWNew] = useState<string | number>(
+    wCurrent === 0 ? "" : wCurrent,
+  );
+  const [isLocked, setIsLocked] = useState(isLock);
 
   const eUsage = eNew ? Number(eNew) - eOld : 0;
   const wUsage = wNew ? Number(wNew) - wOld : 0;
   const tempTotal = eUsage * unitPrices.electric + wUsage * unitPrices.water;
 
-  // Khống chế chặt chẽ: Chỉ số mới bắt buộc phải lớn hơn hoặc bằng chỉ số cũ
   const isInputInvalid =
     (eNew !== "" && eUsage < 0) || (wNew !== "" && wUsage < 0);
   const canLock = eNew !== "" && wNew !== "" && !isInputInvalid;
 
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isLocking, setIsLocking] = useState(false);
+
+  const handleLocked = async () => {
+    setIsLocking(true);
+    try {
+      console.log({
+        eOld,
+        wOld,
+        eNew,
+        wNew,
+        room,
+        roomId,
+      });
+      const newReadingMeter = await utilityApi.createMeterReading({
+        roomId: roomId,
+        waterCurrent: Number(wNew),
+        electricCurrent: Number(eNew),
+      });
+      console.log(newReadingMeter);
+      handleUpdateRoomUtilities(roomId, true, Number(eNew), Number(wNew));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLocking(false);
+      setIsLocked(true);
+    }
+  };
 
   return (
     <TableRow
@@ -63,7 +109,6 @@ export const UtilityTableRow = ({
         isLocked
           ? "bg-emerald-50/20 hover:bg-emerald-50/30 border-l-emerald-500"
           : "hover:bg-slate-50/40 border-l-transparent"
-        /* KHẮC PHỤC 3: Giữ nguyên border-l-2 trong suốt từ đầu để triệt tiêu lỗi giật khung hình khi bấm chốt */
       }`}
     >
       {/* 1. Cột Số Phòng & Badge dẹt */}
@@ -213,11 +258,20 @@ export const UtilityTableRow = ({
               >
                 <X className="w-3 h-3 mr-1 stroke-[2.5]" /> Mở khóa
               </Button>
+            ) : isLocking ? (
+              <Button
+                disabled={true}
+                className={`h-7 px-3 rounded-md text-xs font-bold gap-1 transition-all 
+                  active:scale-[0.98] cursor-pointer bg-slate-100 text-slate-600
+                  pointer-events-none shadow-none`}
+              >
+                <span>Đang chốt...</span>
+              </Button>
             ) : (
               <Button
                 type="button"
                 disabled={!canLock}
-                onClick={() => setIsLocked(true)}
+                onClick={() => handleLocked()}
                 className={`h-7 px-3 rounded-md text-xs font-bold gap-1 transition-all active:scale-[0.98] cursor-pointer ${
                   canLock
                     ? "bg-slate-950 hover:bg-slate-900 text-white shadow-3xs"
