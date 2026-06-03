@@ -14,12 +14,13 @@ import {
   DollarSign,
   Calendar,
   Eye,
-  UserCheck,
-  CreditCard,
   ChevronLeft,
   ChevronRight,
   ClipboardList,
   SlidersHorizontal,
+  AlertCircle,
+  CheckCheck,
+  CalendarClock,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
@@ -32,90 +33,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/shared/components/ui/dialog";
-import { Textarea } from "@/shared/components/ui/textarea";
 import { toast } from "sonner";
-
-// Mock Data chuẩn quy trình Ticket bảo trì thực tế tại chung cư mini
-const INITIAL_TICKETS = [
-  {
-    id: "TK-4420",
-    room: "Phòng 202 - LuxHouse",
-    resident: "Trần Thế Anh",
-    phone: "0934567890",
-    category: "plumbing", // plumbing | electrical | appliance | infrastructure
-    title: "Rò rỉ đường ống bồn rửa mặt, thấm tường sàn",
-    description:
-      "Nước rò rỉ từ khớp nối dưới bồn rửa mặt làm ướt hết sàn nhà vệ sinh và có dấu hiệu ngấm xuống trần phòng 102 phía dưới. Cần xử lý gấp.",
-    priority: "high", // low | medium | high
-    status: "pending", // pending | processing | completed | canceled
-    assignedTo: "",
-    createdAt: "21/05/2026 06:15",
-    cost: 0,
-    notes: "",
-  },
-  {
-    id: "TK-4418",
-    room: "Phòng 104 - LuxHouse",
-    resident: "Nguyễn Văn Anh",
-    phone: "0356789123",
-    category: "electrical",
-    title: "Chập hỏng Aptomat điều hòa",
-    description:
-      "Bật điều hòa lên khoảng 5 phút là aptomat tự nhảy, sờ vào thấy rất nóng. Nghi ngờ bị chập dây nguồn hoặc hỏng át.",
-    priority: "high",
-    status: "processing",
-    assignedTo: "Thợ điện Nguyễn Văn Hùng",
-    createdAt: "20/05/2026 14:30",
-    cost: 150000,
-    notes: "Đang mua aptomat 32A mới để thay thế.",
-  },
-  {
-    id: "TK-4415",
-    room: "Phòng 405 - LuxHouse",
-    resident: "Lê Văn Nam",
-    phone: "0789123456",
-    category: "appliance",
-    title: "Tủ lạnh đóng tuyết dày, không mát ngăn dưới",
-    description:
-      "Tủ lạnh mini trang bị sẵn trong phòng đóng tuyết quá dày ở ngăn đông, dẫn đến ngăn mát phía dưới không có hơi lạnh làm hỏng đồ ăn.",
-    priority: "medium",
-    status: "completed",
-    assignedTo: "Kỹ thuật Lê Minh Đức",
-    createdAt: "19/05/2026 09:15",
-    cost: 200000,
-    notes: "Đã xả tuyết, thông ống thoát nước thải và nạp thêm gas điều hòa.",
-  },
-  {
-    id: "TK-4410",
-    room: "Khu vực chung",
-    resident: "Bảo vệ tòa nhà",
-    phone: "BQL",
-    category: "infrastructure",
-    title: "Cháy bóng đèn LED hành lang tầng 3",
-    description:
-      "Bóng tuýp LED ở lối đi hành lang trước cửa phòng 301 bị nhấp nháy liên tục rồi tắt hẳn, gây tối lối đi chung.",
-    priority: "low",
-    status: "completed",
-    assignedTo: "Kỹ thuật Lê Minh Đức",
-    createdAt: "18/05/2026 10:00",
-    cost: 65000,
-    notes: "Đã thay bóng tuýp LED 1m2 mới.",
-  },
-];
-
-// Danh sách đội thợ nội bộ của tòa nhà
-const TECHNICIANS = [
-  "Kỹ thuật Lê Minh Đức (Nội bộ)",
-  "Thợ điện Nguyễn Văn Hùng (Đối tác)",
-  "Thợ nước Trần Văn thạch (Đối tác)",
-];
+import { INITIAL_TICKETS, TECHNICIANS } from "./data";
+import { TicketDetailModal } from "./components/ticket-detail-modal";
 
 export default function MaintenanceTicketsManagement() {
   const [tickets, setTickets] = useState(INITIAL_TICKETS);
@@ -170,7 +90,7 @@ export default function MaintenanceTicketsManagement() {
   };
 
   // Cập nhật lệnh điều phối nội bộ (Lưu Ticket)
-  const handleUpdateTicket = (statusTarget?: string) => {
+  const handleUpdateTicket = (statusTarget: string, updatedFields: any) => {
     if (!selectedTicket) return;
 
     setTickets(
@@ -178,10 +98,8 @@ export default function MaintenanceTicketsManagement() {
         if (tk.id === selectedTicket.id) {
           return {
             ...tk,
-            assignedTo: assignee,
-            cost: parseFloat(ticketCost) || 0,
-            notes: adminNotes,
-            status: statusTarget || tk.status,
+            ...updatedFields,
+            status: statusTarget,
           };
         }
         return tk;
@@ -454,142 +372,14 @@ export default function MaintenanceTicketsManagement() {
         </footer>
       </main>
 
-      {/* ================= MODAL DIALOG: ĐIỀU PHỐI VÀ CẬP NHẬT TIẾN ĐỘ SỬA CHỮA ================= */}
-      <Dialog
-        open={!!selectedTicket}
-        onOpenChange={(open) => !open && setSelectedTicket(null)}
-      >
-        <DialogContent className="sm:max-w-137.5 bg-white rounded-2xl p-6 font-sans">
-          <DialogHeader className="select-none">
-            <DialogTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Wrench className="w-4 h-4 text-blue-600" /> Thẩm định & Điều phối
-              lệnh sửa chữa
-            </DialogTitle>
-            <DialogDescription className="text-xs text-slate-400">
-              Mã phiếu: {selectedTicket?.id} — Khai báo khởi tạo bởi cư dân căn
-              hộ.
-            </DialogDescription>
-          </DialogHeader>
+      {/* 5. MAINTENANCE TICKET DETAIL CONTROL DIALOG */}
 
-          {selectedTicket && (
-            <div className="space-y-4 pt-2 text-xs">
-              {/* Thẻ tóm tắt thông tin báo lỗi của cư dân */}
-              <div className="bg-slate-50 border border-slate-100 p-3.5 rounded-xl space-y-2">
-                <div className="flex justify-between font-bold text-slate-800 text-[13px]">
-                  <span>Vị trí: {selectedTicket.room}</span>
-                  <span className="text-slate-400 text-xs font-medium font-mono">
-                    {selectedTicket.createdAt}
-                  </span>
-                </div>
-                <p className="font-semibold text-slate-700 text-[12px]">
-                  Sự cố:{" "}
-                  <span className="text-slate-900 font-bold">
-                    {selectedTicket.title}
-                  </span>
-                </p>
-                <p className="text-slate-500 font-medium leading-relaxed bg-white p-2 rounded-lg border border-slate-200/40 text-[11.5px] max-h-24 overflow-y-auto">
-                  {selectedTicket.description}
-                </p>
-                <div className="text-[11px] text-slate-400 font-medium font-mono">
-                  Người báo: {selectedTicket.resident} — ĐT:{" "}
-                  {selectedTicket.phone}
-                </div>
-              </div>
-
-              {/* KHAY FORM ĐIỀU PHỐI CỦA ADMIN */}
-              <div className="space-y-3.5 border-t border-slate-100 pt-3">
-                {/* 1. Chọn thợ sửa chữa */}
-                <div className="space-y-1.5">
-                  <label className="font-bold text-slate-700 flex items-center gap-1">
-                    <UserCheck className="w-3.5 h-3.5 text-slate-400" /> Chỉ
-                    định nhân sự sửa chữa
-                  </label>
-                  <Select value={assignee} onValueChange={setAssignee}>
-                    <SelectTrigger className="h-9.5 border-slate-200 bg-slate-50/50 rounded-xl text-xs font-semibold focus:ring-0">
-                      <SelectValue placeholder="--- Bấm để chọn thợ xử lý sực cố ---" />
-                    </SelectTrigger>
-                    <SelectContent className="rounded-xl border-slate-200 text-xs font-medium">
-                      {TECHNICIANS.map((tech) => (
-                        <SelectItem key={tech} value={tech} className="text-xs">
-                          {tech}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* 2. Cập nhật chi phí vật tư */}
-                <div className="space-y-1.5">
-                  <label className="font-bold text-slate-700 flex items-center gap-1">
-                    <CreditCard className="w-3.5 h-3.5 text-slate-400" /> Chi
-                    phí vật tư phát sinh (nếu có)
-                  </label>
-                  <div className="relative group">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-                    <Input
-                      type="number"
-                      placeholder="Nhập số tiền mặt phụ tùng vật tư..."
-                      value={ticketCost}
-                      onChange={(e) => setTicketCost(e.target.value)}
-                      className="h-9.5 pl-8.5 bg-slate-50/50 border-slate-200 rounded-xl font-mono font-bold text-slate-800 text-xs focus-visible:bg-white transition-all shadow-2xs"
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                      VND
-                    </span>
-                  </div>
-                </div>
-
-                {/* 3. Nhật ký nghiệm thu kỹ thuật */}
-                <div className="space-y-1.5">
-                  <label className="font-bold text-slate-700">
-                    Nhật ký / Ghi chú nghiệm thu của ban quản lý
-                  </label>
-                  <Textarea
-                    placeholder="Ghi lại vật tư đã thay, nguyên nhân hỏng hoặc lý do lùi lịch sửa chữa..."
-                    rows={3}
-                    value={adminNotes}
-                    onChange={(e) => setAdminNotes(e.target.value)}
-                    className="rounded-xl bg-slate-50/50 border-slate-200 text-xs font-medium leading-relaxed p-3 focus-visible:bg-white resize-none"
-                  />
-                </div>
-              </div>
-
-              {/* Điều phối luồng Button chuyển đổi trạng thái thực tế */}
-              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3 select-none">
-                <div className="flex gap-1.5">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => handleUpdateTicket("canceled")}
-                    className="h-9 text-xs text-slate-400 border-slate-200 hover:text-red-600 hover:bg-red-50/20 font-bold rounded-xl"
-                  >
-                    Hủy Ticket
-                  </Button>
-                </div>
-
-                <div className="flex gap-1.5">
-                  {selectedTicket.status !== "completed" && (
-                    <Button
-                      type="button"
-                      onClick={() => handleUpdateTicket("processing")}
-                      className="h-9 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-sm"
-                    >
-                      Báo đang sửa
-                    </Button>
-                  )}
-                  <Button
-                    type="button"
-                    onClick={() => handleUpdateTicket("completed")}
-                    className="h-9 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-sm"
-                  >
-                    ✓ Hoàn thành nghiệm thu
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      <TicketDetailModal
+        selectedTicket={selectedTicket}
+        technicians={TECHNICIANS}
+        onClose={() => setSelectedTicket(null)}
+        onUpdateTicket={handleUpdateTicket}
+      />
     </div>
   );
 }
@@ -641,8 +431,20 @@ function renderStatusBadge(status: string) {
   switch (status) {
     case "pending":
       return (
-        <span className="inline-flex items-center gap-1 text-[11px] w-fit font-bold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">
-          <AlertTriangle className="w-3 h-3 stroke-[2.5]" /> Tiếp nhận mới
+        <span className="inline-flex items-center gap-1 text-[11px] w-fit font-bold text-sky-600 bg-sky-50 border border-sky-100 px-2 py-0.5 rounded-full">
+          <AlertCircle className="w-3 h-3 stroke-[2.5]" /> Tiếp nhận mới
+        </span>
+      );
+    case "received":
+      return (
+        <span className="inline-flex items-center gap-1 text-[11px] w-fit font-bold text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full">
+          <CheckCheck className="w-3 h-3 stroke-[2.5]" /> Đã tiếp nhận
+        </span>
+      );
+    case "scheduled":
+      return (
+        <span className="inline-flex items-center gap-1 text-[11px] w-fit font-bold text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full">
+          <CalendarClock className="w-3 h-3 stroke-[2.5]" /> Đã hẹn lịch sửa
         </span>
       );
     case "processing":
@@ -657,10 +459,16 @@ function renderStatusBadge(status: string) {
           <CheckCircle className="w-3 h-3 stroke-[2.5]" /> Hoàn thành
         </span>
       );
+    case "cancelled":
+      return (
+        <span className="inline-flex items-center gap-1 text-[11px] w-fit font-bold text-slate-500 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-full">
+          <XCircle className="w-3 h-3" /> Đã hủy
+        </span>
+      );
     default:
       return (
-        <span className="inline-flex items-center gap-1 text-[11px] w-fit font-bold text-slate-400 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-full">
-          <XCircle className="w-3 h-3" /> Đã hủy bỏ
+        <span className="inline-flex items-center gap-1 text-[11px] w-fit font-bold text-slate-500 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-full">
+          Không xác định
         </span>
       );
   }

@@ -6,8 +6,6 @@ import {
   Receipt,
   Search,
   FileDown,
-  Mail,
-  MoreHorizontal,
   CheckCircle2,
   Clock,
   AlertCircle,
@@ -22,6 +20,8 @@ import {
   ChevronRight,
   RefreshCw,
   Plus,
+  MoreVertical,
+  AlertTriangle,
 } from "lucide-react";
 
 import { Input } from "@/shared/components/ui/input";
@@ -48,43 +48,110 @@ import { toast } from "sonner";
 import { CreateInvoiceDialog } from "./components/CreateInvoiceDialog";
 import { cn } from "@/shared/utils/cn";
 import { InvoicingCountdown } from "./components/InvoicingCountdown";
-import { MOCK_INVOICES } from "./data";
-
-// Mock Data bóc tách chi phí đậm đặc nghiệp vụ chuỗi CCMN Danjin 2026
-
+import { invoiceApi } from "./apis/invoice.api";
+import { Invoice } from "./types/invoice.type";
+import {
+  SystemInvoiceSetting,
+  systemSettingApi,
+} from "../settings/apis/system-setting.api";
 
 export default function InvoiceManagementPage() {
+  const now = new Date();
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSystemRunning, setIsSystemRunning] = useState(false);
+  const [systemSetting, setSystemSetting] = useState<SystemInvoiceSetting>();
+
   const [statusTab, setStatusTab] = useState<
     "all" | "Paid" | "Pending" | "Overdue"
   >("all");
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  // Thêm 2 dòng state này vào đầu component InvoiceManagementPage
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const [selectedInvoice, setSelectedInvoice] = useState<any | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const fetchDateTimeFromServer = async () => {
+    try {
+      const response = await systemSettingApi.getServerDateTime();
+      console.log("Server date time response:", response);
+      if (response.data) {
+        setSystemSetting(response.data);
+      } else {
+        console.warn("Server date time response has no data field:", response);
+      }
+    } catch (error) {
+      console.error("Error fetching server date time:", error);
+    }
+  };
+
+  const fetchInvoices = async () => {
+    try {
+      setIsLoading(true);
+      const res = await invoiceApi.getAllInvoices();
+      console.log("Fetched invoices from API:", res);
+      setInvoices(res.data);
+    } catch (error) {
+      console.error("Error fetching invoices:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchInvoices();
+    fetchDateTimeFromServer();
+  }, []);
+
+  const handleViewInvoice = async (invoiceId: string) => {
+    try {
+      const blob = await invoiceApi.exportInvoicePdf(invoiceId);
+
+      const url = URL.createObjectURL(blob);
+
+      window.open(url, "_blank");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDownloadInvoice = async (invoiceId: string) => {
+    try {
+      const blob = await invoiceApi.exportInvoicePdf(invoiceId);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `invoice-${invoiceId.slice(0, 12)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success(
+        `Đã xuất hóa đơn PDF cho chứng từ ${invoiceId.slice(0, 12)}!`,
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleOpenDetail = (invoice: any) => {
     setSelectedInvoice(invoice);
     setIsDetailOpen(true);
   };
-
-  // 1. Luồng xử lý bộ lọc tập trung
+  // Luồng xử lý bộ lọc tập trung
   const filteredInvoices = useMemo(() => {
-    return MOCK_INVOICES.filter((inv) => {
+    return invoices.filter((inv) => {
       const matchesSearch =
-        inv.room.includes(searchTerm) ||
-        inv.tenant.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        inv.roomNumber.includes(searchTerm) ||
+        inv.tenantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         inv.id.toLowerCase().includes(searchTerm.toLowerCase());
 
       if (!matchesSearch) return false;
       if (statusTab !== "all" && inv.status !== statusTab) return false;
       return true;
     });
-  }, [searchTerm, statusTab]);
+  }, [searchTerm, statusTab, invoices]);
 
-  // 2. Logic tương tác mảng Checkbox hàng loạt
+  //Logic tương tác mảng Checkbox hàng loạt
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
       setSelectedIds(filteredInvoices.map((inv) => inv.id));
@@ -101,67 +168,59 @@ export default function InvoiceManagementPage() {
     }
   };
 
-  const fetchInvoices = async () => {
-    try {
-      setIsLoading(true);
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchInvoices();
-  }, []);
-
-  const now = new Date();
-
-  // Giả lập state lưu trữ mốc thời gian nhận về từ API Backend
-  // Đúng nửa đêm ngày 05/06/2026 hệ thống sẽ tự chạy Cron Job
-  const [targetDate, setTargetDate] = useState<string>(
-    "2026-06-03T00:00:00.000Z",
-  );
-  const [isSystemRunning, setIsSystemRunning] = useState(false);
-
-  // Giả lập hàm gọi API lấy thời gian thực tế từ server
-  useEffect(() => {
-    // fetch('/api/invoice-scheduler/next-date')
-    //   .then(res => res.json())
-    //   .then(data => setTargetDate(data.targetDate))
-  }, []);
-
   // Callback kích hoạt khi đồng hồ đếm ngược về 0
-  const handleAutomaticTrigger = () => {
+  const handleAutomaticTrigger = async () => {
     setIsSystemRunning(true);
     toast.loading(
-      "⏰ Hệ thống tự động: Đang tiến hành quét chỉ số và phát hành hóa đơn...",
+      "Hệ thống tự động: Đang tiến hành quét chỉ số và phát hành hóa đơn...",
     );
 
-    // Giả lập lệnh gọi reload data sau khi Cron Job xử lý xong
-    setTimeout(() => {
-      setIsSystemRunning(false);
-      toast.success("✓ Đã hoàn tất luồng tự động phát hành hóa đơn kỳ mới!");
-    }, 3000);
+    // Thêm từ khóa async ngay trước dấu ngoặc () của callback setTimeout
+    setTimeout(async () => {
+      try {
+        setIsSystemRunning(false);
+        await fetchInvoices();
+        toast.success("✓ Đã hoàn tất luồng tự động phát hành hóa đơn kỳ mới!");
+      } catch (error) {
+        console.error("Error during automatic invoicing:", error);
+        toast.error("Có lỗi xảy ra khi đồng bộ hóa đơn mới.", {
+          description: "Vui lòng kiểm tra lại hệ thống.",
+        });
+      }
+    }, 5000);
   };
 
-  // Nút khẩn cấp dùng khi Admin muốn ép hệ thống chốt số luôn lập tức bằng tay
-  const handleForceInvoicingByHand = () => {
+  const handleForceInvoicingByHand = async () => {
     const confirmForce = window.confirm(
       "Cảnh báo: Hành động này sẽ ép hệ thống chốt số và phát hành hóa đơn ngay lập tức trước thời hạn. Bạn có chắc chắn không?",
     );
     if (!confirmForce) return;
 
-    toast.loading("Đang phát hành hóa đơn cư dân thủ công...");
-    setTimeout(() => {
-      toast.success(
-        "✓ Cư dân toàn bộ hệ thống tòa nhà đã nhận được thông báo hóa đơn kỳ mới!",
-      );
-    }, 1500);
-    toast.dismiss();
+    const loadingToast = toast.loading(
+      "Đang phát hành hóa đơn cư dân thủ công...",
+    );
+
+    try {
+      const generatedInvoices = await invoiceApi.generateInvoices();
+      console.log("Generated invoices:", generatedInvoices);
+      await fetchInvoices();
+      toast.success("✓ Đã phát hành hóa đơn thành công cho kỳ này!", {
+        id: loadingToast,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Có lỗi xảy ra khi phát hành hóa đơn. Vui lòng thử lại.", {
+        id: loadingToast,
+      });
+    }
   };
+
+  // Sau đó truyền vào component con như thế này:
+  <InvoicingCountdown
+    settingData={systemSetting}
+    onTimerEnd={handleAutomaticTrigger}
+  />;
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-2 space-y-5 bg-slate-50/20 min-h-screen antialiased selection:bg-indigo-50">
       {/* 1. TOP BAR CHỨNG TỪ TÁC VỤ */}
@@ -173,7 +232,7 @@ export default function InvoiceManagementPage() {
           </h1>
           <p className="text-xs text-slate-500 font-medium">
             Kỳ chu kỳ đối soát hệ thống tháng này • Tổng hóa đơn{" "}
-            {MOCK_INVOICES.length}.
+            {invoices.length}.
           </p>
           <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto pt-2">
             <Button className="h-8 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-2xs flex-1 sm:flex-none">
@@ -188,7 +247,7 @@ export default function InvoiceManagementPage() {
               {now.getFullYear()}
             </Button>
 
-            <Button
+            {/* <Button
               variant="outline"
               className="h-8 text-xs cursor-pointer font-semibold border-slate-200 text-slate-600 bg-white hover:bg-slate-50 shadow-2xs rounded-lg flex-1 sm:flex-none"
               onClick={() => {
@@ -200,24 +259,24 @@ export default function InvoiceManagementPage() {
             >
               <Printer className="w-3.5 h-3.5 mr-1.5 text-slate-400" /> In hàng
               loạt
-            </Button>
+            </Button> */}
 
             <Button
               variant="outline"
               onClick={() => setIsLoading(true)}
-              disabled={isLoading}
+              disabled={isLoading || isSystemRunning}
             >
               <RefreshCw
                 className={cn(
                   " cursor-pointer w-4 h-4",
-                  isLoading && "animate-spin",
+                  (isLoading || isSystemRunning)  && "animate-spin",
                 )}
               />
             </Button>
           </div>
         </div>
         <InvoicingCountdown
-          targetTargetDate={targetDate}
+          settingData={systemSetting}
           onTimerEnd={handleAutomaticTrigger}
         />
       </div>
@@ -389,58 +448,103 @@ export default function InvoiceManagementPage() {
 
                   {/* Mã ID hóa đơn */}
                   <TableCell className="font-mono text-xs font-bold text-slate-400 py-3">
-                    {inv.id}
+                    {inv.id.toUpperCase().slice(0, 12)}
                   </TableCell>
 
                   {/* Vị trí phòng & Tên chủ hộ */}
                   <TableCell className="py-3">
                     <span className="font-bold text-slate-800 text-xs font-mono">
-                      P.{inv.room}
+                      Phòng {inv.roomNumber}
                     </span>
                     <span className="text-[10px] text-slate-400 font-sans block mt-0.5 truncate max-w-30 font-medium">
-                      {inv.tenant}
+                      {inv.tenantName}
                     </span>
                   </TableCell>
 
-                  {/* KHẮC PHỤC: Khay phân tách điện nước thực tế, hiển thị rõ số công tơ */}
+                  {/* Cấu phần điện nước chi tiết */}
                   <TableCell className="py-3">
-                    <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[10px] font-medium text-slate-400 font-sans">
+                    <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] font-medium text-slate-400 font-sans">
                       <span className="flex items-center gap-1">
                         <Zap size={11} className="text-amber-500" /> Điện:{" "}
                         <strong className="text-slate-700 font-mono font-bold">
-                          {inv.counters.electric.used} kWh
+                          {inv.invoiceItems.find((i) => i.type === "ELECTRIC")
+                            ?.quantity ?? ""}{" "}
+                          kWh
                         </strong>{" "}
                         <span className="text-slate-300">
-                          ({inv.counters.electric.old}➔
-                          {inv.counters.electric.new})
+                          (
+                          {inv.invoiceItems.find((i) => i.type === "ELECTRIC")
+                            ?.previousReading ?? ""}
+                          ➔
+                          {inv.invoiceItems.find((i) => i.type === "ELECTRIC")
+                            ?.currentReading ?? ""}
+                          )
                         </span>
                       </span>
                       <span className="flex items-center gap-1">
                         <Droplets size={11} className="text-blue-500" /> Nước:{" "}
                         <strong className="text-slate-700 font-mono font-bold">
-                          {inv.counters.water.used} m³
+                          {inv.invoiceItems.find((i) => i.type === "WATER")
+                            ?.quantity ?? ""}{" "}
+                          m³
                         </strong>{" "}
                         <span className="text-slate-300">
-                          ({inv.counters.water.old}➔{inv.counters.water.new})
+                          (
+                          {inv.invoiceItems.find((i) => i.type === "WATER")
+                            ?.previousReading ?? ""}
+                          ➔
+                          {inv.invoiceItems.find((i) => i.type === "WATER")
+                            ?.currentReading ?? ""}
+                          )
                         </span>
                       </span>
                     </div>
-                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[9px] text-slate-400 font-medium font-sans mt-1 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 w-fit">
+                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-slate-400 font-medium font-sans mt-1 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 w-fit">
                       <span>
-                        Gốc: {(inv.breakdown.rent / 1000).toLocaleString()}k
+                        Gốc:{" "}
+                        {(
+                          (inv.invoiceItems.find((i) => i.type == "ROOM")
+                            ?.subTotal || 0) / 1000
+                        ).toLocaleString("vi-VN")}{" "}
+                        k
                       </span>
                       <span>•</span>
-                      <span>Điện: {inv.breakdown.electric / 1000}k</span>
+                      <span>
+                        Điện:{" "}
+                        {(
+                          (inv.invoiceItems.find((i) => i.type === "ELECTRIC")
+                            ?.subTotal ?? 0) / 1000
+                        ).toLocaleString("vi-VN")}{" "}
+                        k
+                      </span>
                       <span>•</span>
-                      <span>Nước: {inv.breakdown.water / 1000}k</span>
+                      <span>
+                        Nước:{" "}
+                        {(
+                          (inv.invoiceItems.find((i) => i.type === "WATER")
+                            ?.subTotal ?? 0) / 1000
+                        ).toLocaleString("vi-VN")}{" "}
+                        k
+                      </span>
                       <span>•</span>
-                      <span>DV: {inv.breakdown.service / 1000}k</span>
+                      <span>
+                        DV:{" "}
+                        {(
+                          inv.invoiceItems.reduce(
+                            (acc, item) =>
+                              acc +
+                              (item.type === "SERVICE" ? item.subTotal : 0),
+                            0,
+                          ) / 1000
+                        ).toLocaleString("vi-VN")}{" "}
+                        k
+                      </span>
                     </div>
                   </TableCell>
 
                   {/* Tổng số tiền */}
                   <TableCell className="font-bold text-slate-900 text-right font-mono py-3">
-                    {inv.amount.toLocaleString("vi-VN")}đ
+                    {inv.totalAmount.toLocaleString("vi-VN")}đ
                   </TableCell>
 
                   {/* Hạn đóng & Cảnh báo số ngày trễ */}
@@ -463,30 +567,20 @@ export default function InvoiceManagementPage() {
                   {/* Dropdown tác vụ hệ thống */}
                   <TableCell className="text-right pr-4 py-3">
                     <div className="flex justify-end gap-1 items-center h-7">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-slate-400 hover:text-indigo-600 rounded-md hover:bg-slate-100/50"
-                        title="Gửi email nhắc nhanh"
-                      >
-                        <Mail className="w-3.5 h-3.5 stroke-[1.75]" />
-                      </Button>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-7 w-7 rounded-md opacity-0 group-hover:opacity-100 text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                            className="h-7 w-7 cursor-pointer rounded-md group-hover:opacity-100 text-slate-400 hover:text-slate-700 hover:bg-slate-100"
                           >
-                            <MoreHorizontal className="w-3.5 h-3.5" />
+                            <MoreVertical className="w-3.5 h-3.5" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
                           align="end"
                           className="w-48 p-1 rounded-lg border border-slate-200/70 bg-white shadow-md"
                         >
-                          {/* // Tìm đến DropdownMenuItem "Chi tiết hóa đơn" trong
-                          bảng Table của anh và gắn lệnh: */}
                           <DropdownMenuItem
                             onClick={() => handleOpenDetail(inv)} // Bắn toàn bộ Object hóa đơn vào state kích hoạt
                             className="gap-2 rounded py-2 text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer"
@@ -494,17 +588,27 @@ export default function InvoiceManagementPage() {
                             <ArrowUpRight className="w-3.5 h-3.5 text-slate-400" />{" "}
                             Chi tiết hóa đơn
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="gap-2 rounded py-2 text-emerald-600 hover:bg-emerald-50/40 text-xs font-semibold cursor-pointer">
+                          {/* <DropdownMenuItem className="gap-2 rounded py-2 text-emerald-600 hover:bg-emerald-50/40 text-xs font-semibold cursor-pointer">
                             <CheckCircle2 className="w-3.5 h-3.5" /> Xác nhận
                             khớp tiền
+                          </DropdownMenuItem> */}
+                          <DropdownMenuItem
+                            onClick={() => handleViewInvoice(inv.id)}
+                            className=" gap-2 cursor-pointer rounded-md py-2 text-xs font-medium text-slate-600 hover:bg-sky-50 focus:bg-sky-50"
+                          >
+                            <Receipt className="h-4 w-4" />
+                            Xem biên lai điện tử
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleDownloadInvoice(inv.id)}
+                            className="gap-2 rounded py-2 text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer"
+                          >
+                            <FileDown className="h-4 w-4" />
+                            Xuất hóa đơn PDF
                           </DropdownMenuItem>
                           <DropdownMenuSeparator className="my-1 border-slate-100" />
-                          <DropdownMenuItem className="gap-2 rounded py-2 text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer">
-                            <QrCode className="w-3.5 h-3.5 text-slate-400" />{" "}
-                            Tải ảnh QR VietQR
-                          </DropdownMenuItem>
                           <DropdownMenuItem className="gap-2 rounded py-2 text-rose-600 hover:bg-rose-50/50 text-xs font-semibold cursor-pointer">
-                            Hủy bỏ chứng từ
+                            <AlertTriangle /> Đánh dấu sai sót
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -554,10 +658,7 @@ export default function InvoiceManagementPage() {
         isOpen={isDetailOpen}
         onClose={() => setIsDetailOpen(false)}
         invoice={selectedInvoice}
-        onConfirmPayment={(id) => {
-          // Luồng xử lý gọi API cập nhật trạng thái hóa đơn sang "Paid"
-          toast.success(`Đã tất toán và khóa sổ công nợ chứng từ ${id}!`);
-        }}
+        onDownloadPdf={handleDownloadInvoice}
       />
     </div>
   );

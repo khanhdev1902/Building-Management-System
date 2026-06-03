@@ -77,14 +77,23 @@ export default function UtilityReadingPage() {
     }
   }, [totalPages, currentPage]);
 
-  const projectedRevenue = roomUtilities.reduce((total, room) => {
-    const electricUsage =
-      room.electricCurrentReading - room.electricPreviousReading;
-    const waterUsage = room.waterCurrentReading - room.waterPreviousReading;
-    const electricMoney = electricUsage * (room.electricService?.price ?? 0);
-    const waterMoney = waterUsage * (room.waterService?.price ?? 0);
-    return total + electricMoney + waterMoney;
-  }, 0);
+  const projectedRevenue = roomUtilities
+    .filter((room) => room.isRecordedThisMonth)
+    .reduce((total, room) => {
+      const electricUsage =
+        room.electricCurrentReading - room.electricPreviousReading;
+
+      const waterUsage = room.waterCurrentReading - room.waterPreviousReading;
+
+      const electricMoney =
+        electricUsage * Number(room.electricService?.price ?? 0);
+
+      const waterMoney = waterUsage * Number(room.waterService?.price ?? 0);
+
+      return total + electricMoney + waterMoney;
+    }, 0);
+
+  console.log("Projected Revenue:", projectedRevenue);
 
   const handleUpdateRoomUtilities = (
     roomId: string,

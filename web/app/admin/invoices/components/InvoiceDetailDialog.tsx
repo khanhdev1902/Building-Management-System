@@ -10,10 +10,10 @@ import {
   Zap,
   Droplets,
   Wrench,
-  FileCheck2,
-  QrCode,
   Printer,
   Send,
+  QrCode,
+  CheckCircle2,
 } from "lucide-react";
 import {
   Dialog,
@@ -24,275 +24,288 @@ import {
 } from "@/shared/components/ui/dialog";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
+import { Invoice } from "../types/invoice.type";
 
-
-// Khai báo cấu trúc Type nghiêm ngặt cho dữ liệu hóa đơn đối soát
 interface InvoiceDetailProps {
   isOpen: boolean;
   onClose: () => void;
-  invoice: {
-    id: string;
-    room: string;
-    tenant: string;
-    amount: number;
-    dueDate: string;
-    status: string;
-    counters: {
-      electric: { old: number; new: number; used: number };
-      water: { old: number; new: number; used: number };
-    };
-    breakdown: {
-      rent: number;
-      electric: number;
-      water: number;
-      service: number;
-    };
-  } | null;
-  onConfirmPayment?: (id: string) => void;
+  invoice: Invoice | null;
+  onDownloadPdf?: (id: string) => void;
 }
 
 export function InvoiceDetailDialog({
   isOpen,
   onClose,
   invoice,
-  onConfirmPayment,
+  onDownloadPdf,
 }: InvoiceDetailProps) {
   if (!invoice) return null;
 
   const isUnpaid = invoice.status !== "Paid";
 
+  // Phân tách dữ liệu chuẩn từ Backend gác lên UI
+  const roomItem = invoice.invoiceItems.find((i) => i.type === "ROOM");
+  const electricItem = invoice.invoiceItems.find((i) => i.type === "ELECTRIC");
+  const waterItem = invoice.invoiceItems.find((i) => i.type === "WATER");
+  const serviceItems = invoice.invoiceItems.filter((i) => i.type === "SERVICE");
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      {/* Nới rộng khung lên mốc 3xl thoáng đạt, phẳng trần không đệm viền thừa */}
-      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-3xl bg-white rounded-xl border border-slate-200 p-0 shadow-xl font-sans overflow-hidden flex flex-col md:flex-row md:h-130 animate-in fade-in zoom-in-95 duration-200">
-        {/* ================= CỘT TRÁI (7 PHẦN): BẢNG CHIẾT TÍNH TIỀN PHÒNG ĐẬM NGỮ CẢNH ================= */}
-        <div className="flex-1 p-5 flex flex-col justify-between overflow-y-auto">
-          <div className="space-y-4">
-            <DialogHeader className="select-none">
+      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-3xl bg-white rounded-2xl border border-slate-150 p-0 shadow-2xl font-sans overflow-hidden flex flex-col md:flex-row md:h-[520px] animate-in fade-in zoom-in-95 duration-200">
+        {/* ================= CỘT TRÁI: BẢNG CHIẾT TÍNH (FLEXBOX CHẶN TRÔI) ================= */}
+        <div className="flex-1 flex flex-col h-full bg-white overflow-hidden">
+          {/* TẦNG 1: HEADER CỐ ĐỊNH KHÔNG DI DỊCH */}
+          <div className="p-5.5 pb-3 border-b border-slate-100 bg-white select-none">
+            <DialogHeader>
               <div className="flex items-center gap-2">
                 <Badge
                   variant="outline"
-                  className="bg-slate-900 text-white border-none font-mono text-[10px] font-bold px-1.5 py-0 rounded"
+                  className="bg-slate-900 text-slate-100 border-none font-mono text-[9px] font-bold px-2 py-0.5 rounded"
                 >
-                  {invoice.id}
+                  MÃ ĐỐI SOÁT: {invoice.id.substring(0, 8).toUpperCase()}
                 </Badge>
                 <StatusIndicator status={invoice.status} />
               </div>
-              <DialogTitle className="text-sm font-black text-slate-950 uppercase tracking-wide pt-1 flex items-center gap-1.5">
-                <Receipt size={15} className="text-slate-400 stroke-[2.5]" />
-                Chi tiết bảng kê công nợ phòng {invoice.room}
+              <DialogTitle className="text-[15px] font-black text-slate-900 tracking-tight pt-1 flex items-center gap-1.5">
+                <Receipt size={15} className="text-indigo-600 stroke-[2.5]" />
+                Phiếu kê cước & công nợ P.{invoice.roomNumber}
               </DialogTitle>
               <DialogDescription className="text-[11px] text-slate-400 font-medium">
-                Đối soát chỉ số tiêu thụ và các cấu phần cước sinh hoạt kỳ{" "}
-                <strong className="text-slate-600 font-mono">05/2026</strong>.
+                Kỳ hạn chốt sổ doanh thu chu kỳ tháng:{" "}
+                <span className="text-slate-800 font-bold font-mono bg-slate-100 px-1.5 py-0.5 rounded">
+                  {invoice.billingPeriod}
+                </span>
               </DialogDescription>
             </DialogHeader>
+          </div>
 
-            {/* THẺ TÓM TẮT LÝ LỊCH CHỦ HỘ */}
-            <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50/60 border border-slate-100 rounded-xl text-xs select-none">
-              <div className="space-y-0.5">
-                <span className="text-slate-400 text-[9px] font-bold uppercase tracking-tight block">
-                  Cư dân đại diện
-                </span>
-                <span className="font-bold text-slate-800 flex items-center gap-1">
-                  <User size={12} className="text-slate-400" /> {invoice.tenant}
+          {/* TẦNG 2: VÙNG CHỨA NỘI DUNG ĐƯỢC PHÉP CUỘN (SCROLLABLE BODY) */}
+          <div className="flex-1 overflow-y-auto p-5.5 pt-3 space-y-4.5 bg-slate-50/30">
+            {/* SƠ YẾU LÝ LỊCH CƯ DÂN */}
+            <div className="flex items-center justify-between p-2.5 bg-white border border-slate-200/60 rounded-xl text-[11.5px] select-none text-slate-600 shadow-3xs">
+              <div className="flex items-center gap-1.5">
+                <User size={13} className="text-slate-400" />
+                <span>
+                  Cư dân:{" "}
+                  <strong className="text-slate-900 font-bold">
+                    {invoice.tenantName}
+                  </strong>
                 </span>
               </div>
-              <div className="space-y-0.5">
-                <span className="text-slate-400 text-[9px] font-bold uppercase tracking-tight block">
-                  Hạn kì tất toán
-                </span>
-                <span className="font-bold text-slate-800 font-mono flex items-center gap-1">
-                  <Calendar size={12} className="text-slate-400" />{" "}
-                  {invoice.dueDate}
+              <div className="h-3 w-px bg-slate-200" />
+              <div className="flex items-center gap-1.5">
+                <Calendar size={13} className="text-slate-400" />
+                <span>
+                  Hạn tất toán:{" "}
+                  <strong className="text-slate-900 font-mono font-bold">
+                    {invoice.dueDate}
+                  </strong>
                 </span>
               </div>
             </div>
 
-            {/* BẢNG KÊ KHAI CHI TIẾT DỊCH VỤ PHẲNG LÌ */}
-            <div className="space-y-2 select-none">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block pl-0.5">
-                Cấu phần cước phí chi tiết
-              </span>
-
-              <div className="border border-slate-100 rounded-xl overflow-hidden text-xs">
-                {/* Hàng 1: Tiền nhà */}
-                <div className="flex items-center justify-between p-3 bg-white hover:bg-slate-50/40 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1 bg-slate-50 rounded-md border border-slate-100">
-                      <Home size={13} className="text-slate-500" />
+            {/* DANH SÁCH BIỂU PHÍ BÓC TÁCH */}
+            <div className="space-y-3">
+              {/* PHÂN VÙNG 1: TIỀN PHÒNG GỐC */}
+              {roomItem && (
+                <div className="bg-white border border-slate-200/80 rounded-xl p-3 flex items-center justify-between shadow-3xs">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 bg-indigo-600 text-white rounded-lg shadow-sm">
+                      <Home size={14} className="stroke-[2.2]" />
                     </div>
-                    <span className="font-semibold text-slate-700">
-                      Tiền phòng cứng định kỳ
-                    </span>
+                    <div>
+                      <h5 className="font-bold text-slate-900 text-[12px]">
+                        Tiền thuê căn hộ cứng
+                      </h5>
+                      <p className="text-[10px] text-slate-400 font-medium">
+                        Giá thuê cố định tính theo chu kỳ tháng
+                      </p>
+                    </div>
                   </div>
-                  <span className="font-mono font-bold text-slate-900">
-                    {invoice.breakdown.rent.toLocaleString("vi-VN")} đ
+                  <span className="font-mono font-black text-slate-900 text-[13px]">
+                    {roomItem.subTotal.toLocaleString("vi-VN")} đ
                   </span>
                 </div>
+              )}
 
-                <div className="h-px bg-slate-100 w-full" />
-
-                {/* Hàng 2: Tiền điện kèm chỉ số cũ mới */}
-                <div className="flex items-center justify-between p-3 bg-white hover:bg-slate-50/40 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1 bg-amber-50 rounded-md border border-amber-100/40">
-                      <Zap size={13} className="text-amber-500" />
+              {/* PHÂN VÙNG 2: TIỀN ĐIỆN NƯỚC */}
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block pl-0.5">
+                  Hạng mục năng lượng tiêu thụ
+                </span>
+                <div className="border border-slate-150 bg-white rounded-xl divide-y divide-slate-100 shadow-3xs overflow-hidden">
+                  {/* Dòng Điện */}
+                  {electricItem && (
+                    <div className="flex items-center justify-between p-2.5 text-[11.5px] hover:bg-slate-50/40 transition-colors">
+                      <div className="flex items-center gap-2.5">
+                        <Zap
+                          size={13}
+                          className="text-amber-500 stroke-[2.2]"
+                        />
+                        <div>
+                          <span className="font-bold text-slate-800">
+                            Tiền điện tiêu thụ
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-mono ml-2">
+                            ({electricItem.previousReading} ➔{" "}
+                            {electricItem.currentReading})
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-100 px-1.5 py-0.2 rounded font-mono font-bold">
+                          +{electricItem.quantity} kWh
+                        </span>
+                        <span className="font-mono font-bold text-slate-900 w-20 text-right">
+                          {electricItem.subTotal.toLocaleString("vi-VN")} đ
+                        </span>
+                      </div>
                     </div>
-                    <div className="space-y-0.5">
-                      <span className="font-semibold text-slate-700 block">
-                        Tiện ích điện tiêu thụ
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-mono block">
-                        Chỉ số: {invoice.counters.electric.old} ➔{" "}
-                        {invoice.counters.electric.new} (
-                        <strong className="text-slate-600 font-bold">
-                          +{invoice.counters.electric.used} kWh
-                        </strong>
-                        )
-                      </span>
-                    </div>
-                  </div>
-                  <span className="font-mono font-bold text-slate-900">
-                    {invoice.breakdown.electric.toLocaleString("vi-VN")} đ
-                  </span>
-                </div>
+                  )}
 
-                <div className="h-px bg-slate-100 w-full" />
-
-                {/* Hàng 3: Tiền nước kèm chỉ số */}
-                <div className="flex items-center justify-between p-3 bg-white hover:bg-slate-50/40 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1 bg-blue-50 rounded-md border border-blue-100/40">
-                      <Droplets size={13} className="text-blue-500" />
+                  {/* Dòng Nước */}
+                  {waterItem && (
+                    <div className="flex items-center justify-between p-2.5 text-[11.5px] hover:bg-slate-50/40 transition-colors">
+                      <div className="flex items-center gap-2.5">
+                        <Droplets
+                          size={13}
+                          className="text-blue-500 stroke-[2.2]"
+                        />
+                        <div>
+                          <span className="font-bold text-slate-800">
+                            Nước sạch lưu trú
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-mono ml-2">
+                            ({waterItem.previousReading} ➔{" "}
+                            {waterItem.currentReading})
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className="text-[10px] bg-blue-50 text-blue-700 border border-blue-100 px-1.5 py-0.2 rounded font-mono font-bold">
+                          +{waterItem.quantity} m³
+                        </span>
+                        <span className="font-mono font-bold text-slate-900 w-20 text-right">
+                          {waterItem.subTotal.toLocaleString("vi-VN")} đ
+                        </span>
+                      </div>
                     </div>
-                    <div className="space-y-0.5">
-                      <span className="font-semibold text-slate-700 block">
-                        Nước sạch lưu trú
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-mono block">
-                        Chỉ số: {invoice.counters.water.old} ➔{" "}
-                        {invoice.counters.water.new} (
-                        <strong className="text-slate-600 font-bold">
-                          +{invoice.counters.water.used} m³
-                        </strong>
-                        )
-                      </span>
-                    </div>
-                  </div>
-                  <span className="font-mono font-bold text-slate-900">
-                    {invoice.breakdown.water.toLocaleString("vi-VN")} đ
-                  </span>
-                </div>
-
-                <div className="h-px bg-slate-100 w-full" />
-
-                {/* Hàng 4: Phí dịch vụ gộp */}
-                <div className="flex items-center justify-between p-3 bg-white hover:bg-slate-50/40 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1 bg-indigo-50 rounded-md border border-indigo-100/40">
-                      <Wrench size={13} className="text-indigo-500" />
-                    </div>
-                    <span className="font-semibold text-slate-700">
-                      Combo Quản lý, Mạng Wifi & Vệ sinh
-                    </span>
-                  </div>
-                  <span className="font-mono font-bold text-slate-900">
-                    {invoice.breakdown.service.toLocaleString("vi-VN")} đ
-                  </span>
+                  )}
                 </div>
               </div>
+
+              {/* PHÂN VÙNG 3: TIỀN DỊCH VỤ CỘNG THÊM */}
+              {serviceItems.length > 0 && (
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block pl-0.5">
+                    Dịch vụ tiện ích tích hợp
+                  </span>
+                  <div className="border border-slate-150 bg-white rounded-xl divide-y divide-slate-100 shadow-3xs overflow-hidden">
+                    {serviceItems.map((item, key) => (
+                      <div
+                        key={key}
+                        className="flex items-center justify-between p-2.5 text-[11.5px] hover:bg-slate-50/40 transition-colors"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <Wrench
+                            size={13}
+                            className="text-slate-400 stroke-[2.2]"
+                          />
+                          <span className="font-medium text-slate-700 truncate">
+                            {item.itemName}
+                          </span>
+                        </div>
+                        <span className="font-mono font-bold text-slate-900 pl-2 shrink-0">
+                          {item.subTotal.toLocaleString("vi-VN")} đ
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* THANH CÔNG CỤ CHÂN TRANG TRÁI */}
-          <div className="flex items-center gap-2 pt-3 border-t border-slate-100 mt-4 select-none">
+          {/* TẦNG 3: FOOTER THANH CÔNG CỤ CỐ ĐỊNH Ở ĐÁY (STICKY FOOTER) */}
+          <div className="p-4 px-5.5 border-t border-slate-100 bg-white flex items-center gap-2 select-none shrink-0 shadow-[0_-4px_12px_rgba(0,0,0,0.02)]">
             <Button
+              onClick={() => onDownloadPdf && onDownloadPdf(invoice.id)}
               variant="outline"
               size="sm"
-              className="h-8 text-xs font-semibold border-slate-200 text-slate-600 bg-white rounded-lg px-2.5"
+              className="h-8 text-xs font-bold border-slate-200 text-slate-600 bg-white rounded-xl px-2.5 hover:bg-slate-50 shadow-3xs cursor-pointer"
             >
-              <Printer size={12} className="mr-1 text-slate-400" /> In phiếu thu
+              <Printer size={12} className="mr-1.5 text-slate-400" /> Xuất PDF
             </Button>
             {isUnpaid && (
               <Button
                 variant="outline"
                 size="sm"
-                className="h-8 text-xs font-semibold border-slate-200 text-slate-600 bg-white rounded-lg px-2.5 gap-1"
+                className="h-8 text-xs font-bold border-slate-200 text-slate-600 bg-white rounded-xl px-2.5 hover:bg-slate-50 gap-1 shadow-3xs cursor-pointer"
               >
-                <Send size={12} className="text-slate-400" /> Nhắc nợ Zalo/SMS
+                <Send size={12} className="text-slate-400" /> Nhắc nợ
               </Button>
             )}
             <div className="flex-1" />
             <Button
               variant="ghost"
               onClick={onClose}
-              className="h-8 text-xs text-slate-400 hover:text-slate-700 font-bold rounded-lg cursor-pointer"
+              className="h-8 text-xs text-slate-400 hover:text-slate-600 font-bold rounded-xl cursor-pointer"
             >
               Đóng lại
             </Button>
           </div>
         </div>
 
-        {/* ================= CỘT PHẢI (5 PHẦN): KHU VỰC QUÉT MÃ VIETQR SLATE THAN SANG TRỌNG ================= */}
-        <div className="w-full md:w-72 bg-slate-50/60 p-5 flex flex-col justify-between border-t md:border-t-0 md:border-l border-slate-100 select-none shrink-0">
-          <div className="space-y-4 flex-1 flex flex-col">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 flex items-center gap-1">
-              <QrCode size={11} className="text-indigo-500" /> Cổng gạch nợ
-              nhanh VietQR
+        {/* ================= CỘT PHẢI: KHU VỰC THỂ THAN QR CODE (GIỮ NGUYÊN TỶ LỆ) ================= */}
+        <div className="w-full md:w-[240px] bg-slate-50 p-4 flex flex-col border-t md:border-t-0 md:border-l border-slate-200/60 select-none shrink-0 justify-between">
+          <div className="space-y-3 flex-1 flex flex-col justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 flex items-center gap-1 pl-0.5">
+              <QrCode size={12} className="text-indigo-500" /> CỔNG VIETQR CHỐT
+              SỔ
             </span>
 
-            {/* KHUNG THẺ HÓA ĐƠN ĐIỆN TỬ CHÌM GIỮA NỀN */}
-            <div className="bg-white p-4 shadow-sm rounded-xl border border-slate-200/60 relative overflow-hidden flex-1 flex flex-col justify-between space-y-4">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-slate-900" />
-
-              {/* QR Code giả lập căn khít */}
-              <div className="flex flex-col items-center justify-center space-y-2 py-2 flex-1">
-                <div className="h-52 w-52 border border-slate-200 p-2 rounded-lg bg-white shadow-3xs flex items-center justify-center transition-all hover:border-slate-400">
+            <div className="bg-white p-3.5 shadow-xs rounded-xl border border-slate-200 flex-1 flex flex-col justify-between space-y-3">
+              <div className="flex flex-col items-center justify-center space-y-2 py-1 flex-1">
+                <div className="h-38 w-38 border border-slate-150 p-2 rounded-xl bg-white shadow-3xs flex items-center justify-center">
                   <img
-                    src={`https://qr.sepay.vn/img?acc=VQRQAJEQY6518&bank=MBBank&amount=2000&des=Thanh_Toan_Tien_Phong_T8`}
+                    src={
+                      invoice.qrUrl ||
+                      "https://img.vietqr.io/image/vcb-123456-compact.png"
+                    }
                     alt="Mã QR Thanh toán"
-                    className={`w-full h-full object-cover ${isUnpaid ? "text-slate-900" : "text-slate-200"}`}
+                    className={`w-full h-full object-contain transition-all duration-300 ${isUnpaid ? "opacity-100" : "opacity-5 blur-xs"}`}
                   />
                 </div>
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight text-center">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight text-center leading-normal max-w-[150px]">
                   {isUnpaid
-                    ? "Quét để tất toán nhanh qua App Bank"
-                    : "Giao dịch đã đóng số"}
+                    ? "Quét gạch nợ tự động SePay"
+                    : "Hóa đơn đã khóa sổ quỹ"}
                 </span>
               </div>
 
-              {/* TỔNG TIỀN PHẢI ĐÓNG SẮP XẾP ĐẰNG CHÂN BOX */}
               <div className="space-y-2 mt-auto">
-                <div className="p-3 bg-slate-950 text-white rounded-xl relative overflow-hidden shadow-sm">
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400 block leading-none">
-                    Tổng cước thu kỳ này
+                <div className="p-3 bg-slate-950 text-white rounded-xl relative overflow-hidden shadow-md">
+                  <span className="text-[8px] font-bold uppercase tracking-widest text-slate-400 block leading-none">
+                    TỔNG TIỀN PHẢI THU
                   </span>
                   <div className="flex items-baseline gap-0.5 pt-1.5">
-                    <span className="text-xl font-black font-mono tracking-tight leading-none text-white">
-                      {invoice.amount.toLocaleString("vi-VN")}
+                    <span className="text-lg font-black font-mono tracking-tight leading-none text-white">
+                      {invoice.totalAmount.toLocaleString("vi-VN")}
                     </span>
-                    <span className="text-[10px] font-bold font-sans opacity-60 ml-0.5 text-slate-400">
+                    <span className="text-[9px] font-bold font-sans opacity-40 ml-1 text-slate-400">
                       VND
                     </span>
                   </div>
                 </div>
 
-                {/* Phím bấm Duyệt nợ thông minh dành riêng cho Admin */}
                 {isUnpaid ? (
-                  <Button
-                    onClick={() => {
-                      if (onConfirmPayment) onConfirmPayment(invoice.id);
-                      onClose();
-                    }}
-                    className="w-full h-8 text-[11px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-2xs gap-1 cursor-pointer uppercase tracking-wider transition-colors"
-                  >
-                    <FileCheck2 size={12} className="stroke-[2.5]" /> Xác nhận
-                    khớp tiền
-                  </Button>
+                  <div className="w-full h-8 flex items-center justify-center bg-amber-500/10 border border-amber-500/20 text-amber-700 rounded-lg text-[10px] font-extrabold uppercase tracking-wider select-none animate-pulse">
+                    Chờ khớp dòng tiền...
+                  </div>
                 ) : (
-                  <div className="w-full h-8 flex items-center justify-center gap-1 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-lg text-[11px] font-bold uppercase select-none">
-                    ✓ Đã tất toán sổ gốc
+                  <div className="w-full h-8 flex items-center justify-center bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 rounded-lg text-[10px] font-extrabold uppercase tracking-wider select-none">
+                    <CheckCircle2 size={12} className="stroke-[2.5] mr-1" /> Đã
+                    tất toán
                   </div>
                 )}
               </div>
@@ -304,11 +317,10 @@ export function InvoiceDetailDialog({
   );
 }
 
-// COMPONENT HELPER 1: ĐÈN CHỈ BÁO TRẠNG THÁI TIỀN DẸT MỊN KHÍT KHÔNG GIAN
 function StatusIndicator({ status }: { status: string }) {
   const map: Record<string, { label: string; class: string; dot: string }> = {
     Paid: {
-      label: "Đã thu",
+      label: "Đã thu tiền",
       class: "bg-emerald-50 text-emerald-700 border-emerald-100",
       dot: "bg-emerald-500",
     },
@@ -327,9 +339,9 @@ function StatusIndicator({ status }: { status: string }) {
   return (
     <Badge
       variant="outline"
-      className={`${current.class} border px-2 py-0 h-4.5 rounded-full text-[9px] font-bold flex items-center gap-1 cursor-default select-none`}
+      className={`${current.class} border px-2 py-0 h-4.5 rounded-full text-[9px] font-bold flex items-center gap-1.5 cursor-default select-none`}
     >
-      <span className={`h-1 w-1 rounded-full ${current.dot}`} />
+      <span className={`h-1.5 w-1.5 rounded-full ${current.dot}`} />
       {current.label}
     </Badge>
   );

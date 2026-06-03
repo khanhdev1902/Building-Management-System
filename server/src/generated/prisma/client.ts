@@ -115,10 +115,25 @@ export type Invoice = Prisma.InvoiceModel
  */
 export type InvoiceItem = Prisma.InvoiceItemModel
 /**
- * Model Payment
+ * Model Receipt
  * 
  */
-export type Payment = Prisma.PaymentModel
+export type Receipt = Prisma.ReceiptModel
+/**
+ * Model ExpenseType
+ * 
+ */
+export type ExpenseType = Prisma.ExpenseTypeModel
+/**
+ * Model PaymentVoucher
+ * 
+ */
+export type PaymentVoucher = Prisma.PaymentVoucherModel
+/**
+ * Model SystemSetting
+ * 
+ */
+export type SystemSetting = Prisma.SystemSettingModel
 /**
  * Model Shift
  * 

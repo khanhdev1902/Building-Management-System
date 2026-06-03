@@ -1,20 +1,29 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect } from "react";
 import { Clock, AlertCircle, RefreshCw } from "lucide-react";
 import { Badge } from "@/shared/components/ui/badge";
 
+interface SystemInvoiceSetting {
+  invoiceGenerateDay: number;
+  invoiceGenerateHour: number;
+  invoiceGenerateMinute: number;
+  [key: string]: any;
+}
+
 interface CountdownTimerProps {
-  // Mốc thời gian Backend trả về (Định dạng ISO String hoặc Timestamp)
-  // Ví dụ: "2026-06-05T00:00:00.000Z" (Đúng nửa đêm ngày mùng 5 tháng 6)
-  targetTargetDate: string;
+  settingData: SystemInvoiceSetting | null | undefined;
   onTimerEnd?: () => void;
 }
 
 export function InvoicingCountdown({
-  targetTargetDate,
+  settingData,
   onTimerEnd,
 }: CountdownTimerProps) {
+  // Đã bổ sung đầy đủ state ép Loading 5 giây ở đây nè cưng!
+  const [isForceLoading, setIsForceLoading] = useState(true);
+
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -23,11 +32,49 @@ export function InvoicingCountdown({
     isOver: false,
   });
 
+  // 1. Bộ đếm giữ trạng thái hiệu ứng Loading đúng 5 giây
   useEffect(() => {
-    const calculateTimeLeft = () => {
-      const difference = +new Date(targetTargetDate) - +new Date();
+    const timerDelay = setTimeout(() => {
+      setIsForceLoading(false);
+    }, 5000);
 
-      if (difference <= 0) {
+    return () => clearTimeout(timerDelay);
+  }, []);
+
+  // 2. Bộ tính toán thời gian đếm ngược thực tế
+  useEffect(() => {
+    // CHẶN: Nếu chưa có data từ Server HOẶC vẫn đang trong 5 giây ép loading thì không tính toán
+    if (!settingData || isForceLoading) return;
+
+    const calculateTimeLeft = () => {
+      const now = new Date();
+
+      let targetDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        settingData.invoiceGenerateDay,
+        settingData.invoiceGenerateHour,
+        settingData.invoiceGenerateMinute,
+        0,
+      );
+
+      if (now > targetDate) {
+        targetDate = new Date(
+          now.getFullYear(),
+          now.getMonth() + 1,
+          settingData.invoiceGenerateDay,
+          settingData.invoiceGenerateHour,
+          settingData.invoiceGenerateMinute,
+          0,
+        );
+      }
+
+      const difference = +targetDate - +now;
+      console.log("Thời gian còn lại (ms):", difference);
+
+      // Đặt ngưỡng biên an toàn 500ms như cưng muốn
+      if (difference <= 1000) {
+        console.log("Đã đến thời điểm chốt sổ hóa đơn tự động!");
         setTimeLeft({
           days: 0,
           hours: 0,
@@ -48,20 +95,29 @@ export function InvoicingCountdown({
       });
     };
 
-    // Chạy ngay lập tức lượt đầu để tránh UI bị delay 1 giây
     calculateTimeLeft();
-
-    // Kích hoạt bộ đếm thời gian thực mỗi giây
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, [targetTargetDate]);
+  }, [settingData, onTimerEnd, isForceLoading]); // Thêm isForceLoading vào dependency array để kích hoạt lại sau 5s
 
-  // Hàm helper để render số có 2 chữ số (Ví dụ: 05 thay vì 5)
   const padZero = (num: number) => String(num).padStart(2, "0");
 
+  // Giao diện Skeleton hiện ra khi chưa có data HOẶC đang trong chu kỳ 5 giây ép buộc
+  if (!settingData || isForceLoading) {
+    return (
+      <div className="p-4.5 bg-slate-50/50 border border-dashed border-slate-200 rounded-xl max-w-lg text-center text-xs font-medium text-slate-400 animate-pulse flex items-center justify-center gap-1.5 h-[58px] w-[340px]">
+        <span>Đang đồng bộ thời gian từ Server...</span>
+        <Clock
+          size={12}
+          className="inline-block animate-spin text-indigo-500"
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="p-4.5 shadow-3xs max-w-lg select-none font-sans flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="p-4.5 shadow-3xs max-w-lg select-none font-sans flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white border border-slate-100 rounded-2xl">
       <div className="space-y-1 min-w-0 flex-1">
         <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 block">
           Tiến trình tự động hóa hệ thống
@@ -81,9 +137,22 @@ export function InvoicingCountdown({
         </h4>
         <p className="text-[11px] text-slate-400 font-medium leading-normal flex items-center gap-1 pt-0.5">
           <AlertCircle size={12} className="text-amber-500 shrink-0" />
-          {timeLeft.isOver
-            ? "Cron Job đang chạy ngầm dưới Server."
-            : "Hệ thống sẽ tự quét công tơ điện nước và lập hóa đơn đồng loạt."}
+          {timeLeft.isOver ? (
+            "Cron Job đang chạy ngầm dưới Server."
+          ) : (
+            <span>
+              Tự động chốt lúc{" "}
+              <strong className="text-slate-700 font-mono">
+                {padZero(settingData.invoiceGenerateHour)}:
+                {padZero(settingData.invoiceGenerateMinute)}
+              </strong>{" "}
+              ngày{" "}
+              <strong className="text-slate-700 font-mono">
+                {settingData.invoiceGenerateDay}
+              </strong>{" "}
+              hàng tháng.
+            </span>
+          )}
         </p>
       </div>
 
@@ -97,7 +166,7 @@ export function InvoicingCountdown({
             { label: "Giây", val: timeLeft.seconds },
           ].map((item, idx) => (
             <React.Fragment key={idx}>
-              <div className="flex flex-col px-1.5 min-w-[34px]">
+              <div className="flex flex-col px-1.5 min-w-8.5">
                 <span className="text-sm font-black text-slate-900 tracking-tight leading-none">
                   {padZero(item.val)}
                 </span>

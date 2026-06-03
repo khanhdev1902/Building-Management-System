@@ -219,6 +219,8 @@ export type StaffWhereInput = {
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   attendances?: Prisma.AttendanceListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  receipts?: Prisma.ReceiptListRelationFilter
+  paymentVouchers?: Prisma.PaymentVoucherListRelationFilter
 }
 
 export type StaffOrderByWithRelationInput = {
@@ -230,6 +232,8 @@ export type StaffOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput
   attendances?: Prisma.AttendanceOrderByRelationAggregateInput
   invoices?: Prisma.InvoiceOrderByRelationAggregateInput
+  receipts?: Prisma.ReceiptOrderByRelationAggregateInput
+  paymentVouchers?: Prisma.PaymentVoucherOrderByRelationAggregateInput
 }
 
 export type StaffWhereUniqueInput = Prisma.AtLeast<{
@@ -244,6 +248,8 @@ export type StaffWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   attendances?: Prisma.AttendanceListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  receipts?: Prisma.ReceiptListRelationFilter
+  paymentVouchers?: Prisma.PaymentVoucherListRelationFilter
 }, "id" | "userId">
 
 export type StaffOrderByWithAggregationInput = {
@@ -278,6 +284,8 @@ export type StaffCreateInput = {
   user: Prisma.UserCreateNestedOneWithoutStaffProfileInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutStaffInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutStaffInput
+  receipts?: Prisma.ReceiptCreateNestedManyWithoutStaffInput
+  paymentVouchers?: Prisma.PaymentVoucherCreateNestedManyWithoutStaffInput
 }
 
 export type StaffUncheckedCreateInput = {
@@ -288,6 +296,8 @@ export type StaffUncheckedCreateInput = {
   salary: runtime.Decimal | runtime.DecimalJsLike | number | string
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStaffInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutStaffInput
+  receipts?: Prisma.ReceiptUncheckedCreateNestedManyWithoutStaffInput
+  paymentVouchers?: Prisma.PaymentVoucherUncheckedCreateNestedManyWithoutStaffInput
 }
 
 export type StaffUpdateInput = {
@@ -298,6 +308,8 @@ export type StaffUpdateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutStaffProfileNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutStaffNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutStaffNestedInput
+  receipts?: Prisma.ReceiptUpdateManyWithoutStaffNestedInput
+  paymentVouchers?: Prisma.PaymentVoucherUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffUncheckedUpdateInput = {
@@ -308,6 +320,8 @@ export type StaffUncheckedUpdateInput = {
   salary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStaffNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutStaffNestedInput
+  receipts?: Prisma.ReceiptUncheckedUpdateManyWithoutStaffNestedInput
+  paymentVouchers?: Prisma.PaymentVoucherUncheckedUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffCreateManyInput = {
@@ -421,12 +435,46 @@ export type StaffCreateNestedOneWithoutInvoicesInput = {
   connect?: Prisma.StaffWhereUniqueInput
 }
 
-export type StaffUpdateOneRequiredWithoutInvoicesNestedInput = {
+export type StaffUpdateOneWithoutInvoicesNestedInput = {
   create?: Prisma.XOR<Prisma.StaffCreateWithoutInvoicesInput, Prisma.StaffUncheckedCreateWithoutInvoicesInput>
   connectOrCreate?: Prisma.StaffCreateOrConnectWithoutInvoicesInput
   upsert?: Prisma.StaffUpsertWithoutInvoicesInput
+  disconnect?: Prisma.StaffWhereInput | boolean
+  delete?: Prisma.StaffWhereInput | boolean
   connect?: Prisma.StaffWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.StaffUpdateToOneWithWhereWithoutInvoicesInput, Prisma.StaffUpdateWithoutInvoicesInput>, Prisma.StaffUncheckedUpdateWithoutInvoicesInput>
+}
+
+export type StaffCreateNestedOneWithoutReceiptsInput = {
+  create?: Prisma.XOR<Prisma.StaffCreateWithoutReceiptsInput, Prisma.StaffUncheckedCreateWithoutReceiptsInput>
+  connectOrCreate?: Prisma.StaffCreateOrConnectWithoutReceiptsInput
+  connect?: Prisma.StaffWhereUniqueInput
+}
+
+export type StaffUpdateOneWithoutReceiptsNestedInput = {
+  create?: Prisma.XOR<Prisma.StaffCreateWithoutReceiptsInput, Prisma.StaffUncheckedCreateWithoutReceiptsInput>
+  connectOrCreate?: Prisma.StaffCreateOrConnectWithoutReceiptsInput
+  upsert?: Prisma.StaffUpsertWithoutReceiptsInput
+  disconnect?: Prisma.StaffWhereInput | boolean
+  delete?: Prisma.StaffWhereInput | boolean
+  connect?: Prisma.StaffWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StaffUpdateToOneWithWhereWithoutReceiptsInput, Prisma.StaffUpdateWithoutReceiptsInput>, Prisma.StaffUncheckedUpdateWithoutReceiptsInput>
+}
+
+export type StaffCreateNestedOneWithoutPaymentVouchersInput = {
+  create?: Prisma.XOR<Prisma.StaffCreateWithoutPaymentVouchersInput, Prisma.StaffUncheckedCreateWithoutPaymentVouchersInput>
+  connectOrCreate?: Prisma.StaffCreateOrConnectWithoutPaymentVouchersInput
+  connect?: Prisma.StaffWhereUniqueInput
+}
+
+export type StaffUpdateOneWithoutPaymentVouchersNestedInput = {
+  create?: Prisma.XOR<Prisma.StaffCreateWithoutPaymentVouchersInput, Prisma.StaffUncheckedCreateWithoutPaymentVouchersInput>
+  connectOrCreate?: Prisma.StaffCreateOrConnectWithoutPaymentVouchersInput
+  upsert?: Prisma.StaffUpsertWithoutPaymentVouchersInput
+  disconnect?: Prisma.StaffWhereInput | boolean
+  delete?: Prisma.StaffWhereInput | boolean
+  connect?: Prisma.StaffWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StaffUpdateToOneWithWhereWithoutPaymentVouchersInput, Prisma.StaffUpdateWithoutPaymentVouchersInput>, Prisma.StaffUncheckedUpdateWithoutPaymentVouchersInput>
 }
 
 export type StaffCreateNestedOneWithoutAttendancesInput = {
@@ -450,6 +498,8 @@ export type StaffCreateWithoutUserInput = {
   salary: runtime.Decimal | runtime.DecimalJsLike | number | string
   attendances?: Prisma.AttendanceCreateNestedManyWithoutStaffInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutStaffInput
+  receipts?: Prisma.ReceiptCreateNestedManyWithoutStaffInput
+  paymentVouchers?: Prisma.PaymentVoucherCreateNestedManyWithoutStaffInput
 }
 
 export type StaffUncheckedCreateWithoutUserInput = {
@@ -459,6 +509,8 @@ export type StaffUncheckedCreateWithoutUserInput = {
   salary: runtime.Decimal | runtime.DecimalJsLike | number | string
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStaffInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutStaffInput
+  receipts?: Prisma.ReceiptUncheckedCreateNestedManyWithoutStaffInput
+  paymentVouchers?: Prisma.PaymentVoucherUncheckedCreateNestedManyWithoutStaffInput
 }
 
 export type StaffCreateOrConnectWithoutUserInput = {
@@ -484,6 +536,8 @@ export type StaffUpdateWithoutUserInput = {
   salary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   attendances?: Prisma.AttendanceUpdateManyWithoutStaffNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutStaffNestedInput
+  receipts?: Prisma.ReceiptUpdateManyWithoutStaffNestedInput
+  paymentVouchers?: Prisma.PaymentVoucherUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffUncheckedUpdateWithoutUserInput = {
@@ -493,6 +547,8 @@ export type StaffUncheckedUpdateWithoutUserInput = {
   salary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStaffNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutStaffNestedInput
+  receipts?: Prisma.ReceiptUncheckedUpdateManyWithoutStaffNestedInput
+  paymentVouchers?: Prisma.PaymentVoucherUncheckedUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffCreateWithoutInvoicesInput = {
@@ -502,6 +558,8 @@ export type StaffCreateWithoutInvoicesInput = {
   salary: runtime.Decimal | runtime.DecimalJsLike | number | string
   user: Prisma.UserCreateNestedOneWithoutStaffProfileInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutStaffInput
+  receipts?: Prisma.ReceiptCreateNestedManyWithoutStaffInput
+  paymentVouchers?: Prisma.PaymentVoucherCreateNestedManyWithoutStaffInput
 }
 
 export type StaffUncheckedCreateWithoutInvoicesInput = {
@@ -511,6 +569,8 @@ export type StaffUncheckedCreateWithoutInvoicesInput = {
   workStatus: string
   salary: runtime.Decimal | runtime.DecimalJsLike | number | string
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStaffInput
+  receipts?: Prisma.ReceiptUncheckedCreateNestedManyWithoutStaffInput
+  paymentVouchers?: Prisma.PaymentVoucherUncheckedCreateNestedManyWithoutStaffInput
 }
 
 export type StaffCreateOrConnectWithoutInvoicesInput = {
@@ -536,6 +596,8 @@ export type StaffUpdateWithoutInvoicesInput = {
   salary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   user?: Prisma.UserUpdateOneRequiredWithoutStaffProfileNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutStaffNestedInput
+  receipts?: Prisma.ReceiptUpdateManyWithoutStaffNestedInput
+  paymentVouchers?: Prisma.PaymentVoucherUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffUncheckedUpdateWithoutInvoicesInput = {
@@ -545,6 +607,128 @@ export type StaffUncheckedUpdateWithoutInvoicesInput = {
   workStatus?: Prisma.StringFieldUpdateOperationsInput | string
   salary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStaffNestedInput
+  receipts?: Prisma.ReceiptUncheckedUpdateManyWithoutStaffNestedInput
+  paymentVouchers?: Prisma.PaymentVoucherUncheckedUpdateManyWithoutStaffNestedInput
+}
+
+export type StaffCreateWithoutReceiptsInput = {
+  id?: string
+  position: string
+  workStatus: string
+  salary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  user: Prisma.UserCreateNestedOneWithoutStaffProfileInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStaffInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutStaffInput
+  paymentVouchers?: Prisma.PaymentVoucherCreateNestedManyWithoutStaffInput
+}
+
+export type StaffUncheckedCreateWithoutReceiptsInput = {
+  id?: string
+  userId: string
+  position: string
+  workStatus: string
+  salary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStaffInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutStaffInput
+  paymentVouchers?: Prisma.PaymentVoucherUncheckedCreateNestedManyWithoutStaffInput
+}
+
+export type StaffCreateOrConnectWithoutReceiptsInput = {
+  where: Prisma.StaffWhereUniqueInput
+  create: Prisma.XOR<Prisma.StaffCreateWithoutReceiptsInput, Prisma.StaffUncheckedCreateWithoutReceiptsInput>
+}
+
+export type StaffUpsertWithoutReceiptsInput = {
+  update: Prisma.XOR<Prisma.StaffUpdateWithoutReceiptsInput, Prisma.StaffUncheckedUpdateWithoutReceiptsInput>
+  create: Prisma.XOR<Prisma.StaffCreateWithoutReceiptsInput, Prisma.StaffUncheckedCreateWithoutReceiptsInput>
+  where?: Prisma.StaffWhereInput
+}
+
+export type StaffUpdateToOneWithWhereWithoutReceiptsInput = {
+  where?: Prisma.StaffWhereInput
+  data: Prisma.XOR<Prisma.StaffUpdateWithoutReceiptsInput, Prisma.StaffUncheckedUpdateWithoutReceiptsInput>
+}
+
+export type StaffUpdateWithoutReceiptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.StringFieldUpdateOperationsInput | string
+  workStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  salary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  user?: Prisma.UserUpdateOneRequiredWithoutStaffProfileNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStaffNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutStaffNestedInput
+  paymentVouchers?: Prisma.PaymentVoucherUpdateManyWithoutStaffNestedInput
+}
+
+export type StaffUncheckedUpdateWithoutReceiptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.StringFieldUpdateOperationsInput | string
+  workStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  salary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStaffNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutStaffNestedInput
+  paymentVouchers?: Prisma.PaymentVoucherUncheckedUpdateManyWithoutStaffNestedInput
+}
+
+export type StaffCreateWithoutPaymentVouchersInput = {
+  id?: string
+  position: string
+  workStatus: string
+  salary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  user: Prisma.UserCreateNestedOneWithoutStaffProfileInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStaffInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutStaffInput
+  receipts?: Prisma.ReceiptCreateNestedManyWithoutStaffInput
+}
+
+export type StaffUncheckedCreateWithoutPaymentVouchersInput = {
+  id?: string
+  userId: string
+  position: string
+  workStatus: string
+  salary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStaffInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutStaffInput
+  receipts?: Prisma.ReceiptUncheckedCreateNestedManyWithoutStaffInput
+}
+
+export type StaffCreateOrConnectWithoutPaymentVouchersInput = {
+  where: Prisma.StaffWhereUniqueInput
+  create: Prisma.XOR<Prisma.StaffCreateWithoutPaymentVouchersInput, Prisma.StaffUncheckedCreateWithoutPaymentVouchersInput>
+}
+
+export type StaffUpsertWithoutPaymentVouchersInput = {
+  update: Prisma.XOR<Prisma.StaffUpdateWithoutPaymentVouchersInput, Prisma.StaffUncheckedUpdateWithoutPaymentVouchersInput>
+  create: Prisma.XOR<Prisma.StaffCreateWithoutPaymentVouchersInput, Prisma.StaffUncheckedCreateWithoutPaymentVouchersInput>
+  where?: Prisma.StaffWhereInput
+}
+
+export type StaffUpdateToOneWithWhereWithoutPaymentVouchersInput = {
+  where?: Prisma.StaffWhereInput
+  data: Prisma.XOR<Prisma.StaffUpdateWithoutPaymentVouchersInput, Prisma.StaffUncheckedUpdateWithoutPaymentVouchersInput>
+}
+
+export type StaffUpdateWithoutPaymentVouchersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.StringFieldUpdateOperationsInput | string
+  workStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  salary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  user?: Prisma.UserUpdateOneRequiredWithoutStaffProfileNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStaffNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutStaffNestedInput
+  receipts?: Prisma.ReceiptUpdateManyWithoutStaffNestedInput
+}
+
+export type StaffUncheckedUpdateWithoutPaymentVouchersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.StringFieldUpdateOperationsInput | string
+  workStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  salary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStaffNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutStaffNestedInput
+  receipts?: Prisma.ReceiptUncheckedUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffCreateWithoutAttendancesInput = {
@@ -554,6 +738,8 @@ export type StaffCreateWithoutAttendancesInput = {
   salary: runtime.Decimal | runtime.DecimalJsLike | number | string
   user: Prisma.UserCreateNestedOneWithoutStaffProfileInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutStaffInput
+  receipts?: Prisma.ReceiptCreateNestedManyWithoutStaffInput
+  paymentVouchers?: Prisma.PaymentVoucherCreateNestedManyWithoutStaffInput
 }
 
 export type StaffUncheckedCreateWithoutAttendancesInput = {
@@ -563,6 +749,8 @@ export type StaffUncheckedCreateWithoutAttendancesInput = {
   workStatus: string
   salary: runtime.Decimal | runtime.DecimalJsLike | number | string
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutStaffInput
+  receipts?: Prisma.ReceiptUncheckedCreateNestedManyWithoutStaffInput
+  paymentVouchers?: Prisma.PaymentVoucherUncheckedCreateNestedManyWithoutStaffInput
 }
 
 export type StaffCreateOrConnectWithoutAttendancesInput = {
@@ -588,6 +776,8 @@ export type StaffUpdateWithoutAttendancesInput = {
   salary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   user?: Prisma.UserUpdateOneRequiredWithoutStaffProfileNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutStaffNestedInput
+  receipts?: Prisma.ReceiptUpdateManyWithoutStaffNestedInput
+  paymentVouchers?: Prisma.PaymentVoucherUpdateManyWithoutStaffNestedInput
 }
 
 export type StaffUncheckedUpdateWithoutAttendancesInput = {
@@ -597,6 +787,8 @@ export type StaffUncheckedUpdateWithoutAttendancesInput = {
   workStatus?: Prisma.StringFieldUpdateOperationsInput | string
   salary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutStaffNestedInput
+  receipts?: Prisma.ReceiptUncheckedUpdateManyWithoutStaffNestedInput
+  paymentVouchers?: Prisma.PaymentVoucherUncheckedUpdateManyWithoutStaffNestedInput
 }
 
 
@@ -607,11 +799,15 @@ export type StaffUncheckedUpdateWithoutAttendancesInput = {
 export type StaffCountOutputType = {
   attendances: number
   invoices: number
+  receipts: number
+  paymentVouchers: number
 }
 
 export type StaffCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   attendances?: boolean | StaffCountOutputTypeCountAttendancesArgs
   invoices?: boolean | StaffCountOutputTypeCountInvoicesArgs
+  receipts?: boolean | StaffCountOutputTypeCountReceiptsArgs
+  paymentVouchers?: boolean | StaffCountOutputTypeCountPaymentVouchersArgs
 }
 
 /**
@@ -638,6 +834,20 @@ export type StaffCountOutputTypeCountInvoicesArgs<ExtArgs extends runtime.Types.
   where?: Prisma.InvoiceWhereInput
 }
 
+/**
+ * StaffCountOutputType without action
+ */
+export type StaffCountOutputTypeCountReceiptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReceiptWhereInput
+}
+
+/**
+ * StaffCountOutputType without action
+ */
+export type StaffCountOutputTypeCountPaymentVouchersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentVoucherWhereInput
+}
+
 
 export type StaffSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -648,6 +858,8 @@ export type StaffSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   attendances?: boolean | Prisma.Staff$attendancesArgs<ExtArgs>
   invoices?: boolean | Prisma.Staff$invoicesArgs<ExtArgs>
+  receipts?: boolean | Prisma.Staff$receiptsArgs<ExtArgs>
+  paymentVouchers?: boolean | Prisma.Staff$paymentVouchersArgs<ExtArgs>
   _count?: boolean | Prisma.StaffCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["staff"]>
 
@@ -682,6 +894,8 @@ export type StaffInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   attendances?: boolean | Prisma.Staff$attendancesArgs<ExtArgs>
   invoices?: boolean | Prisma.Staff$invoicesArgs<ExtArgs>
+  receipts?: boolean | Prisma.Staff$receiptsArgs<ExtArgs>
+  paymentVouchers?: boolean | Prisma.Staff$paymentVouchersArgs<ExtArgs>
   _count?: boolean | Prisma.StaffCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type StaffIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -697,6 +911,8 @@ export type $StaffPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     user: Prisma.$UserPayload<ExtArgs>
     attendances: Prisma.$AttendancePayload<ExtArgs>[]
     invoices: Prisma.$InvoicePayload<ExtArgs>[]
+    receipts: Prisma.$ReceiptPayload<ExtArgs>[]
+    paymentVouchers: Prisma.$PaymentVoucherPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1101,6 +1317,8 @@ export interface Prisma__StaffClient<T, Null = never, ExtArgs extends runtime.Ty
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   attendances<T extends Prisma.Staff$attendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Staff$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoices<T extends Prisma.Staff$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Staff$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  receipts<T extends Prisma.Staff$receiptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Staff$receiptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  paymentVouchers<T extends Prisma.Staff$paymentVouchersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Staff$paymentVouchersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentVoucherPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1581,6 +1799,54 @@ export type Staff$invoicesArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.InvoiceScalarFieldEnum | Prisma.InvoiceScalarFieldEnum[]
+}
+
+/**
+ * Staff.receipts
+ */
+export type Staff$receiptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Receipt
+   */
+  select?: Prisma.ReceiptSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Receipt
+   */
+  omit?: Prisma.ReceiptOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReceiptInclude<ExtArgs> | null
+  where?: Prisma.ReceiptWhereInput
+  orderBy?: Prisma.ReceiptOrderByWithRelationInput | Prisma.ReceiptOrderByWithRelationInput[]
+  cursor?: Prisma.ReceiptWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReceiptScalarFieldEnum | Prisma.ReceiptScalarFieldEnum[]
+}
+
+/**
+ * Staff.paymentVouchers
+ */
+export type Staff$paymentVouchersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PaymentVoucher
+   */
+  select?: Prisma.PaymentVoucherSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PaymentVoucher
+   */
+  omit?: Prisma.PaymentVoucherOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentVoucherInclude<ExtArgs> | null
+  where?: Prisma.PaymentVoucherWhereInput
+  orderBy?: Prisma.PaymentVoucherOrderByWithRelationInput | Prisma.PaymentVoucherOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentVoucherWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentVoucherScalarFieldEnum | Prisma.PaymentVoucherScalarFieldEnum[]
 }
 
 /**

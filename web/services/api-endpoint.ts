@@ -36,4 +36,12 @@ export const API_ENDPOINTS = {
   UTILITIES: "/utilities",
   UTILITY_DETAIL: (roomId: string) => `/utilities/${roomId}`,
   UTILITY_METER_READING: "/utilities/meter-reading",
+
+  INVOICES: "/invoices",
+  INVOICES_GENERATE: "/invoices/generate",
+
+  INVOICE_DETAIL: (id: string) => `/invoices/${id}`,
+  EXPORT_INVOICE_PDF: (id: string) => `/invoices/${id}/export-pdf`,
+
+  SYSTEM_SETTING: "/setting",
 } as const;

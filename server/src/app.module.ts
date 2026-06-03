@@ -10,6 +10,8 @@ import { AssetModule } from './modules/assets/asset.module';
 import { ContractsModule } from './modules/contracts/contracts.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { UtilityModule } from './modules/utilities/utility.module';
+import { InvoiceModule } from './modules/invoices/invoice.module';
+import { SettingModule } from './modules/setting/settting.moudle';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { UtilityModule } from './modules/utilities/utility.module';
     AssetModule,
     ContractsModule,
     UtilityModule,
+    InvoiceModule,
+    SettingModule,
   ],
 })
 export class AppModule {}

@@ -1,10 +1,11 @@
 // src/modules/contracts/contracts.controller.ts
 
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
 
 import { ContractsService } from './contracts.service';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { ApiResponse } from 'src/common/responses/api-response';
+import { type Response } from 'express';
 
 @Controller('contracts')
 export class ContractsController {
@@ -44,4 +45,20 @@ export class ContractsController {
   //   async deleteContract(@Param('id') id: string) {
   //     return this.contractsService.deleteContract(id);
   //   }
+
+  @Get(':id/export-pdf')
+  async exportInvoicePdf(@Param('id') id: string, @Res() res: Response) {
+    const buffer = await this.contractsService.exportContractPdf(id);
+
+    // 1. Cấu hình Header chuẩn để báo hiệu đây là file PDF nhị phân
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'inline; filename=invoice.pdf', // "inline" để xem trực tiếp, "attachment" để tải về
+      'Content-Length': buffer.length,
+    });
+
+    // 2. Bắt buộc dùng res.end(buffer) hoặc res.send(buffer)
+    // để đẩy thẳng dữ liệu nhị phân ra, tránh bị NestJS biến thành JSON Object.
+    res.end(buffer);
+  }
 }

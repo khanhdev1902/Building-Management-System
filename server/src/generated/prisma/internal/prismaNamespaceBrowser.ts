@@ -66,7 +66,10 @@ export const ModelName = {
   Meter: 'Meter',
   Invoice: 'Invoice',
   InvoiceItem: 'InvoiceItem',
-  Payment: 'Payment',
+  Receipt: 'Receipt',
+  ExpenseType: 'ExpenseType',
+  PaymentVoucher: 'PaymentVoucher',
+  SystemSetting: 'SystemSetting',
   Shift: 'Shift',
   Attendance: 'Attendance',
   Problem: 'Problem',
@@ -288,13 +291,12 @@ export type MeterScalarFieldEnum = (typeof MeterScalarFieldEnum)[keyof typeof Me
 export const InvoiceScalarFieldEnum = {
   id: 'id',
   contractId: 'contractId',
-  tenantId: 'tenantId',
   staffId: 'staffId',
-  date: 'date',
   deadline: 'deadline',
   totalAmount: 'totalAmount',
   paidAmount: 'paidAmount',
   balance: 'balance',
+  billingPeriod: 'billingPeriod',
   status: 'status',
   overdueFee: 'overdueFee',
   updatedAt: 'updatedAt',
@@ -307,27 +309,81 @@ export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeo
 export const InvoiceItemScalarFieldEnum = {
   id: 'id',
   invoiceId: 'invoiceId',
+  type: 'type',
   itemName: 'itemName',
   quantity: 'quantity',
   unitPrice: 'unitPrice',
   subTotal: 'subTotal',
+  unit: 'unit',
+  previousReading: 'previousReading',
+  currentReading: 'currentReading',
   note: 'note'
 } as const
 
 export type InvoiceItemScalarFieldEnum = (typeof InvoiceItemScalarFieldEnum)[keyof typeof InvoiceItemScalarFieldEnum]
 
 
-export const PaymentScalarFieldEnum = {
+export const ReceiptScalarFieldEnum = {
   id: 'id',
   invoiceId: 'invoiceId',
+  staffId: 'staffId',
+  receiptCode: 'receiptCode',
   paymentMethod: 'paymentMethod',
+  amount: 'amount',
+  note: 'note',
+  receiptDate: 'receiptDate',
   status: 'status',
-  totalAmount: 'totalAmount',
-  paidAmount: 'paidAmount',
-  paidAt: 'paidAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
-export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+export type ReceiptScalarFieldEnum = (typeof ReceiptScalarFieldEnum)[keyof typeof ReceiptScalarFieldEnum]
+
+
+export const ExpenseTypeScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExpenseTypeScalarFieldEnum = (typeof ExpenseTypeScalarFieldEnum)[keyof typeof ExpenseTypeScalarFieldEnum]
+
+
+export const PaymentVoucherScalarFieldEnum = {
+  id: 'id',
+  paymentCode: 'paymentCode',
+  staffId: 'staffId',
+  expenseTypeId: 'expenseTypeId',
+  paymentMethod: 'paymentMethod',
+  amount: 'amount',
+  description: 'description',
+  paymentDate: 'paymentDate',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentVoucherScalarFieldEnum = (typeof PaymentVoucherScalarFieldEnum)[keyof typeof PaymentVoucherScalarFieldEnum]
+
+
+export const SystemSettingScalarFieldEnum = {
+  id: 'id',
+  systemName: 'systemName',
+  systemLogo: 'systemLogo',
+  supportPhone: 'supportPhone',
+  supportEmail: 'supportEmail',
+  defaultTenantPassword: 'defaultTenantPassword',
+  invoiceGenerateDay: 'invoiceGenerateDay',
+  invoiceGenerateHour: 'invoiceGenerateHour',
+  invoiceGenerateMinute: 'invoiceGenerateMinute',
+  lastInvoiceGeneratedAt: 'lastInvoiceGeneratedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SystemSettingScalarFieldEnum = (typeof SystemSettingScalarFieldEnum)[keyof typeof SystemSettingScalarFieldEnum]
 
 
 export const ShiftScalarFieldEnum = {
