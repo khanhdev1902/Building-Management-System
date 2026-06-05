@@ -12,6 +12,9 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { UtilityModule } from './modules/utilities/utility.module';
 import { InvoiceModule } from './modules/invoices/invoice.module';
 import { SettingModule } from './modules/setting/settting.moudle';
+import { NotificationModule } from './modules/notifications/notification.module';
+import { PaymentModule } from './modules/payments/payment.module';
+import { ReceiptModule } from './modules/receipt/receipt.module';
 
 @Module({
   imports: [
@@ -31,6 +34,9 @@ import { SettingModule } from './modules/setting/settting.moudle';
     UtilityModule,
     InvoiceModule,
     SettingModule,
+    NotificationModule,
+    PaymentModule,
+    ReceiptModule,
   ],
 })
 export class AppModule {}

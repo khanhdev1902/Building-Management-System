@@ -71,7 +71,7 @@ export default function DanjinDashboard() {
                 variant="outline"
                 className="bg-emerald-50 text-emerald-700 border-emerald-100 text-[9px] font-bold rounded"
               >
-                LẤP ĐẦY 84%
+                LẤP ĐẦY 78%
               </Badge>
             </div>
             <div className="mt-4">
@@ -80,10 +80,10 @@ export default function DanjinDashboard() {
               </p>
               <div className="flex items-baseline gap-1.5 mt-0.5">
                 <span className="text-2xl font-bold text-slate-900 font-sans leading-none">
-                  48
+                  7
                 </span>
                 <span className="text-xs font-medium text-slate-400">
-                  / 56 căn hộ
+                  / 9 căn hộ
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 font-medium mt-2">
@@ -112,7 +112,7 @@ export default function DanjinDashboard() {
               </p>
               <div className="flex items-baseline gap-1.5 mt-0.5">
                 <span className="text-2xl font-bold text-slate-900 font-sans leading-none">
-                  112
+                  11
                 </span>
                 <span className="text-xs font-medium text-slate-400">
                   cư dân
@@ -146,7 +146,7 @@ export default function DanjinDashboard() {
               </p>
               <div className="flex items-baseline gap-1.5 mt-0.5">
                 <span className="text-2xl font-bold text-rose-600 font-sans leading-none">
-                  12
+                  0
                 </span>
                 <span className="text-xs font-medium text-slate-400">
                   căn hộ
@@ -178,11 +178,11 @@ export default function DanjinDashboard() {
               </p>
               <div className="flex items-baseline gap-1 mt-0.5">
                 <span className="text-2xl font-black text-white font-sans leading-none">
-                  245.5
+                  23.716.000đ
                 </span>
-                <span className="text-xs font-bold text-indigo-400 uppercase italic">
+                {/* <span className="text-xs font-bold text-indigo-400 uppercase italic">
                   triệuđ
-                </span>
+                </span> */}
               </div>
 
               {/* Thanh đo lường Target tài chính thực tế */}

@@ -13,6 +13,18 @@ import * as path from 'path';
 export class InvoiceService {
   constructor(private prisma: PrismaService) {}
 
+  private generateOrderCode() {
+    const date = new Date();
+
+    const y = date.getFullYear().toString().slice(-2);
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+
+    const random = Math.floor(1000 + Math.random() * 9000);
+
+    return `OD${y}${m}${d}${random}`;
+  }
+
   async getAllInvoices() {
     const invoices = await this.prisma.invoice.findMany({
       orderBy: {
@@ -43,9 +55,9 @@ export class InvoiceService {
       const fullName = `${tenantUser.lastName} ${tenantUser.firstName}`;
       const amount = invoice.totalAmount.toNumber();
 
-      const rawDescription = `${fullName}_P${roomNo}_Thanh Toan tien phong ky ${invoice.billingPeriod}`;
+      const rawDescription = `${fullName}_P${roomNo}_Thanh Toan tien phong ky ${invoice.billingPeriod} ${invoice.invoiceCode}`;
       const encodedDes = encodeURIComponent(rawDescription);
-      const qrUrl = `https://qr.sepay.vn/img?acc=VQRQAJEQY6518&bank=MBBank&amount=${amount}&des=${encodedDes}`;
+      const qrUrl = `https://qr.sepay.vn/img?acc=VQRQAJEQY6518&bank=MBBank&amount=${2000}&des=${encodedDes}`;
 
       return {
         id: invoice.id,
@@ -263,6 +275,7 @@ export class InvoiceService {
     return this.prisma.$transaction(async (tx) => {
       const invoice = await tx.invoice.create({
         data: {
+          invoiceCode: this.generateOrderCode(),
           billingPeriod: data.billingPeriod,
           contractId: data.contractId,
           totalAmount: data.totalAmount,

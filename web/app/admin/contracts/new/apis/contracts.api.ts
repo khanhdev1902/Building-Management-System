@@ -5,17 +5,23 @@ import { apiHandler } from "@/helpers/api.helper";
 import http from "@/services/http";
 
 import {
-  Contract,
   GetAllContractsResponse,
   CreateContractRequest,
-  // UpdateContractRequest,
 } from "../types/contract.type";
 
 const getAllContracts = () =>
   apiHandler<GetAllContractsResponse>(http.get(API_ENDPOINTS.CONTRACTS));
 
 const getContractById = (id: string) =>
-  apiHandler<Contract>(http.get(API_ENDPOINTS.CONTRACT_DETAIL(id)));
+  apiHandler(http.get(API_ENDPOINTS.CONTRACT_DETAIL(id)));
+
+const exportContractPdf = async (id: string) => {
+  const response = await http.get(API_ENDPOINTS.EXPORT_CONTRACT_PDF(id), {
+    responseType: "blob",
+  });
+
+  return response.data;
+};
 
 const createContract = (data: CreateContractRequest) =>
   apiHandler(http.post(API_ENDPOINTS.CONTRACTS, data));
@@ -51,6 +57,7 @@ export const contractApi = {
   getContractById,
   createContract,
   // updateContract,
+  exportContractPdf,
   deleteContract,
   renewContract,
   terminateContract,

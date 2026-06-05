@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   ArrowLeft,
   Calendar,
@@ -39,8 +39,12 @@ import {
   TableRow,
 } from "@/shared/components/ui/table";
 import Link from "next/link";
+import { contractApi } from "../new/apis/contracts.api";
+import { ContractDetail } from "./types/contract.type";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
-// Mockup Data chi tiết tuyệt đối cho một hợp đồng vận hành thực tế năm 2026
+// Mockup Data? chi tiết tuyệt đối cho một hợp đồng vận hành thực tế năm 2026
 const MOCK_CONTRACT_DETAIL = {
   id: "HD-2026-002",
   roomNumber: "202",
@@ -184,20 +188,57 @@ export default function ContractDetailPage({
   const [activeTab, setActiveTab] = useState<"legal" | "billing" | "assets">(
     "legal",
   );
-  const data = MOCK_CONTRACT_DETAIL;
+  const [data, setData] = useState<ContractDetail>();
+  const params2 = useParams();
+  const id = params2.id as string;
 
-  // Tính toán dải chu kỳ thời gian thực tế đã trôi qua
+  const getData = async () => {
+    try {
+      const res = await contractApi.getContractById(id);
+      console.log(res);
+      setData(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
   const timeProgress = useMemo(() => {
+    if (!data?.startDate || !data?.endDate) return 0;
+
     const start = new Date(data.startDate).getTime();
     const end = new Date(data.endDate).getTime();
-    const current = new Date("2026-05-18").getTime(); // Khóa trục mốc hệ thống 2026
-    if (end <= start) return 0;
+
+    if (Number.isNaN(start) || Number.isNaN(end)) return 0;
+
+    // eslint-disable-next-line react-hooks/purity
+    const current = Date.now();
+
     return Math.min(
       Math.max(Math.round(((current - start) / (end - start)) * 100), 0),
       100,
     );
-  }, [data.startDate, data.endDate]);
+  }, [data]);
 
+  const handleDownloadContract = async (id: string) => {
+    try {
+      const blob = await contractApi.exportContractPdf(id);
+      console.log(blob);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `contract-${id.slice(0, 10)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success(`Đã xuất hợp đồng PDF cho chứng từ ${id.slice(0, 10)}!`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-5 bg-slate-50/20 min-h-screen antialiased selection:bg-indigo-50">
       {/* 1. Nút Back & Thanh điều hướng Top-bar */}
@@ -214,11 +255,11 @@ export default function ContractDetailPage({
           </Link>
           <div className="flex items-center gap-2">
             <span className="text-xs font-mono font-bold text-slate-400">
-              {data.id}
+              {data?.id}
             </span>
             <span className="text-slate-300">/</span>
             <span className="text-xs font-bold text-slate-800">
-              Chi tiết hồ sơ pháp lý phòng {data.roomNumber}
+              Chi tiết hồ sơ pháp lý phòng {data?.roomNumber}
             </span>
           </div>
         </div>
@@ -267,7 +308,7 @@ export default function ContractDetailPage({
                     <User size={14} className="text-slate-400" /> Chủ thể đứng
                     tên hợp đồng
                   </h3>
-                  {data.primaryTenant.identityVerified && (
+                  {data?.primaryTenant.identityVerified && (
                     <span className="text-[10px] text-blue-600 font-semibold bg-blue-50 border border-blue-100 px-2 py-0.5 rounded flex items-center gap-1">
                       <ShieldCheck size={12} /> Đã đối chiếu CCCD gốc
                     </span>
@@ -277,7 +318,7 @@ export default function ContractDetailPage({
                 <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center">
                   <Avatar className="h-12 w-12 border border-slate-100 rounded-lg shadow-2xs shrink-0">
                     <AvatarFallback className="bg-slate-100 text-slate-700 text-xs font-bold">
-                      {data.primaryTenant.name.substring(0, 2).toUpperCase()}
+                      {data?.primaryTenant.name.substring(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
 
@@ -287,7 +328,7 @@ export default function ContractDetailPage({
                         Họ và tên
                       </span>
                       <span className="font-bold text-slate-800">
-                        {data.primaryTenant.name}
+                        {data?.primaryTenant.name}
                       </span>
                     </div>
                     <div>
@@ -295,7 +336,7 @@ export default function ContractDetailPage({
                         Số điện thoại
                       </span>
                       <span className="font-mono font-semibold text-slate-800">
-                        {data.primaryTenant.phone}
+                        {data?.primaryTenant.phone}
                       </span>
                     </div>
                     <div>
@@ -303,7 +344,7 @@ export default function ContractDetailPage({
                         Số định danh cá nhân
                       </span>
                       <span className="font-mono font-semibold text-slate-700">
-                        {data.primaryTenant.cccd}
+                        {data?.primaryTenant.cccd}
                       </span>
                     </div>
                     <div>
@@ -311,7 +352,7 @@ export default function ContractDetailPage({
                         Hộ khẩu thường trú
                       </span>
                       <span className="font-semibold text-slate-700">
-                        {data.primaryTenant.hometown}
+                        {data?.primaryTenant.hometown}
                       </span>
                     </div>
                   </div>
@@ -322,7 +363,7 @@ export default function ContractDetailPage({
               <div className="border border-slate-200/80 bg-white rounded-xl p-5 shadow-[0_1px_2px_rgba(0,0,0,0.01)] space-y-3">
                 <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide border-b border-slate-100 pb-2.5 flex items-center gap-1.5">
                   <Users size={14} className="text-slate-400" /> Nhân khẩu tạm
-                  trú đi kèm ({data.occupants.length} thành viên)
+                  trú đi kèm ({data?.occupants.length} thành viên)
                 </h3>
                 <Table>
                   <TableHeader className="bg-slate-50/50 border-b border-slate-100/60">
@@ -334,15 +375,18 @@ export default function ContractDetailPage({
                         Số định danh CCCD
                       </TableHead>
                       <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider py-2">
-                        Quan hệ chủ hộ
+                        Số điện thoại
+                      </TableHead>
+                      <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider py-2">
+                        Ngày sinh
                       </TableHead>
                       <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider py-2 font-mono">
-                        Biển số xe máy
+                        Quê quán
                       </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody className="divide-y divide-slate-100/60 text-xs">
-                    {data.occupants.map((occ, index) => (
+                    {data?.occupants.map((occ, index) => (
                       <TableRow key={index} className="hover:bg-slate-50/30">
                         <TableCell className="font-semibold text-slate-800 pl-3 py-2.5">
                           {occ.name}
@@ -351,11 +395,14 @@ export default function ContractDetailPage({
                           {occ.cccd}
                         </TableCell>
                         <TableCell className="text-slate-500 font-medium py-2.5">
-                          {occ.relation}
+                          {occ.phone || "Chưa có"}
+                        </TableCell>
+                        <TableCell className="text-slate-500 font-medium py-2.5">
+                          {occ.dateOfBirth || "Chưa có"}
                         </TableCell>
                         <TableCell className="py-2.5">
                           <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-700 font-semibold uppercase text-[10px] border border-slate-200/40">
-                            {occ.licensePlate || "Không đăng ký"}
+                            {occ.hometownAddress || "chưa có"}
                           </span>
                         </TableCell>
                       </TableRow>
@@ -371,13 +418,14 @@ export default function ContractDetailPage({
                     Định mức phí dịch vụ áp dụng
                   </h3>
                   <div className="space-y-2">
-                    {data.services.map((s, idx) => (
+                    {data?.services.map((s, idx) => (
                       <div
                         key={idx}
                         className="flex items-center justify-between text-xs p-2 border border-dashed border-slate-100 rounded-lg"
                       >
                         <div className="flex items-center gap-2 font-semibold text-slate-700">
-                          {s.icon} <span>{s.name}</span>
+                          {/* {s.icon} */}
+                          <span>{s.name}</span>
                         </div>
                         <span className="font-mono font-bold text-slate-800">
                           {s.price.toLocaleString("vi-VN")}đ
@@ -400,7 +448,7 @@ export default function ContractDetailPage({
                         Chỉ số Điện gốc
                       </span>
                       <span className="text-lg font-bold font-mono text-slate-800 tracking-tight">
-                        {data.initialCounters.electric}{" "}
+                        {data?.initialCounters.electric}{" "}
                         <span className="text-xs text-slate-400 font-sans font-normal">
                           kWh
                         </span>
@@ -411,7 +459,7 @@ export default function ContractDetailPage({
                         Chỉ số Nước gốc
                       </span>
                       <span className="text-lg font-bold font-mono text-slate-800 tracking-tight">
-                        {data.initialCounters.water}{" "}
+                        {data?.initialCounters.water}{" "}
                         <span className="text-xs text-slate-400 font-sans font-normal">
                           m³
                         </span>
@@ -460,7 +508,7 @@ export default function ContractDetailPage({
                   </TableRow>
                 </TableHeader>
                 <TableBody className="divide-y divide-slate-100/60 text-xs">
-                  {data.billingHistory.map((bill, index) => (
+                  {data?.billingHistory.map((bill, index) => (
                     <TableRow key={index} className="hover:bg-slate-50/30">
                       <TableCell className="font-mono font-semibold text-slate-500 pl-3 py-3">
                         {bill.invoiceId}
@@ -510,7 +558,7 @@ export default function ContractDetailPage({
                   </TableRow>
                 </TableHeader>
                 <TableBody className="divide-y divide-slate-100/60 text-xs">
-                  {data.assets.map((asset, index) => (
+                  {data?.assets.map((asset, index) => (
                     <TableRow key={index} className="hover:bg-slate-50/30">
                       <TableCell className="font-bold text-slate-800 pl-3 py-3">
                         {asset.name}
@@ -545,7 +593,7 @@ export default function ContractDetailPage({
                   Giá trị tiền thuê nhà:
                 </span>
                 <span className="font-bold text-slate-900 font-mono">
-                  {data.rentPrice.toLocaleString("vi-VN")} đ / tháng
+                  {data?.rentPrice.toLocaleString("vi-VN")} đ / tháng
                 </span>
               </div>
               <div className="flex justify-between">
@@ -553,7 +601,7 @@ export default function ContractDetailPage({
                   Quỹ tiền đặt cọc giữ:
                 </span>
                 <span className="font-bold text-indigo-600 font-mono">
-                  {data.deposit.toLocaleString("vi-VN")} đ
+                  {data?.deposit.toLocaleString("vi-VN")} đ
                 </span>
               </div>
               <div className="flex justify-between">
@@ -561,7 +609,7 @@ export default function ContractDetailPage({
                   Chu kỳ đóng tiền:
                 </span>
                 <span className="font-semibold text-slate-700">
-                  {data.paymentCycle}
+                  {data?.paymentCycle}
                 </span>
               </div>
 
@@ -570,13 +618,13 @@ export default function ContractDetailPage({
                 <div className="flex justify-between text-[11px] font-medium font-mono text-slate-500">
                   <span>
                     Hạn:{" "}
-                    {data.startDate.split("-").reverse().slice(1).join("/")}
+                    {data?.startDate.split("-").reverse().slice(1).join("/")}
                   </span>
                   <span className="text-slate-800 font-bold">
                     Đã trôi qua {timeProgress}%
                   </span>
                   <span>
-                    Hết: {data.endDate.split("-").reverse().slice(1).join("/")}
+                    Hết: {data?.endDate.split("-").reverse().slice(1).join("/")}
                   </span>
                 </div>
                 <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
@@ -593,11 +641,12 @@ export default function ContractDetailPage({
             {/* Hệ thống cụm nút bấm nghiệp vụ lì, phẳng h-9 */}
             <div className="flex flex-col gap-2">
               <Button
+                onClick={() => handleDownloadContract(id)}
                 variant="outline"
                 className="w-full h-9 justify-start text-xs text-slate-700 border-slate-200/80 shadow-2xs font-semibold gap-2 hover:bg-slate-50"
               >
-                <Printer size={13} className="text-slate-400 stroke-[1.8]" /> In
-                ấn bản cứng hợp đồng (PDF)
+                <Printer size={13} className="text-slate-400 stroke-[1.8]" />{" "}
+                Xuất bản cứng hợp đồng (PDF)
               </Button>
               <Button
                 variant="outline"
@@ -627,7 +676,7 @@ export default function ContractDetailPage({
             </h3>
 
             <div className="space-y-4 pl-1.5 relative before:absolute before:left-[5px] before:top-2 before:bottom-2 before:w-[1px] before:bg-slate-200/70 select-none">
-              {data.timeline.map((log, index) => (
+              {data?.timeline.map((log, index) => (
                 <div
                   key={index}
                   className="flex gap-3 relative items-start text-xs"

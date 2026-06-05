@@ -249,12 +249,277 @@ export class ContractsService {
     }));
   }
 
-  //   async getContractById(id: string) {
-  //     // TODO: Logic lấy chi tiết hợp đồng
-  //     return {
-  //       id,
-  //     };
-  //   }
+  async getContractById(id: string) {
+    const contract = await this.prismaService.contract.findUnique({
+      where: { id },
+      include: {
+        room: true,
+        roommates: true,
+        tenant: {
+          include: { user: true },
+        },
+      },
+    });
+
+    //   id: "HD-2026-002",
+    //   roomNumber: "202",
+    //   tower: "Danjin Block A",
+    //   rentPrice: 5200000,
+    //   deposit: 5000000,
+    //   startDate: "2026-02-15",
+    //   endDate: "2027-02-15",
+    //   paymentCycle: "1 tháng / lần",
+    //   status: "active",
+
+    //   // Chỉ số nền đầu kỳ lúc ký kết
+    //   initialCounters: {
+    //     electric: 2100,
+    //     water: 800,
+    //   },
+
+    //   // Lý lịch chủ hộ ký tên
+    //   primaryTenant: {
+    //     name: "Trần Thị Bình",
+    //     phone: "0912 333 444",
+    //     email: "binh.tran96@gmail.com",
+    //     cccd: "037196001234",
+    //     avatar: "",
+    //     hometown: "Nam Định",
+    //     identityVerified: true,
+    //   },
+
+    //   // Nhân khẩu ở cùng và biển số xe quản lý thẻ từ
+    //   occupants: [
+    //     {
+    //       name: "Trần Văn An",
+    //       cccd: "037198005678",
+    //       relation: "Em trai",
+    //       licensePlate: "18B1-888.88",
+    //     },
+    //     {
+    //       name: "Lê Thị Mai",
+    //       cccd: "038200012345",
+    //       relation: "Bạn ở cùng",
+    //       licensePlate: "29X1-678.90",
+    //     },
+    //   ],
+
+    //   // Danh mục định mức dịch vụ đi kèm
+    //   services: [
+    //     {
+    //       name: "Điện tiêu thụ",
+    //       price: 3500,
+    //       unit: "kWh",
+    //       icon: <Zap size={13} className="text-amber-500" />,
+    //     },
+    //     {
+    //       name: "Nước sinh hoạt",
+    //       price: 100000,
+    //       unit: "Người",
+    //       icon: <Droplets size={13} className="text-blue-500" />,
+    //     },
+    //     {
+    //       name: "Phí dịch vụ chung",
+    //       price: 150000,
+    //       unit: "Phòng",
+    //       icon: <Package size={13} className="text-slate-500" />,
+    //     },
+    //   ],
+
+    //   // Danh sách hóa đơn đã phát sinh thuộc chu kỳ hợp đồng này
+    //   billingHistory: [
+    //     {
+    //       invoiceId: "INV-2026-05",
+    //       month: "Tháng 05/2026",
+    //       amount: 5650000,
+    //       status: "paid",
+    //       paidDate: "2026-05-05",
+    //     },
+    //     {
+    //       invoiceId: "INV-2026-04",
+    //       month: "Tháng 04/2026",
+    //       amount: 5580000,
+    //       status: "paid",
+    //       paidDate: "2026-04-04",
+    //     },
+    //     {
+    //       invoiceId: "INV-2026-03",
+    //       month: "Tháng 03/2026",
+    //       amount: 5200000,
+    //       status: "paid",
+    //       paidDate: "2026-03-05",
+    //     }, // Tháng đầu chỉ thu tiền nhà tiền cọc
+    //   ],
+
+    //   // Biên bản kiểm kê hiện trạng nội thất bàn giao
+    //   assets: [
+    //     {
+    //       name: "Điều hòa Caspe 12000BTU",
+    //       quantity: 1,
+    //       status: "Mới 98%, nguyên tem, hoạt động tốt",
+    //     },
+    //     {
+    //       name: "Tủ lạnh Toshiba 180L",
+    //       quantity: 1,
+    //       status: "Đã qua sử dụng, làm lạnh mượt",
+    //     },
+    //     {
+    //       name: "Giường ngủ sồi Nga + Đệm",
+    //       quantity: 1,
+    //       status: "Mới 100%, không trầy xước",
+    //     },
+    //     {
+    //       name: "Khóa cửa thông minh vân tay",
+    //       quantity: 1,
+    //       status: "Hoạt động nhạy, đã reset mã",
+    //     },
+    //   ],
+
+    //   // Nhật ký tương tác/tác động pháp lý hệ thống
+    //   timeline: [
+    //     {
+    //       date: "2026-02-15 09:30",
+    //       action: "Khởi tạo hợp đồng thành công",
+    //       user: "Khánh Nguyễn (Manager)",
+    //     },
+    //     {
+    //       date: "2026-02-15 10:15",
+    //       action: "Đã thu đủ 9.700.000 đ tiền cọc và tháng đầu",
+    //       user: "Hệ thống (Auto)",
+    //     },
+    //     {
+    //       date: "2026-02-15 11:00",
+    //       action: "Bàn giao chìa khóa & Kích hoạt nhân khẩu",
+    //       user: "Minh Tuấn (Kỹ thuật)",
+    //     },
+    //   ],
+    // };
+    return {
+      id: contract?.id.slice(0, 10).toUpperCase(),
+      roomNumber: '202',
+      tower: 'DANJIN BUILDING',
+      rentPrice: contract?.rentalPrice.toNumber(),
+      deposit: contract?.deposit.toNumber(),
+      startDate: contract?.startDate,
+      endDate: contract?.endDate,
+      paymentCycle: `${1} tháng / lần`,
+      status: contract?.status,
+      // Chỉ số nền đầu kỳ lúc ký kết
+      initialCounters: {
+        electric: 0,
+        water: 0,
+      },
+      // Lý lịch chủ hộ ký tên
+      primaryTenant: {
+        name: `${contract?.tenant.user.lastName} ${contract?.tenant.user.firstName}`,
+        phone: contract?.tenant.user.phone,
+        email: contract?.tenant.user.email ?? 'chưa có mail',
+        cccd: contract?.tenant.citizenId,
+        dateOfBirth: contract?.tenant.dateOfBirth,
+        occupation: contract?.tenant.occupation,
+        avatar: '',
+        hometown: `${contract?.tenant.hometownAddress}, ${contract?.tenant.hometownWard}, ${contract?.tenant.hometownDistrict}, ${contract?.tenant.hometownProvince}`,
+        identityVerified: true,
+      },
+
+      occupants: contract?.roommates.map((t) => ({
+        name: t.fullName,
+        dateOfBirth: t.dateOfBirth?.toLocaleDateString('vi-VN'),
+        cccd: t.citizenId,
+        hometownAddress: t.hometownAddress,
+        gender: t.gender,
+        phone: t.phone,
+        occupation: t.occupation,
+      })),
+      // Danh mục định mức dịch vụ đi kèm
+      services: [
+        {
+          name: 'Điện tiêu thụ',
+          price: 3500,
+          unit: 'kWh',
+          // icon: <Zap size={13} className="text-amber-500" />,
+        },
+        {
+          name: 'Nước sinh hoạt',
+          price: 100000,
+          unit: 'Người',
+          // icon: <Droplets size={13} className="text-blue-500" />,
+        },
+        {
+          name: 'Phí dịch vụ chung',
+          price: 150000,
+          unit: 'Phòng',
+          // icon: <Package size={13} className="text-slate-500" />,
+        },
+      ],
+      billingHistory: [
+        {
+          invoiceId: 'INV-2026-05',
+          month: 'Tháng 05/2026',
+          amount: 5650000,
+          status: 'paid',
+          paidDate: '2026-05-05',
+        },
+        {
+          invoiceId: 'INV-2026-04',
+          month: 'Tháng 04/2026',
+          amount: 5580000,
+          status: 'paid',
+          paidDate: '2026-04-04',
+        },
+        {
+          invoiceId: 'INV-2026-03',
+          month: 'Tháng 03/2026',
+          amount: 5200000,
+          status: 'paid',
+          paidDate: '2026-03-05',
+        }, // Tháng đầu chỉ thu tiền nhà tiền cọc
+      ],
+
+      // Biên bản kiểm kê hiện trạng nội thất bàn giao
+      assets: [
+        {
+          name: 'Điều hòa Caspe 12000BTU',
+          quantity: 1,
+          status: 'Mới 98%, nguyên tem, hoạt động tốt',
+        },
+        {
+          name: 'Tủ lạnh Toshiba 180L',
+          quantity: 1,
+          status: 'Đã qua sử dụng, làm lạnh mượt',
+        },
+        {
+          name: 'Giường ngủ sồi Nga + Đệm',
+          quantity: 1,
+          status: 'Mới 100%, không trầy xước',
+        },
+        {
+          name: 'Khóa cửa thông minh vân tay',
+          quantity: 1,
+          status: 'Hoạt động nhạy, đã reset mã',
+        },
+      ],
+
+      // Nhật ký tương tác/tác động pháp lý hệ thống
+      timeline: [
+        {
+          date: '2026-02-15 09:30',
+          action: 'Khởi tạo hợp đồng thành công',
+          user: 'Khánh Nguyễn (Manager)',
+        },
+        {
+          date: '2026-02-15 10:15',
+          action: 'Đã thu đủ 9.700.000 đ tiền cọc và tháng đầu',
+          user: 'Hệ thống (Auto)',
+        },
+        {
+          date: '2026-02-15 11:00',
+          action: 'Bàn giao chìa khóa & Kích hoạt nhân khẩu',
+          user: 'Minh Tuấn (Kỹ thuật)',
+        },
+      ],
+    };
+  }
 
   //   async updateContract(id: string, updateData: Partial<CreateContractDto>) {
   //     // TODO: Logic cập nhật hợp đồng
@@ -272,16 +537,25 @@ export class ContractsService {
   //   }
 
   async exportContractPdf(id: string): Promise<Buffer> {
-    // 1. DATA ĐÃ CHUẨN HÓA PHÁP LÝ ĐỂ KHAI BÁO TẠM TRÚ
+    const contract = await this.prismaService.contract.findUnique({
+      where: { id },
+      include: {
+        room: true,
+        roommates: true,
+        tenant: {
+          include: { user: true },
+        },
+      },
+    });
     const contractData = {
-      id: id.substring(0, 8).toUpperCase(),
-      createdAtDate: '02',
-      createdAtMonth: '06',
-      createdAtYear: '2026',
+      id: contract?.id.slice(0, 10).toUpperCase(),
+      createdAtDate: contract?.createdAt.getDay(),
+      createdAtMonth: contract?.createdAt.getMonth(),
+      createdAtYear: contract?.createdAt.getFullYear(),
       location: 'Hà Nội',
 
       partyA: {
-        name: 'NGUYỄN TRIỆU ĐAN',
+        name: 'NGUYỄN Văn Khanh',
         cccd: '001095001234',
         issuedDate: '15/12/2021',
         issuedPlace: 'Cục Cảnh sát QLHC về trật tự xã hội',
@@ -295,18 +569,18 @@ export class ContractsService {
       },
 
       partyB: {
-        name: 'TRẦN VĂN BÌNH',
-        cccd: '038099005678',
+        name: `${contract?.tenant.user.lastName} ${contract?.tenant.user.firstName}`,
+        cccd: contract?.tenant.citizenId,
         issuedDate: '20/05/2023',
         issuedPlace: 'Cục Cảnh sát QLHC về trật tự xã hội',
         permanentAddress:
           'Thôn Đông, Xã Kim Đường, Huyện Ứng Hòa, Thành phố Hà Nội',
         currentAddress:
           'Thôn Đông, Xã Kim Đường, Huyện Ứng Hòa, Thành phố Hà Nội',
-        phone: '098.765.4321',
+        phone: contract?.tenant.user.phone,
       },
 
-      roomNumber: 'Phòng số 402, Tòa nhà chung cư LuxHouse',
+      roomNumber: `Phòng số ${contract?.room.roomNumber}, Tòa nhà chung cư DANJIN BUILDING`,
       address:
         'Số 88, Đường Cầu Giấy, Phường Quan Hoa, Quận Cầu Giấy, Thành phố Hà Nội',
       termMonths: 12,
@@ -317,8 +591,8 @@ export class ContractsService {
       rentPriceText: 'Ba triệu năm trăm nghìn đồng chẵn',
       deposit: 3500000,
       depositText: 'Ba triệu năm trăm nghìn đồng chẵn',
-      electricityPrice: 3500,
-      waterPrice: 15000,
+      electricityPrice: 0,
+      waterPrice: 0,
     };
 
     return new Promise<Buffer>((resolve, reject) => {

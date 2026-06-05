@@ -170,11 +170,6 @@ export type Message = Prisma.MessageModel
  */
 export type Notification = Prisma.NotificationModel
 /**
- * Model NotificationRecipient
- * 
- */
-export type NotificationRecipient = Prisma.NotificationRecipientModel
-/**
  * Model AuditLog
  * 
  */

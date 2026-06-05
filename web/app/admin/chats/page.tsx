@@ -8,7 +8,6 @@ import {
   Send,
   Building,
   User,
-  ShieldAlert,
   CheckCircle2,
   Paperclip,
   MoreVertical,
@@ -16,7 +15,6 @@ import {
   Check,
   CheckCheck,
   Megaphone,
-  Volume2,
   Trash2,
   Pin,
   Smile,
@@ -37,7 +35,7 @@ import { toast } from "sonner";
 const INITIAL_ROOMS = [
   {
     id: "CHAT-P202",
-    roomName: "Phòng 202 - LuxHouse",
+    roomName: "P.202",
     lastMessage:
       "Dạ ban quản lý kiểm tra hộ em hóa đơn nước tăng bất thường với ạ!",
     time: "18:32",
@@ -48,7 +46,7 @@ const INITIAL_ROOMS = [
   },
   {
     id: "CHAT-P104",
-    roomName: "Phòng 104 - LuxHouse",
+    roomName: "P.104",
     lastMessage: "Đã chuyển khoản tiền cọc xe máy tháng này rồi nhé.",
     time: "15:45",
     unreadCount: 0,
@@ -58,7 +56,7 @@ const INITIAL_ROOMS = [
   },
   {
     id: "CHANNEL-ALL",
-    roomName: "📢 Kênh Thông Báo Chung",
+    roomName: "Kênh Thông Báo Chung",
     lastMessage:
       "Ban quản lý: Vui lòng không để xe chắn lối thoát hiểm tầng hầm.",
     time: "Trưa nay",
@@ -225,7 +223,7 @@ export default function AdminChatDashboard() {
   return (
     <div className="flex h-screen w-full bg-slate-50/50 text-slate-900 font-sans antialiased overflow-hidden select-none">
       {/* ================= CỘT TRÁI (1/3): DANH SÁCH PHÒNG CHAT / KÊNH TUYẾN TRÊN ================= */}
-      <div className="w-full md:w-[360px] lg:w-[400px] bg-white border-r border-slate-200/80 flex flex-col shadow-xs">
+      <div className="w-full md:w-90 lg:w-100 bg-white border-r border-slate-200/80 flex flex-col shadow-xs">
         {/* Header tìm kiếm & Tabs */}
         <div className="p-4 border-b border-slate-100 space-y-3">
           <div className="flex items-center justify-between">

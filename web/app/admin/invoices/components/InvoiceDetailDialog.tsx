@@ -41,7 +41,7 @@ export function InvoiceDetailDialog({
 }: InvoiceDetailProps) {
   if (!invoice) return null;
 
-  const isUnpaid = invoice.status !== "Paid";
+  const isUnpaid = invoice.status !== "PAID";
 
   // Phân tách dữ liệu chuẩn từ Backend gác lên UI
   const roomItem = invoice.invoiceItems.find((i) => i.type === "ROOM");
@@ -51,7 +51,7 @@ export function InvoiceDetailDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-3xl bg-white rounded-2xl border border-slate-150 p-0 shadow-2xl font-sans overflow-hidden flex flex-col md:flex-row md:h-[520px] animate-in fade-in zoom-in-95 duration-200">
+      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-3xl bg-white rounded-2xl border border-slate-150 p-0 shadow-2xl font-sans overflow-hidden flex flex-col md:flex-row md:h-130 animate-in fade-in zoom-in-95 duration-200">
         {/* ================= CỘT TRÁI: BẢNG CHIẾT TÍNH (FLEXBOX CHẶN TRÔI) ================= */}
         <div className="flex-1 flex flex-col h-full bg-white overflow-hidden">
           {/* TẦNG 1: HEADER CỐ ĐỊNH KHÔNG DI DỊCH */}
@@ -257,7 +257,7 @@ export function InvoiceDetailDialog({
         </div>
 
         {/* ================= CỘT PHẢI: KHU VỰC THỂ THAN QR CODE (GIỮ NGUYÊN TỶ LỆ) ================= */}
-        <div className="w-full md:w-[240px] bg-slate-50 p-4 flex flex-col border-t md:border-t-0 md:border-l border-slate-200/60 select-none shrink-0 justify-between">
+        <div className="w-full md:w-60 bg-slate-50 p-4 flex flex-col border-t md:border-t-0 md:border-l border-slate-200/60 select-none shrink-0 justify-between">
           <div className="space-y-3 flex-1 flex flex-col justify-between">
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 flex items-center gap-1 pl-0.5">
               <QrCode size={12} className="text-indigo-500" /> CỔNG VIETQR CHỐT
@@ -276,7 +276,7 @@ export function InvoiceDetailDialog({
                     className={`w-full h-full object-contain transition-all duration-300 ${isUnpaid ? "opacity-100" : "opacity-5 blur-xs"}`}
                   />
                 </div>
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight text-center leading-normal max-w-[150px]">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight text-center leading-normal max-w-37.5">
                   {isUnpaid
                     ? "Quét gạch nợ tự động SePay"
                     : "Hóa đơn đã khóa sổ quỹ"}

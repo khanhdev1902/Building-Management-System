@@ -221,6 +221,13 @@ export default function InvoiceManagementPage() {
     onTimerEnd={handleAutomaticTrigger}
   />;
 
+  const totalAmount = invoices.reduce(
+    (sum, invoice) => sum + Number(invoice.totalAmount),
+    0,
+  );
+  const totalAmountf = invoices
+    .filter((i) => i.status === "PAID")
+    .reduce((sum, invoice) => sum + Number(invoice.totalAmount), 0);
   return (
     <div className="max-w-7xl mx-auto px-4 py-2 space-y-5 bg-slate-50/20 min-h-screen antialiased selection:bg-indigo-50">
       {/* 1. TOP BAR CHỨNG TỪ TÁC VỤ */}
@@ -269,7 +276,7 @@ export default function InvoiceManagementPage() {
               <RefreshCw
                 className={cn(
                   " cursor-pointer w-4 h-4",
-                  (isLoading || isSystemRunning)  && "animate-spin",
+                  (isLoading || isSystemRunning) && "animate-spin",
                 )}
               />
             </Button>
@@ -285,28 +292,28 @@ export default function InvoiceManagementPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 select-none">
         <StatsMetricCard
           title="Tổng doanh số phát hành"
-          value="1.24 tỷ"
+          value={`${totalAmount.toLocaleString("vi-VN")}đ`}
           sub="Kỳ hạn T05/2026"
           icon={CreditCard}
           color="indigo"
         />
         <StatsMetricCard
           title="Dòng tiền thực thu"
-          value="840.5 tr"
+          value={`${totalAmountf.toLocaleString("vi-VN")}đ`}
           sub="Đạt tiến độ 68%"
           icon={CheckCircle2}
           color="emerald"
         />
         <StatsMetricCard
           title="Nợ chờ đối soát"
-          value="320.0 tr"
+          value={`${(totalAmount - totalAmountf).toLocaleString("vi-VN")}đ`}
           sub="45 lệnh treo"
           icon={Clock}
           color="amber"
         />
         <StatsMetricCard
           title="Nợ đọng quá hạn"
-          value="85.2 tr"
+          value="0đ"
           sub="Rủi ro dòng tiền cao"
           icon={AlertCircle}
           color="rose"
@@ -668,7 +675,7 @@ export default function InvoiceManagementPage() {
 function StatusBadge({ status }: { status: string }) {
   const configs: Record<string, { label: string; class: string; dot: string }> =
     {
-      Paid: {
+      PAID: {
         label: "Đã tất toán",
         class: "bg-emerald-50 text-emerald-700 border-emerald-100/70",
         dot: "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.4)]",

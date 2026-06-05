@@ -26,7 +26,7 @@ export default function TenantProfessionalDetail() {
     <div className="max-w-7xl mx-auto p-6 space-y-5 bg-slate-50/30 min-h-screen antialiased selection:bg-indigo-50">
       {/* 1. HEADER NÂNG CẤP: Đã tích hợp sẵn dải StatsBar đồng hàng bên phải */}
       <TenantHeader
-        name="Trần Bình An"
+        name="Trần Thế anh"
         id="RES-8802"
         room="101"
         building="Danjin Tower Block A"

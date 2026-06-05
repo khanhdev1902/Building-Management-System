@@ -28,10 +28,11 @@ export class ContractsController {
     );
   }
 
-  //   @Get(':id')
-  //   async getContractById(@Param('id') id: string) {
-  //     return this.contractsService.getContractById(id);
-  //   }
+  @Get(':id')
+  async getContractById(@Param('id') id: string) {
+    const contract = await this.contractsService.getContractById(id);
+    return ApiResponse.success(contract, 'lấy data contract thành công', 200);
+  }
 
   //   @Patch(':id')
   //   async updateContract(
@@ -50,15 +51,10 @@ export class ContractsController {
   async exportInvoicePdf(@Param('id') id: string, @Res() res: Response) {
     const buffer = await this.contractsService.exportContractPdf(id);
 
-    // 1. Cấu hình Header chuẩn để báo hiệu đây là file PDF nhị phân
     res.set({
       'Content-Type': 'application/pdf',
-      'Content-Disposition': 'inline; filename=invoice.pdf', // "inline" để xem trực tiếp, "attachment" để tải về
-      'Content-Length': buffer.length,
+      'Content-Disposition': 'inline; filename=invoice.pdf',
     });
-
-    // 2. Bắt buộc dùng res.end(buffer) hoặc res.send(buffer)
-    // để đẩy thẳng dữ liệu nhị phân ra, tránh bị NestJS biến thành JSON Object.
     res.end(buffer);
   }
 }

@@ -1,18 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   FileText,
   Search,
-
   FileDown,
   Printer,
   Coins,
   QrCode,
- 
   Eye,
-
   MoreHorizontal,
 } from "lucide-react";
 import { Input } from "@/shared/components/ui/input";
@@ -34,51 +31,16 @@ import {
 } from "@/shared/components/ui/dropdown-menu";
 import { CreateReceiptDialog } from "./components/CreateReceiptDialog";
 import { ReceiptDetailDialog } from "./components/ReceiptDetailDialog";
+import { receiptApi } from "./apis/receipt.api";
+import { Receipt } from "./types/receipt.type";
 
-const MOCK_RECEIPTS_UPGRADED = [
-  {
-    id: "REC-2026-0589",
-    invoiceId: "INV-2026-0502",
-    room: "202",
-    tenant: "Trần Thị Bình",
-    amount: 5650000,
-    type: "CONTRACT_INITIAL", // ⚡ Nghiệp vụ 1: Phiếu thu cọc + tiền nhà đầu kỳ lúc ký hợp đồng
-    paymentMethod: "BANK_TRANSFER",
-    collectedBy: "Hệ thống (VietQR Auto)",
-    createdAt: "22/05/2026 09:15",
-    referenceNo: "FT26142905182",
-  },
-  {
-    id: "REC-2026-0590",
-    invoiceId: "INV-2026-FIX01",
-    room: "101",
-    tenant: "Trần Bình An",
-    amount: 350000,
-    type: "ROOM_REPAIR", // ⚡ Nghiệp vụ 2: Phiếu thu tiền sửa chữa phát sinh ngay trong tháng
-    paymentMethod: "CASH",
-    collectedBy: "Kế toán (Lê Minh Thu)",
-    createdAt: "22/05/2026 10:30",
-    referenceNo: "CASH-FIX-P101",
-  },
-  {
-    id: "REC-2026-0591",
-    invoiceId: null, // ⚡ Nghiệp vụ 3: Phiếu thu tự do bên ngoài, không thuộc hóa đơn hay phòng nào
-    room: null,
-    tenant: "Khách vãng lai gửi xe",
-    amount: 1200000,
-    type: "EXTERNAL_REVENUE",
-    paymentMethod: "CASH",
-    collectedBy: "Bảo vệ (Nguyễn Văn Hùng)",
-    createdAt: "23/05/2026 23:00",
-    referenceNo: "PARKING-SLOT-BATCH",
-  },
-];
 
 export default function ReceiptManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<"all" | "ROOM" | "EXTERNAL">(
     "all",
   );
+  const [receipts, setReceipts] = useState<Receipt[]>([]);
 
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [selectedReceipt, setSelectedReceipt] = useState<any | null>(null);
@@ -88,8 +50,23 @@ export default function ReceiptManagementPage() {
     setIsDetailOpen(true);
   };
 
+  const fechData = async () => {
+    try {
+      const res = await receiptApi.getAllReceipts();
+      console.log(res);
+      setReceipts(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fechData();
+  }, []);
+
   const filteredReceipts = useMemo(() => {
-    return MOCK_RECEIPTS_UPGRADED.filter((rec) => {
+    return receipts.filter((rec) => {
       const matchesSearch =
         (rec.room && rec.room.includes(searchTerm)) ||
         rec.tenant.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -99,13 +76,12 @@ export default function ReceiptManagementPage() {
 
       if (!matchesSearch) return false;
 
-      // Bộ lọc phân loại thông minh
       if (typeFilter === "ROOM" && !rec.room) return false;
       if (typeFilter === "EXTERNAL" && rec.room) return false;
 
       return true;
     });
-  }, [searchTerm, typeFilter]);
+  }, [receipts, searchTerm, typeFilter]);
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-5 bg-slate-50/20 min-h-screen antialiased font-sans select-none">
@@ -315,6 +291,10 @@ function TypeBadge({ type }: { type: string }) {
   const map: Record<string, { label: string; class: string }> = {
     CONTRACT_INITIAL: {
       label: "Cọc & Tiền nhà đầu kỳ",
+      class: "bg-indigo-50 text-indigo-700 border-indigo-100",
+    },
+    ROOM: {
+      label: "Tiền phòng",
       class: "bg-indigo-50 text-indigo-700 border-indigo-100",
     },
     ROOM_REPAIR: {

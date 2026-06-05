@@ -45,3 +45,26 @@ export const MeterService = {
 } as const
 
 export type MeterService = (typeof MeterService)[keyof typeof MeterService]
+
+
+export const NotificationType = {
+  SYSTEM: 'SYSTEM',
+  INVOICE: 'INVOICE',
+  PAYMENT: 'PAYMENT',
+  CONTRACT: 'CONTRACT',
+  PROBLEM: 'PROBLEM',
+  ANNOUNCEMENT: 'ANNOUNCEMENT',
+  CHAT: 'CHAT'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const NotificationPriority = {
+  LOW: 'LOW',
+  NORMAL: 'NORMAL',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT'
+} as const
+
+export type NotificationPriority = (typeof NotificationPriority)[keyof typeof NotificationPriority]

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Bell,
   Search,
@@ -49,6 +49,8 @@ import {
 } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { toast } from "sonner";
+import { io } from "socket.io-client";
+import { useAuthStore } from "@/features/auth/stores/auth.store";
 
 // Mock Data chuẩn dữ liệu quản lý vận hành tòa nhà
 const INITIAL_NOTIFICATIONS = [
@@ -108,6 +110,36 @@ export default function NotificationManagement() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const auth = useAuthStore();
+  console.log(auth.accessToken);
+
+  useEffect(() => {
+    if (!auth.accessToken) return;
+
+    const socket = io("http://localhost:5000", {
+      auth: {
+        token: auth.accessToken,
+      },
+    });
+
+    socket.on("connect", () => {
+      console.log("Connected:", socket.id);
+    });
+
+    socket.on("notification", (data) => {
+      console.log("đã nhận tin");
+      console.log(data);
+      toast.success(data.title);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected");
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [auth.accessToken]);
 
   // Phân trang đơn giản
   const [currentPage, setCurrentPage] = useState(1);

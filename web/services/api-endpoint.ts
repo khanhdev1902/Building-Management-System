@@ -32,6 +32,7 @@ export const API_ENDPOINTS = {
   CONTRACT_DETAIL: (id: string) => `/contracts/${id}`,
   CONTRACT_RENEW: (id: string) => `/contracts/${id}/renew`,
   CONTRACT_TERMINATE: (id: string) => `/contracts/${id}/terminate`,
+  EXPORT_CONTRACT_PDF: (id: string) => `/contracts/${id}/export-pdf`,
 
   UTILITIES: "/utilities",
   UTILITY_DETAIL: (roomId: string) => `/utilities/${roomId}`,
