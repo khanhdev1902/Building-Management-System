@@ -57,7 +57,7 @@ export class InvoiceService {
 
       const rawDescription = `${fullName}_P${roomNo}_Thanh Toan tien phong ky ${invoice.billingPeriod} ${invoice.invoiceCode}`;
       const encodedDes = encodeURIComponent(rawDescription);
-      const qrUrl = `https://qr.sepay.vn/img?acc=VQRQAJEQY6518&bank=MBBank&amount=${2000}&des=${encodedDes}`;
+      const qrUrl = `https://qr.sepay.vn/img?acc=VQRQAJEQY6518&bank=MBBank&amount=${amount}&des=${encodedDes}`;
 
       return {
         id: invoice.id,

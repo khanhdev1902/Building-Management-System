@@ -3,23 +3,16 @@
 import React, { useState, useMemo, useEffect } from "react";
 import {
   ArrowLeft,
-  Calendar,
   FileText,
   ShieldCheck,
-  Zap,
-  Droplets,
-  Bike,
   User,
-  Home,
   CheckCircle2,
   Printer,
   History,
   AlertTriangle,
   Receipt,
   Package,
-  Clock,
   ArrowUpRight,
-  ExternalLink,
   Users,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
@@ -28,7 +21,6 @@ import { Separator } from "@/shared/components/ui/separator";
 import {
   Avatar,
   AvatarFallback,
-  AvatarImage,
 } from "@/shared/components/ui/avatar";
 import {
   Table,
@@ -44,147 +36,7 @@ import { ContractDetail } from "./types/contract.type";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
-// Mockup Data? chi tiết tuyệt đối cho một hợp đồng vận hành thực tế năm 2026
-const MOCK_CONTRACT_DETAIL = {
-  id: "HD-2026-002",
-  roomNumber: "202",
-  tower: "Danjin Block A",
-  rentPrice: 5200000,
-  deposit: 5000000,
-  startDate: "2026-02-15",
-  endDate: "2027-02-15",
-  paymentCycle: "1 tháng / lần",
-  status: "active",
-
-  // Chỉ số nền đầu kỳ lúc ký kết
-  initialCounters: {
-    electric: 2100,
-    water: 800,
-  },
-
-  // Lý lịch chủ hộ ký tên
-  primaryTenant: {
-    name: "Trần Thị Bình",
-    phone: "0912 333 444",
-    email: "binh.tran96@gmail.com",
-    cccd: "037196001234",
-    avatar: "",
-    hometown: "Nam Định",
-    identityVerified: true,
-  },
-
-  // Nhân khẩu ở cùng và biển số xe quản lý thẻ từ
-  occupants: [
-    {
-      name: "Trần Văn An",
-      cccd: "037198005678",
-      relation: "Em trai",
-      licensePlate: "18B1-888.88",
-    },
-    {
-      name: "Lê Thị Mai",
-      cccd: "038200012345",
-      relation: "Bạn ở cùng",
-      licensePlate: "29X1-678.90",
-    },
-  ],
-
-  // Danh mục định mức dịch vụ đi kèm
-  services: [
-    {
-      name: "Điện tiêu thụ",
-      price: 3500,
-      unit: "kWh",
-      icon: <Zap size={13} className="text-amber-500" />,
-    },
-    {
-      name: "Nước sinh hoạt",
-      price: 100000,
-      unit: "Người",
-      icon: <Droplets size={13} className="text-blue-500" />,
-    },
-    {
-      name: "Phí dịch vụ chung",
-      price: 150000,
-      unit: "Phòng",
-      icon: <Package size={13} className="text-slate-500" />,
-    },
-  ],
-
-  // Danh sách hóa đơn đã phát sinh thuộc chu kỳ hợp đồng này
-  billingHistory: [
-    {
-      invoiceId: "INV-2026-05",
-      month: "Tháng 05/2026",
-      amount: 5650000,
-      status: "paid",
-      paidDate: "2026-05-05",
-    },
-    {
-      invoiceId: "INV-2026-04",
-      month: "Tháng 04/2026",
-      amount: 5580000,
-      status: "paid",
-      paidDate: "2026-04-04",
-    },
-    {
-      invoiceId: "INV-2026-03",
-      month: "Tháng 03/2026",
-      amount: 5200000,
-      status: "paid",
-      paidDate: "2026-03-05",
-    }, // Tháng đầu chỉ thu tiền nhà tiền cọc
-  ],
-
-  // Biên bản kiểm kê hiện trạng nội thất bàn giao
-  assets: [
-    {
-      name: "Điều hòa Caspe 12000BTU",
-      quantity: 1,
-      status: "Mới 98%, nguyên tem, hoạt động tốt",
-    },
-    {
-      name: "Tủ lạnh Toshiba 180L",
-      quantity: 1,
-      status: "Đã qua sử dụng, làm lạnh mượt",
-    },
-    {
-      name: "Giường ngủ sồi Nga + Đệm",
-      quantity: 1,
-      status: "Mới 100%, không trầy xước",
-    },
-    {
-      name: "Khóa cửa thông minh vân tay",
-      quantity: 1,
-      status: "Hoạt động nhạy, đã reset mã",
-    },
-  ],
-
-  // Nhật ký tương tác/tác động pháp lý hệ thống
-  timeline: [
-    {
-      date: "2026-02-15 09:30",
-      action: "Khởi tạo hợp đồng thành công",
-      user: "Khánh Nguyễn (Manager)",
-    },
-    {
-      date: "2026-02-15 10:15",
-      action: "Đã thu đủ 9.700.000 đ tiền cọc và tháng đầu",
-      user: "Hệ thống (Auto)",
-    },
-    {
-      date: "2026-02-15 11:00",
-      action: "Bàn giao chìa khóa & Kích hoạt nhân khẩu",
-      user: "Minh Tuấn (Kỹ thuật)",
-    },
-  ],
-};
-
-export default function ContractDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function ContractDetailPage() {
   const [activeTab, setActiveTab] = useState<"legal" | "billing" | "assets">(
     "legal",
   );
@@ -204,6 +56,7 @@ export default function ContractDetailPage({
 
   useEffect(() => {
     getData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const timeProgress = useMemo(() => {
     if (!data?.startDate || !data?.endDate) return 0;
@@ -213,7 +66,6 @@ export default function ContractDetailPage({
 
     if (Number.isNaN(start) || Number.isNaN(end)) return 0;
 
-    // eslint-disable-next-line react-hooks/purity
     const current = Date.now();
 
     return Math.min(
@@ -250,7 +102,7 @@ export default function ContractDetailPage({
               size="icon"
               className="h-8 w-8 rounded-lg text-slate-500 border border-slate-200/60 bg-white hover:bg-slate-50"
             >
-              <ArrowLeft size={14} className="stroke-[2]" />
+              <ArrowLeft size={14} className="stroke-2" />
             </Button>
           </Link>
           <div className="flex items-center gap-2">
@@ -618,13 +470,13 @@ export default function ContractDetailPage({
                 <div className="flex justify-between text-[11px] font-medium font-mono text-slate-500">
                   <span>
                     Hạn:{" "}
-                    {data?.startDate.split("-").reverse().slice(1).join("/")}
+                    {data?.startDate.toLocaleDateString("vi-VN").split("-").reverse().slice(1).join("/")}
                   </span>
                   <span className="text-slate-800 font-bold">
                     Đã trôi qua {timeProgress}%
                   </span>
                   <span>
-                    Hết: {data?.endDate.split("-").reverse().slice(1).join("/")}
+                    Hết: {data?.endDate.toLocaleDateString("vi-VN").split("-").reverse().slice(1).join("/")}
                   </span>
                 </div>
                 <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
@@ -675,7 +527,7 @@ export default function ContractDetailPage({
               chứng từ
             </h3>
 
-            <div className="space-y-4 pl-1.5 relative before:absolute before:left-[5px] before:top-2 before:bottom-2 before:w-[1px] before:bg-slate-200/70 select-none">
+            <div className="space-y-4 pl-1.5 relative before:absolute before:left-1.25 before:top-2 before:bottom-2 before:w-px before:bg-slate-200/70 select-none">
               {data?.timeline.map((log, index) => (
                 <div
                   key={index}
