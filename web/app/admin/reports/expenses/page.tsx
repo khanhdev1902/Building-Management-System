@@ -11,9 +11,7 @@ import {
   Droplets,
   Wifi,
   Trash2,
-  FileDown,
   ArrowUpRight,
-  TrendingDown,
   Percent,
   ChevronRight,
   ChevronLeft,
@@ -303,10 +301,10 @@ export default function ExpensesReport() {
                           {item.icon}
                         </div>
                         <div className="min-w-0">
-                          <span className="font-bold text-slate-800 text-xs block truncate max-w-[180px]">
+                          <span className="font-bold text-slate-800 text-xs block truncate max-w-45">
                             {item.title}
                           </span>
-                          <span className="text-[10px] text-slate-400 block font-sans font-medium mt-0.5 truncate max-w-[185px]">
+                          <span className="text-[10px] text-slate-400 block font-sans font-medium mt-0.5 truncate max-w-46.25">
                             {item.detail}
                           </span>
                         </div>

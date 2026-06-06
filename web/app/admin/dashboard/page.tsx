@@ -4,14 +4,10 @@ import React from "react";
 import {
   Home,
   Users,
-  FileText,
   AlertTriangle,
-  ArrowUpRight,
   TrendingUp,
   Clock,
-  Zap,
   ShieldAlert,
-  CheckCircle2,
   DollarSign,
 } from "lucide-react";
 import {
@@ -153,7 +149,7 @@ export default function DanjinDashboard() {
                 </span>
               </div>
               <p className="text-[11px] text-rose-500 font-semibold mt-2 flex items-center gap-1">
-                <AlertTriangle size={11} className="stroke-[2]" /> Cần gửi tin
+                <AlertTriangle size={11} className="stroke-2" /> Cần gửi tin
                 nhắn nhắc nợ ngay
               </p>
             </div>
@@ -162,11 +158,11 @@ export default function DanjinDashboard() {
 
         {/* Card 4: KING CARD - DÒNG TIỀN DOANH THU THỰC THU TẬP TRUNG */}
         <Card className="group relative overflow-hidden rounded-[20px] border-none bg-slate-900 shadow-[0_10px_30px_-6px_rgba(15,23,42,0.12)] transition-all hover:scale-[1.01]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-indigo-500/20 via-transparent to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,var(--tw-gradient-stops))] from-indigo-500/20 via-transparent to-transparent pointer-events-none" />
           <CardContent className="p-5 relative z-10">
             <div className="flex justify-between items-start">
               <div className="p-2 bg-white/10 backdrop-blur-xl rounded-xl border border-white/10 text-indigo-300">
-                <DollarSign className="w-4 h-4 stroke-[2]" />
+                <DollarSign className="w-4 h-4 stroke-2" />
               </div>
               <span className="text-[9px] font-bold tracking-wider text-indigo-300 uppercase bg-white/10 px-2 py-0.5 rounded border border-white/5">
                 MỤC TIÊU THÁNG
@@ -188,7 +184,7 @@ export default function DanjinDashboard() {
               {/* Thanh đo lường Target tài chính thực tế */}
               <div className="mt-3 flex items-center gap-2 select-none">
                 <div className="h-1 flex-1 bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-indigo-500 to-violet-400 w-[78%]" />
+                  <div className="h-full bg-linear-to-r from-indigo-500 to-violet-400 w-[78%]" />
                 </div>
                 <span className="text-[9px] font-bold font-mono text-indigo-400 shrink-0">
                   Target 300M

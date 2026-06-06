@@ -3,18 +3,11 @@
 import React from "react";
 import {
   Banknote,
-  Download,
-  Filter,
   MoreHorizontal,
   CreditCard,
   ArrowUpRight,
   TrendingUp,
   FileText,
-  Clock,
-  History,
-  CheckCircle2,
-  AlertCircle,
-  FileDown,
 } from "lucide-react";
 import {
   BarChart,
@@ -31,8 +24,6 @@ import { Badge } from "@/shared/components/ui/badge";
 import {
   Tabs,
   TabsContent,
-  TabsList,
-  TabsTrigger,
 } from "@/shared/components/ui/tabs";
 import {
   Table,

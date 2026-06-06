@@ -3,13 +3,10 @@
 
 import React, { useState, useMemo, useEffect } from "react";
 import {
-  Bell,
   Search,
-  Filter,
   Plus,
   Send,
   FileText,
-  AlertTriangle,
   CheckCircle,
   Clock,
   MoreVertical,
@@ -246,10 +243,10 @@ export default function NotificationManagement() {
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
             <Button className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 h-9.5 rounded-xl gap-2 shadow-xs transition-colors cursor-pointer">
-              <Plus className="w-4 h-4 stroke-[3]" /> Soạn thông báo mới
+              <Plus className="w-4 h-4 stroke-3" /> Soạn thông báo mới
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[550px] bg-white rounded-2xl p-6 font-sans">
+          <DialogContent className="sm:max-w-137.5 bg-white rounded-2xl p-6 font-sans">
             <DialogHeader>
               <DialogTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
                 <Megaphone className="w-4 h-4 text-blue-600" /> Soạn văn bản
@@ -508,7 +505,7 @@ export default function NotificationManagement() {
       {/* 3. KHU VỰC DANH SÁCH BẢNG TIN (TABLE CHUYÊN NGHIỆP) */}
       <main className="flex-1 p-6 overflow-hidden flex flex-col justify-between">
         <ScrollArea className="flex-1 bg-white rounded-xl border border-slate-200/80 shadow-xs">
-          <div className="w-full min-w-[800px] text-xs">
+          <div className="w-full min-w-200 text-xs">
             {/* Header cột bảng */}
             <div className="grid grid-cols-12 gap-4 bg-slate-50/70 p-4 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider select-none">
               <div className="col-span-5">Nội dung thông báo</div>

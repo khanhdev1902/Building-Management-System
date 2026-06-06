@@ -5,8 +5,6 @@ import {
   Users,
   Plus,
   Search,
-  UserCheck,
-  UserX,
   ShieldAlert,
   MoreVertical,
   Phone,

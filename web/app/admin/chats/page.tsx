@@ -34,6 +34,17 @@ import { toast } from "sonner";
 // Mock Data danh sách hội thoại thực tế ở chung cư
 const INITIAL_ROOMS = [
   {
+    id: "CHANNEL-ALL",
+    roomName: "Kênh Thông Báo Chung",
+    lastMessage:
+      "Ban quản lý: Vui lòng không để xe chắn lối thoát hiểm tầng hầm.",
+    time: "Trưa nay",
+    unreadCount: 0,
+    category: "channel", // Kênh phát thanh toàn tòa
+    residentName: "Hệ thống",
+    status: "broadcast",
+  },
+  {
     id: "CHAT-P202",
     roomName: "P.202",
     lastMessage:
@@ -53,17 +64,6 @@ const INITIAL_ROOMS = [
     category: "support",
     residentName: "Nguyễn Văn Anh",
     status: "resolved", // Đã xử lý xong
-  },
-  {
-    id: "CHANNEL-ALL",
-    roomName: "Kênh Thông Báo Chung",
-    lastMessage:
-      "Ban quản lý: Vui lòng không để xe chắn lối thoát hiểm tầng hầm.",
-    time: "Trưa nay",
-    unreadCount: 0,
-    category: "channel", // Kênh phát thanh toàn tòa
-    residentName: "Hệ thống",
-    status: "broadcast",
   },
 ];
 

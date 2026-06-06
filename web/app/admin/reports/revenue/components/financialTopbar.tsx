@@ -211,7 +211,7 @@ export default function FinancialTopbar() {
         <Button
           onClick={handleExport}
           disabled={isExporting}
-          className="cursor-pointer h-9 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-2xs flex-1 sm:flex-none gap-1.5 min-w-[140px] justify-center transition-all active:scale-[0.98]"
+          className="cursor-pointer h-9 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-2xs flex-1 sm:flex-none gap-1.5 min-w-35 justify-center transition-all active:scale-[0.98]"
         >
           {isExporting ? (
             <Loader2 size={14} className="animate-spin text-slate-300" />

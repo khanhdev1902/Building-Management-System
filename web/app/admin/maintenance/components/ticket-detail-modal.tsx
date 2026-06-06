@@ -117,6 +117,7 @@ export function TicketDetailModal({
   // Hàm xử lý Submit chung cho các trạng thái
   const handleAction = (status: string) => {
     // Chạy cơ chế kiểm tra thủ công cho từng nút nghiệp vụ riêng biệt
+    // eslint-disable-next-line react-hooks/incompatible-library
     const currentNotes = watch("adminNotes") || "";
     const currentAssignee = watch("assignee") || "";
     const currentAppointment = watch("appointmentTime") || "";

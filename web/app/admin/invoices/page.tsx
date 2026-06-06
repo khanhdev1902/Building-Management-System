@@ -10,7 +10,6 @@ import {
   Clock,
   AlertCircle,
   Send,
-  Printer,
   CreditCard,
   QrCode,
   ArrowUpRight,

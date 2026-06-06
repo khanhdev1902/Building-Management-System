@@ -6,7 +6,6 @@ import {
 } from "@/shared/components/ui/sidebar";
 import { TooltipProvider } from "@/shared/components/ui/tooltip";
 import {
-  Bell,
   HelpCircle,
   Search,
   User,
@@ -47,6 +46,7 @@ import {
 import SidebarWrapper from "@/shared/components/sidebar";
 import dynamic from "next/dynamic";
 import ProtectedRoute from "../protect-router";
+import { NotificationCenter } from "@/shared/components/NotificationCenter";
 
 const MOCK_DATA = {
   room: [
@@ -247,16 +247,7 @@ export default function AdminLayout({
 
                   {/* Cụm Nút chức năng phụ hữu dụng */}
                   <div className="flex items-center gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      // SỬA: Thay đổi hiệu ứng hover từ màu đỏ giật gân sang màu xám mịn đồng bộ thanh lịch
-                      className="h-8 w-8 rounded-lg relative hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
-                    >
-                      <Bell className="h-4 w-4 stroke-[1.75]" />
-                      {/* Chấm đỏ thông báo nhỏ gọn, tĩnh lặng bám sát nút */}
-                      <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-rose-500 ring-1 ring-white"></span>
-                    </Button>
+                    <NotificationCenter />
 
                     <Button
                       variant="ghost"

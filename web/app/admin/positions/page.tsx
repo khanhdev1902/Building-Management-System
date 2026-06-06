@@ -8,7 +8,6 @@ import {
   Edit3,
   Users,
   CircleDollarSign,
-  FileText,
   Save,
   X,
 } from "lucide-react";
