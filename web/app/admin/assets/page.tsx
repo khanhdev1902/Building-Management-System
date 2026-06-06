@@ -107,7 +107,7 @@ export default function AssetPage() {
 
       {/* 2. Không gian nội dung chính: Bố cục Fluid mở rộng thoáng đãng */}
       <main className="max-w-7xl mx-auto p-6 space-y-7 w-full">
-        {/* Khối Thống kê báo cáo vận hành */}
+        
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <div className="w-0.75 h-3.5 bg-slate-900 rounded-full" />
@@ -118,7 +118,7 @@ export default function AssetPage() {
           <AssetStats total={total} active={active} />
         </div>
 
-        {/* Khối hiển thị Danh sách dữ liệu / Danh mục tương ứng */}
+
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 ease-out">
           {activeTab === "inventory" ? (
             <div className="space-y-3">

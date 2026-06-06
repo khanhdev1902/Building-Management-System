@@ -101,6 +101,9 @@ export default function ContractsPage() {
     [contracts],
   );
 
+  const totalDeposit = (contracts || [])
+    .filter((c) => c.status === "ACTIVE")
+    .reduce((sum, c) => sum + Number(c.deposit), 0);
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6 bg-slate-50/20 min-h-screen antialiased">
       {/* 1. Header phân hệ chính - KẾT NỐI HÀM REFRESH DATA */}
@@ -115,7 +118,7 @@ export default function ContractsPage() {
         activeCount={statsCounts.active}
         expiringCount={statsCounts.expiring}
         pendingCount={statsCounts.expired}
-        totalDeposit={isLoading ? "..." : "185.5M"}
+        totalDeposit={isLoading ? "..." :`${ totalDeposit.toLocaleString('vi-VN')}đ`}
         activeFilter={filters.status}
         onFilterChange={(status) => {
           setFilters({ ...filters, status });

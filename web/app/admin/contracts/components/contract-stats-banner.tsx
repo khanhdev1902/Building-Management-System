@@ -22,7 +22,7 @@ export function ContractStatsBanner({
 }: ContractStatsProps) {
   const stats = [
     {
-      key: "active",
+      key: "ACTIVE",
       label: "Hợp đồng hiệu lực",
       value: activeCount,
       trend: "+2 tháng này",
@@ -33,7 +33,7 @@ export function ContractStatsBanner({
       trendStyle: "text-emerald-700 bg-emerald-50 border-emerald-100/50",
     },
     {
-      key: "expiring",
+      key: "EXPIRING",
       label: "Sắp hết hạn (30 ngày)",
       value: expiringCount,
       trend: "Cần xử lý",
@@ -43,14 +43,15 @@ export function ContractStatsBanner({
       trendStyle: "text-amber-700 bg-amber-50 border-amber-100/50",
     },
     {
-      key: "pending",
-      label: "Chờ bàn giao phòng",
-      value: pendingCount,
+      key: "EXPIRED",
+      label: "Đã kết thúc",
+      value: pendingCount, // Bạn nhớ check lại biến này nhé, thường EXPIRED thì biến tên kiểu expiredCount sẽ tường minh hơn :v
       trend: "Trong tuần",
       icon: <FileText size={14} className="stroke-[1.75]" />,
-      style: "border-slate-200/80 hover:border-blue-300",
-      activeStyle: "border-blue-500 bg-blue-50/10 ring-1 ring-blue-500",
-      trendStyle: "text-blue-700 bg-blue-50 border-blue-100/50",
+      style: "border-slate-200/80 hover:border-slate-300 hover:bg-slate-50/40",
+      activeStyle:
+        "border-slate-400 bg-slate-50 ring-1 ring-slate-400/80 text-slate-800",
+      trendStyle: "text-slate-600 bg-slate-100 border-slate-200/60",
     },
     {
       key: "all", // Mặc định click vào ô tiền cọc sẽ reset về hiển thị tất cả

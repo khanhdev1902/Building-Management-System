@@ -55,6 +55,7 @@ export function ContractFilterToolbar({
 
   // Hàm cập nhật cục bộ từng trường lọc
   const handleUpdateFilter = (key: string, value: string) => {
+    console.log(value);
     onFiltersChange({
       ...filters,
       [key]: value,
@@ -151,13 +152,13 @@ export function ContractFilterToolbar({
                     </SelectTrigger>
                     <SelectContent className="rounded-lg border-slate-200">
                       <SelectItem value="all" className="text-xs">
-                        Tất cả Block
+                        Tất cả
                       </SelectItem>
-                      <SelectItem value="Danjin Block A" className="text-xs">
-                        Danjin Block A
-                      </SelectItem>
-                      <SelectItem value="Danjin Block B" className="text-xs">
-                        Danjin Block B
+                      <SelectItem
+                        value="Danjin Building"
+                        className="text-xs uppercase"
+                      >
+                        Danjin Building
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -179,13 +180,13 @@ export function ContractFilterToolbar({
                         Tất cả phòng
                       </SelectItem>
                       <SelectItem value="101" className="text-xs">
-                        Phòng 101
+                        P.101
                       </SelectItem>
                       <SelectItem value="202" className="text-xs">
-                        Phòng 202
+                        P.202
                       </SelectItem>
                       <SelectItem value="305" className="text-xs">
-                        Phòng 305
+                        P.305
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -209,13 +210,13 @@ export function ContractFilterToolbar({
                       <SelectItem value="all" className="text-xs">
                         Mọi tình trạng
                       </SelectItem>
-                      <SelectItem value="active" className="text-xs">
+                      <SelectItem value="ACTIVE" className="text-xs">
                         Đang hiệu lực
                       </SelectItem>
-                      <SelectItem value="expiring" className="text-xs">
+                      <SelectItem value="EXPIRING" className="text-xs">
                         Sắp hết hạn
                       </SelectItem>
-                      <SelectItem value="expired" className="text-xs">
+                      <SelectItem value="EXPIRED" className="text-xs">
                         Đã kết thúc
                       </SelectItem>
                     </SelectContent>
@@ -253,7 +254,6 @@ export function ContractFilterToolbar({
                 </div>
               </div>
 
-              {/* Hàng 3: Bộ lọc Khoảng giá thuê phòng (Min - Max) */}
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide block">
                   Khoảng đơn giá thuê / Tháng
@@ -261,12 +261,12 @@ export function ContractFilterToolbar({
                 <div className="flex items-center gap-2">
                   <Input
                     type="number"
-                    placeholder="Từ mức tiền (VND)"
+                    placeholder="Từ mức tiền"
                     value={filters.minPrice}
                     onChange={(e) =>
                       handleUpdateFilter("minPrice", e.target.value)
                     }
-                    className="h-8 rounded border-slate-200 bg-slate-50/30 text-xs font-mono font-medium focus-visible:border-slate-400 focus-visible:bg-white focus-visible:ring-0 w-full placeholder:font-sans placeholder:font-normal"
+                    className="h-8 rounded border-slate-200 bg-slate-50/30 text-xs focus-visible:border-slate-400 focus-visible:bg-white focus-visible:ring-0 w-full"
                   />
                   <span className="text-slate-300 font-sans text-xs">─</span>
                   <Input
@@ -276,7 +276,7 @@ export function ContractFilterToolbar({
                     onChange={(e) =>
                       handleUpdateFilter("maxPrice", e.target.value)
                     }
-                    className="h-8 rounded border-slate-200 bg-slate-50/30 text-xs font-mono font-medium focus-visible:border-slate-400 focus-visible:bg-white focus-visible:ring-0 w-full placeholder:font-sans placeholder:font-normal"
+                    className="h-8 rounded border-slate-200 bg-slate-50/30 text-xs focus-visible:border-slate-400 focus-visible:bg-white focus-visible:ring-0 w-full"
                   />
                 </div>
               </div>
@@ -298,7 +298,6 @@ export function ContractFilterToolbar({
           </PopoverContent>
         </Popover>
 
-        {/* 3. Cụm chuyển đổi View mode tinh xảo cao h-10 */}
         <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200/40 h-10 items-center shrink-0">
           <button
             onClick={() => onViewModeChange("list")}

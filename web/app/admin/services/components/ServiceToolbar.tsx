@@ -35,7 +35,6 @@ export const ServiceToolbar = ({
 
   return (
     <div className="flex items-center gap-2 w-full">
-      {/* Search Box: Flat & Minimalist */}
       <div className="relative flex-1 group">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors">
           <Search className="h-4 w-4" />
@@ -62,7 +61,6 @@ export const ServiceToolbar = ({
         )}
       </div>
 
-      {/* Filter Dropdown: Thực tế và chuyên nghiệp */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button

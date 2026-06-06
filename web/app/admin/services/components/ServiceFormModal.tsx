@@ -33,13 +33,9 @@ import { Label } from "@/shared/components/ui/label";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { cn } from "@/shared/utils/cn";
 
-// 1. Schema Validation - Bổ sung status
 const serviceSchema = z.object({
   name: z.string().min(2, "Tên dịch vụ phải có ít nhất 2 ký tự"),
-  price: z
-    .number()
-    .min(1, "Giá phải lớn hơn 0")
-    .max(100000000, "Giá quá cao"),
+  price: z.number().min(1, "Giá phải lớn hơn 0").max(100000000, "Giá quá cao"),
   unit: z.string().min(1, "Vui lòng nhập đơn vị tính"),
   description: z
     .string()
@@ -47,7 +43,7 @@ const serviceSchema = z.object({
     .optional()
     .or(z.literal("")),
   iconKey: z.string().min(1),
-  status: z.string().min(1), // Thêm status vào đây
+  status: z.string().min(1),
 });
 
 type ServiceFormValues = z.infer<typeof serviceSchema>;
@@ -70,7 +66,6 @@ const ICON_OPTIONS = [
   { key: "repair", icon: Wrench },
 ];
 
-// Định nghĩa các option cho status
 const STATUS_OPTIONS = [
   {
     key: "active",
@@ -171,9 +166,7 @@ export const ServiceFormModal = ({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-6 space-y-6">
-          {/* Hàng 1: Icon và Status */}
           <div className="grid grid-cols-2 gap-6">
-            {/* Chọn biểu tượng */}
             <div className="space-y-3">
               <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                 Biểu tượng
@@ -197,7 +190,6 @@ export const ServiceFormModal = ({
               </div>
             </div>
 
-            {/* Chọn Trạng thái */}
             <div className="space-y-3">
               <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                 Trạng thái vận hành
@@ -224,7 +216,6 @@ export const ServiceFormModal = ({
           </div>
 
           <div className="grid gap-4">
-            {/* Tên dịch vụ */}
             <div className="space-y-1.5">
               <Label
                 htmlFor="name"
@@ -273,7 +264,6 @@ export const ServiceFormModal = ({
                 )}
               </div>
 
-              {/* Đơn vị */}
               <div className="space-y-1.5">
                 <Label
                   htmlFor="unit"
@@ -298,7 +288,6 @@ export const ServiceFormModal = ({
               </div>
             </div>
 
-            {/* Mô tả */}
             <div className="space-y-1.5">
               <Label
                 htmlFor="description"
@@ -315,7 +304,6 @@ export const ServiceFormModal = ({
             </div>
           </div>
 
-          {/* Footer actions */}
           <DialogFooter className="pt-2 gap-2">
             <Button
               type="button"

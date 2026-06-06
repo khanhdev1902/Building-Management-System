@@ -50,6 +50,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
+import FinancialTopbar from "./components/financialTopbar";
 
 // Mockup dữ liệu dòng tiền băm nhỏ thực tế năm 2026 của chuỗi Danjin Tower
 const monthlyData = [
@@ -63,36 +64,11 @@ const monthlyData = [
 export default function RevenueDashboard() {
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6 bg-slate-50/20 min-h-screen antialiased selection:bg-indigo-50">
-      {/* 1. TOP BAR: TIÊU ĐỀ ĐIỀU HÀNH VÀ NÚT TÁC VỤ PHẲNG */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200/60 pb-4 select-none">
-        <div className="space-y-0.5">
-          <h2 className="text-xl font-bold tracking-tight text-slate-900">
-            Tổng quan Tài chính & Phân tích Dòng tiền
-          </h2>
-          <p className="text-xs text-slate-500 font-medium">
-            Hệ thống tự động đối soát Webhook ngân hàng kỳ này • Cập nhật lúc:{" "}
-            <span className="font-mono font-bold text-slate-700">
-              18:05 hôm nay
-            </span>
-          </p>
-        </div>
-        <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
-          <Button
-            variant="outline"
-            className="h-9 text-xs font-semibold border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-2xs rounded-lg flex-1 sm:flex-none"
-          >
-            <Filter className="mr-1.5 h-3.5 w-3.5 text-slate-400" /> Lọc kì chu
-            kỳ
-          </Button>
-          <Button className="h-9 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-2xs flex-1 sm:flex-none">
-            <FileDown className="mr-1.5 h-3.5 w-3.5" /> Xuất báo cáo gốc
-          </Button>
-        </div>
-      </div>
+      <FinancialTopbar />
 
       {/* 2. CHIA TABS WORKSPACE PHẲNG */}
       <Tabs defaultValue="overview" className="space-y-5">
-        <TabsList className="bg-slate-100 p-0.5 rounded-lg border border-slate-200/40 w-fit h-9 items-center select-none">
+        {/* <TabsList className="bg-slate-100 p-0.5 rounded-lg border border-slate-200/40 w-fit h-9 items-center select-none">
           <TabsTrigger
             value="overview"
             className="h-7 px-4 rounded-md text-xs font-semibold transition-all data-[state=active]:bg-white data-[state=active]:shadow-2xs text-slate-500 data-[state=active]:text-slate-900"
@@ -111,7 +87,7 @@ export default function RevenueDashboard() {
           >
             Phân tích nợ đọng
           </TabsTrigger>
-        </TabsList>
+        </TabsList> */}
 
         <TabsContent value="overview" className="space-y-5 mt-0 outline-hidden">
           {/* 3. KHỐI THỐNG KÊ METRIC CARDS LÌ PHẲNG */}

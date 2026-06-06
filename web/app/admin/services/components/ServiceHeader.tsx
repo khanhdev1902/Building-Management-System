@@ -68,7 +68,6 @@ export const ServiceHeader = ({ onAdd }: ServiceHeaderProps) => (
           key={i}
           className="group relative flex items-center justify-between p-3.5 bg-white rounded-xl border border-slate-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.01)] hover:border-slate-300 transition-all duration-300 select-none overflow-hidden"
         >
-          {/* Cụm Text bên trái: Đưa số liệu lớn lên trước */}
           <div className="space-y-1 min-w-0">
             <p className="text-xs font-medium text-slate-400">{stat.label}</p>
             <div className="flex items-center gap-2">
@@ -85,14 +84,11 @@ export const ServiceHeader = ({ onAdd }: ServiceHeaderProps) => (
             </div>
           </div>
 
-          {/* Icon bên phải: Chuyển màu động vô cùng mượt mà khi hover */}
           <div
             className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-50 border border-slate-100 text-slate-400 transition-all duration-300 ${stat.hoverStyle}`}
           >
             <stat.icon className="h-4 w-4 stroke-[1.5]" />
           </div>
-
-          {/* Hiệu ứng viền ngầm tinh tế dưới đáy card */}
           <div className="absolute bottom-0 left-3 right-3 h-px bg-slate-100 group-hover:bg-slate-200 transition-colors" />
         </div>
       ))}

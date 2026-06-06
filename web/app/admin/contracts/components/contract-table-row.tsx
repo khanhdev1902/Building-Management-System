@@ -18,10 +18,10 @@ import {
 } from "@/shared/components/ui/dropdown-menu";
 import {
   Eye,
-  MoreHorizontal,
   FileText,
   ArrowUpRight,
   AlertTriangle,
+  MoreVertical,
 } from "lucide-react";
 import { StatusBadge, PaymentStatusBadge } from "./contract-table";
 import Link from "next/link";
@@ -97,7 +97,7 @@ export function ContractTableRow({
       <TableCell className="py-3.5">
         <div className="flex flex-col">
           <span className="font-bold text-slate-800 text-xs font-mono">
-            {item.room}
+            Phòng {item.room}
           </span>
           <span className="text-[10px] text-slate-400 font-medium tracking-wide uppercase mt-0.5">
             {item.tower}
@@ -133,14 +133,14 @@ export function ContractTableRow({
           <div className="w-full h-0.5 bg-slate-100 rounded-full overflow-hidden relative">
             <div
               className={`h-full rounded-full transition-all duration-1000 ${
-                item.status === "expired"
+                item.status === "EXPIRED"
                   ? "bg-slate-300"
-                  : item.status === "expiring"
+                  : item.status === "EXPIRING"
                     ? "bg-amber-500"
                     : "bg-slate-900"
               }`}
               style={{
-                width: `${item.status === "expired" ? 100 : timeProgress}%`,
+                width: `${item.status === "EXPIRED" ? 100 : timeProgress}%`,
               }}
             />
           </div>
@@ -178,9 +178,9 @@ export function ContractTableRow({
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-7 w-7 p-0 rounded-md opacity-0 group-hover:opacity-100 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all cursor-pointer"
+                className="h-7 w-7 p-0 rounded-md group-hover:opacity-100 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all cursor-pointer"
               >
-                <MoreHorizontal size={14} className="stroke-[1.75]" />
+                <MoreVertical size={14} className="stroke-[1.75]" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -205,7 +205,7 @@ export function ContractTableRow({
 
               <DropdownMenuSeparator className="my-1 border-slate-100" />
 
-              {/* GẮN DIALOG THANH LÝ CHUẨN UX KHÔNG BỊ LỒNG TRIGGER */}
+             
               <TerminateContractDialog
                 contractData={{
                   id: item.id,

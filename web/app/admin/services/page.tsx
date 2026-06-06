@@ -10,13 +10,13 @@ import {
   ChevronLeft,
   ChevronRight,
   Inbox,
-  Loader2,
   RefreshCw,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { toast } from "sonner";
 import { ServiceResponse } from "./types/service.type";
 import { serviceApi } from "./apis/service.api";
+import { ServiceCardSkeleton } from "./components/ServiceCardSkeleton";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -97,10 +97,8 @@ export default function ServicesPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 p-6 min-h-screen bg-slate-50/20 antialiased selection:bg-indigo-50">
-      {/* 1. Tuyến đầu: Header chính của trang */}
       <ServiceHeader onAdd={handleAddNew} />
 
-      {/* 2. Tuyến hai: Khối điều khiển Toolbar (Đã phá bỏ hộp bọc ngoài thô cứng) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
         <div className="space-y-0.5">
           <h2 className="text-sm font-semibold text-slate-800 tracking-tight">
@@ -138,17 +136,14 @@ export default function ServicesPage() {
         </div>
       </div>
 
-      {/* 3. Khu vực chính hiển thị nội dung */}
       <div className="pt-2">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-40 border border-slate-100 bg-white/50 backdrop-blur-xs rounded-2xl">
-            <Loader2 className="w-5 h-5 animate-spin text-slate-400 mb-2.5 stroke-[1.5]" />
-            <p className="text-xs font-medium text-slate-400 tracking-normal">
-              Đang đồng bộ danh mục dịch vụ...
-            </p>
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
+              <ServiceCardSkeleton key={index} />
+            ))}
           </div>
         ) : paginatedServices.length > 0 ? (
-          /* Grid hiển thị thoáng đãng, không bị gò bó trong khung bao cứng */
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {paginatedServices.map((service) => (
               <ServiceCard
@@ -184,7 +179,6 @@ export default function ServicesPage() {
         )}
       </div>
 
-      {/* 4. Khối phân trang chuẩn Modern Enterprise Workspace */}
       {!isLoading && totalPages > 1 && (
         <div className="flex items-center justify-between border-t border-slate-200/60 pt-5 mt-4">
           <p className="text-xs font-medium text-slate-400">
