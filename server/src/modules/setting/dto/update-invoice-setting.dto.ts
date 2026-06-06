@@ -18,4 +18,6 @@ export class UpdateInvoiceSettingDto {
   @Min(0)
   @Max(59)
   invoiceGenerateMinute!: number;
+
+  lastInvoiceGeneratedAt?: string | null;
 }

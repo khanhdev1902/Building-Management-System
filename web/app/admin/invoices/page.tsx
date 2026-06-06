@@ -168,26 +168,29 @@ export default function InvoiceManagementPage() {
     }
   };
 
-  // Callback kích hoạt khi đồng hồ đếm ngược về 0
   const handleAutomaticTrigger = async () => {
     setIsSystemRunning(true);
-    toast.loading(
-      "Hệ thống tự động: Đang tiến hành quét chỉ số và phát hành hóa đơn...",
+    const toastId = toast.loading(
+      "Hệ thống tự động: Đang tiến hành quét chỉ số và phát hành hóa đơn kỳ mới...",
     );
 
-    // Thêm từ khóa async ngay trước dấu ngoặc () của callback setTimeout
     setTimeout(async () => {
       try {
-        setIsSystemRunning(false);
         await fetchInvoices();
-        toast.success("✓ Đã hoàn tất luồng tự động phát hành hóa đơn kỳ mới!");
+        toast.success("✓ Đã hoàn tất luồng tự động phát hành hóa đơn kỳ mới!", {
+          id: toastId,
+        });
       } catch (error) {
         console.error("Error during automatic invoicing:", error);
         toast.error("Có lỗi xảy ra khi đồng bộ hóa đơn mới.", {
-          description: "Vui lòng kiểm tra lại hệ thống.",
+          id: toastId,
+          description:
+            "Vui lòng kiểm tra lại cấu trúc hệ thống hoặc log server.",
         });
+      } finally {
+        setIsSystemRunning(false);
       }
-    }, 5000);
+    }, 8000);
   };
 
   const handleForceInvoicingByHand = async () => {

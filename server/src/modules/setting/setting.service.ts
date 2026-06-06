@@ -38,6 +38,7 @@ export class SettingService {
         invoiceGenerateDay: dto.invoiceGenerateDay,
         invoiceGenerateHour: dto.invoiceGenerateHour,
         invoiceGenerateMinute: dto.invoiceGenerateMinute,
+        lastInvoiceGeneratedAt: dto.lastInvoiceGeneratedAt,
       },
     });
 

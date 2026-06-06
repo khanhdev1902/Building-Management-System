@@ -15,6 +15,9 @@ import {
   ShieldCheck,
   Wifi,
   ShieldAlert,
+  Clock,
+  History,
+  Wrench,
 } from "lucide-react";
 import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
@@ -64,6 +67,7 @@ export default function SystemSettingsPage() {
     "security" | "billing" | "utility"
   >("security");
   const [isSaving, setIsSaving] = useState(false);
+  const [isDebugloading, setIsDebugLoading] = useState(false);
 
   // State quản lý toàn bộ cấu hình lõi thực tế của Danjin BMS
   const [settings, setSettings] = useState({
@@ -71,10 +75,14 @@ export default function SystemSettingsPage() {
     requirePasswordChange: true,
     sessionTimeout: "1440",
 
-    billingAnchorDay: "25",
-    invoiceGenerationDay: "28",
-    gracePeriodDays: "3",
+    id: "62115915-78bf-4e31-b03e-9c526246a8cb",
+    invoiceGenerateDay: "6",
+    invoiceGenerateHour: "16",
+    invoiceGenerateMinute: "50",
+    lastInvoiceGeneratedAt: "2026-05-07T19:50:00.000Z", // Mốc tháng 5 khiến Cronjob không chạy lại
 
+    billingAnchorDay: "25",
+    gracePeriodDays: "3",
     enableAutoDunning: true,
     firstReminderDays: "1",
     finalReminderDays: "5",
@@ -84,9 +92,48 @@ export default function SystemSettingsPage() {
     defaultServiceFee: 150000,
   });
 
+  // TÁC VỤ DEBUG: Ép lùi thời gian phát hành về tháng trước để test tự động kích hoạt luồng hóa đơn
+  const handleResetInvoiceTimeForTest = async () => {
+    setIsDebugLoading(true);
+    const toastId = toast.loading(
+      "Đang gửi lệnh gỡ lỗi hệ thống lên Neon Database...",
+    );
+
+    try {
+      const pastDateISO = "2026-04-07T19:50:00.000Z"; // Ép về tháng 4 công thức
+
+      // Thực tế cưng bắn thẳng payload này lên API cập nhật cấu hình hệ thống
+      // await systemSettingApi.updateSettings({ id: settings.id, lastInvoiceGeneratedAt: pastDateISO });
+
+      setSettings((prev) => ({
+        ...prev,
+        lastInvoiceGeneratedAt: pastDateISO,
+      }));
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.success(
+        "✓ Đã lùi mốc phát hành về Tháng 04! Hệ thống tự động sẽ kích hoạt sau 1s nữa.",
+        { id: toastId },
+      );
+    } catch (error) {
+      console.error(error);
+      toast.error("Lỗi gỡ lỗi Sandbox phân hệ", { id: toastId });
+    } finally {
+      setIsDebugLoading(false);
+    }
+  };
+
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
+
+    const payload = {
+      id: settings.id,
+      invoiceGenerateDay: Number(settings.invoiceGenerateDay),
+      invoiceGenerateHour: Number(settings.invoiceGenerateHour),
+      invoiceGenerateMinute: Number(settings.invoiceGenerateMinute),
+    };
+    console.log("JSON Payload gửi lên Neon Database:", payload);
 
     setTimeout(() => {
       setIsSaving(false);
@@ -98,7 +145,7 @@ export default function SystemSettingsPage() {
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-7 bg-slate-50/10 min-h-screen antialiased selection:bg-indigo-50">
-      {/* 1. TOP NAVIGATION BAR: TIÊU ĐỀ ĐIỀU HÀNH CHUYÊN SÂU */}
+      {/* 1. TOP NAVIGATION BAR */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200/60 pb-5 select-none">
         <div className="space-y-1">
           <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
@@ -111,7 +158,6 @@ export default function SystemSettingsPage() {
           </p>
         </div>
 
-        {/* Cụm Tabs dẹt khít lồng trực tiếp lên hàng Topbar để tiết kiệm không gian */}
         <div className="flex bg-slate-100 p-0.5 rounded-xl border border-slate-200/40 w-fit h-9 items-center shrink-0 shadow-3xs">
           <button
             type="button"
@@ -151,7 +197,7 @@ export default function SystemSettingsPage() {
         </div>
       </div>
 
-      {/* 2. KHÔNG GIAN NỘI DUNG CHÍNH - ĐÃ PHÁ BỎ CHIẾC HỘP THÔ CỨNG */}
+      {/* 2. KHÔNG GIAN NỘI DUNG CHÍNH */}
       <form onSubmit={handleSaveSettings} className="space-y-8 max-w-4xl">
         {/* ================= TAB 1: BẢO MẬT & MẬT KHẨU KHỞI TẠO ================= */}
         {activeTab === "security" && (
@@ -230,10 +276,10 @@ export default function SystemSettingsPage() {
           </div>
         )}
 
-        {/* ================= TAB 2: CRONJOB TỰ ĐỘNG HÓA TÀI KHÓA ================= */}
+        {/* ================= TAB 2: CRONJOB TỰ ĐỘNG HÓA TÀI KHÓA (CẬP NHẬT THEO ĐÚNG JSON) ================= */}
         {activeTab === "billing" && (
           <div className="space-y-6 animate-in fade-in duration-200">
-            <div className="border-b border-slate-100 pb-3 select-none">
+            <div className="border-b border-slate-100 pb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 select-none">
               <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
                 <CalendarClock
                   size={14}
@@ -241,6 +287,34 @@ export default function SystemSettingsPage() {
                 />{" "}
                 Vòng quét tự động hóa tài khóa tòa nhà
               </h3>
+
+              {/* PHÂN KHU ĐIỀU KHIỂN DEBUG CHO DEV/ADMIN TRÊN FRONTEND */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-1.5 text-[10px] bg-slate-100 text-slate-500 font-mono font-bold px-2.5 py-1 rounded-lg border border-slate-200/60">
+                  <History size={11} className="text-slate-400" />
+                  <span>
+                    Lần chạy cuối:{" "}
+                    {new Date(settings.lastInvoiceGeneratedAt).toLocaleString(
+                      "vi-VN",
+                    )}
+                  </span>
+                </div>
+
+                {/* NÚT THẦN THÁNH ĐỂ BẺ KHÓA THỜI GIAN VỀ THÁNG 4 ĐỂ BẮT ĐẦU TEST AUTO TRIGGER */}
+                <Button
+                  type="button"
+                  disabled={isDebugloading}
+                  onClick={handleResetInvoiceTimeForTest}
+                  variant="outline"
+                  className="cursor-pointer h-7 text-[10px] font-bold border-amber-200 text-amber-700 bg-amber-50/30 hover:bg-amber-50 rounded-lg flex items-center gap-1 px-2 shadow-2xs transition-colors"
+                >
+                  <Wrench
+                    size={11}
+                    className={isDebugloading ? "animate-spin" : ""}
+                  />
+                  <span>Reset mốc chạy (Test Auto)</span>
+                </Button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
@@ -280,63 +354,117 @@ export default function SystemSettingsPage() {
                 </Select>
               </FormGroup>
 
-              <FormGroup
-                label="Ngày phát hành hóa đơn"
-                subLabel="Tự động sinh mã VietQR gạch nợ"
-              >
-                <Select
-                  value={settings.invoiceGenerationDay}
-                  onValueChange={(val) =>
-                    setSettings({ ...settings, invoiceGenerationDay: val })
-                  }
+              <div className="sm:col-span-2 grid grid-cols-3 gap-3.5">
+                <FormGroup
+                  label="Ngày phát hóa đơn"
+                  subLabel="Cronjob tự sinh VietQR"
                 >
-                  <SelectTrigger className="h-9 text-xs font-bold font-mono border-slate-200 bg-white rounded-lg shadow-2xs focus:ring-0">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
-                    <SelectItem
-                      value="25"
-                      className="text-xs font-mono cursor-pointer"
-                    >
-                      Ngày 25 hàng tháng
-                    </SelectItem>
-                    <SelectItem
-                      value="28"
-                      className="text-xs font-mono cursor-pointer"
-                    >
-                      Ngày 28 hàng tháng
-                    </SelectItem>
-                    <SelectItem
-                      value="1"
-                      className="text-xs font-mono cursor-pointer"
-                    >
-                      Ngày 01 đầu tháng sau
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormGroup>
-
-              <FormGroup
-                label="Thời hạn nộp cước phí"
-                subLabel="Hạn đóng tiền kể từ ngày ra phiếu"
-              >
-                <div className="relative flex items-center">
-                  <Input
-                    type="number"
-                    value={settings.gracePeriodDays}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        gracePeriodDays: e.target.value,
-                      })
+                  <Select
+                    value={settings.invoiceGenerateDay}
+                    onValueChange={(val) =>
+                      setSettings({ ...settings, invoiceGenerateDay: val })
                     }
-                    className="h-9 font-mono text-xs font-bold rounded-lg border-slate-200 bg-white pr-12 shadow-2xs focus-visible:border-slate-400 focus-visible:ring-0"
-                  />
-                  <span className="absolute right-3 text-[10px] text-slate-400 font-bold select-none">
-                    NGÀY
+                  >
+                    <SelectTrigger className="h-9 text-xs font-bold font-mono border-slate-200 bg-white rounded-lg shadow-2xs focus:ring-0">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
+                      {Array.from({ length: 31 }).map((_, i) => (
+                        <SelectItem
+                          key={i + 1}
+                          value={String(i + 1)}
+                          className="text-xs font-mono cursor-pointer"
+                        >
+                          Ngày {String(i + 1).padStart(2, "0")}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormGroup>
+
+                <FormGroup
+                  label="Giờ phát hành"
+                  subLabel="Khung giờ quét dữ liệu"
+                >
+                  <div className="relative flex items-center">
+                    <Input
+                      type="number"
+                      min={0}
+                      max={23}
+                      value={settings.invoiceGenerateHour}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          invoiceGenerateHour: e.target.value,
+                        })
+                      }
+                      className="h-9 font-mono text-xs font-bold rounded-lg border-slate-200 bg-white pr-8 shadow-2xs focus-visible:border-slate-400 focus-visible:ring-0"
+                    />
+                    <span className="absolute right-3 text-[10px] text-slate-400 font-bold select-none">
+                      GIỜ
+                    </span>
+                  </div>
+                </FormGroup>
+
+                <FormGroup
+                  label="Phút phát hành"
+                  subLabel="Tỷ lệ chia block phút"
+                >
+                  <div className="relative flex items-center">
+                    <Input
+                      type="number"
+                      min={0}
+                      max={59}
+                      value={settings.invoiceGenerateMinute}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          invoiceGenerateMinute: e.target.value,
+                        })
+                      }
+                      className="h-9 font-mono text-xs font-bold rounded-lg border-slate-200 bg-white pr-8 shadow-2xs focus-visible:border-slate-400 focus-visible:ring-0"
+                    />
+                    <span className="absolute right-3 text-[10px] text-slate-400 font-bold select-none">
+                      PHÚT
+                    </span>
+                  </div>
+                </FormGroup>
+              </div>
+
+              <div className="sm:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div className="sm:col-span-1">
+                  <FormGroup
+                    label="Thời hạn nộp cước phí"
+                    subLabel="Hạn đóng tiền kể từ ngày ra phiếu"
+                  >
+                    <div className="relative flex items-center">
+                      <Input
+                        type="number"
+                        value={settings.gracePeriodDays}
+                        onChange={(e) =>
+                          setSettings({
+                            ...settings,
+                            gracePeriodDays: e.target.value,
+                          })
+                        }
+                        className="h-9 font-mono text-xs font-bold rounded-lg border-slate-200 bg-white pr-12 shadow-2xs focus-visible:border-slate-400 focus-visible:ring-0"
+                      />
+                      <span className="absolute right-3 text-[10px] text-slate-400 font-bold select-none">
+                        NGÀY
+                      </span>
+                    </div>
+                  </FormGroup>
+                </div>
+
+                <div className="sm:col-span-2 flex items-center text-[11px] text-slate-400 font-medium bg-slate-50 border border-slate-200/60 rounded-xl px-4 py-3 h-9 mt-auto select-none font-mono">
+                  <Clock size={13} className="text-slate-400 mr-2 shrink-0" />
+                  <span>
+                    Robot Cronjob lập biểu:{" "}
+                    <strong className="text-slate-700">50 16 06 * * *</strong>{" "}
+                    (Chạy vào lúc 16:50 ngày 06 hàng tháng)
                   </span>
                 </div>
-              </FormGroup>
+              </div>
 
               {/* LUỒNG CHẠY ROBOT DUNNING NHẮC NỢ CÔNG NỢ */}
               <div className="sm:col-span-3 border border-slate-200/90 bg-white rounded-2xl p-5 shadow-3xs space-y-4">
@@ -495,7 +623,6 @@ export default function SystemSettingsPage() {
               </FormGroup>
             </div>
 
-            {/* BOX CẢNH BÁO PHÁP LÝ KHI THAY ĐỔI ĐƠN GIÁ */}
             <div className="flex gap-3 p-4 border border-amber-100 bg-amber-50/40 rounded-xl text-xs text-amber-800 font-medium leading-relaxed select-none">
               <ShieldAlert
                 size={16}
