@@ -54,6 +54,7 @@ import {
   SystemInvoiceSetting,
   systemSettingApi,
 } from "../settings/apis/system-setting.api";
+import { InvoicePageSkeleton } from "./components/InvoicePageSkeleton";
 
 export default function InvoiceManagementPage() {
   const now = new Date();
@@ -270,7 +271,7 @@ export default function InvoiceManagementPage() {
 
             <Button
               variant="outline"
-              onClick={() => setIsLoading(true)}
+              onClick={() => fetchInvoices()}
               disabled={isLoading || isSystemRunning}
             >
               <RefreshCw
@@ -287,380 +288,390 @@ export default function InvoiceManagementPage() {
           onTimerEnd={handleAutomaticTrigger}
         />
       </div>
-
-      {/* 2. KHỐI THỐNG KÊ KPI CARDS FLAT, LIỀN MẠCH */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 select-none">
-        <StatsMetricCard
-          title="Tổng doanh số phát hành"
-          value={`${totalAmount.toLocaleString("vi-VN")}đ`}
-          sub="Kỳ hạn T05/2026"
-          icon={CreditCard}
-          color="indigo"
-        />
-        <StatsMetricCard
-          title="Dòng tiền thực thu"
-          value={`${totalAmountf.toLocaleString("vi-VN")}đ`}
-          sub="Đạt tiến độ 68%"
-          icon={CheckCircle2}
-          color="emerald"
-        />
-        <StatsMetricCard
-          title="Nợ chờ đối soát"
-          value={`${(totalAmount - totalAmountf).toLocaleString("vi-VN")}đ`}
-          sub="45 lệnh treo"
-          icon={Clock}
-          color="amber"
-        />
-        <StatsMetricCard
-          title="Nợ đọng quá hạn"
-          value="0đ"
-          sub="Rủi ro dòng tiền cao"
-          icon={AlertCircle}
-          color="rose"
-        />
-      </div>
-
-      {/* 3. TOOLBAR TÌM KIẾM & CHUYỂN TAB TRẠNG THÁI TRÀN VIỀN */}
-      <div className="flex flex-col lg:flex-row gap-3 justify-between items-center select-none pt-1">
-        <div className="relative w-full lg:w-96 group">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-slate-800 transition-colors stroke-[1.5]" />
-          <Input
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Tìm nhanh số phòng, họ tên cư dân, ID hóa đơn..."
-            className="w-full pl-9 pr-4 h-10 bg-white border border-slate-200/80 focus-visible:border-slate-400 focus-visible:ring-0 rounded-lg text-xs font-medium text-slate-800 placeholder:text-slate-400 placeholder:font-normal transition-all"
-          />
-        </div>
-
-        {/* Cụm chuyển trạng thái dẹt khít chuẩn SaaS */}
-        <div className="flex flex-wrap items-center justify-end gap-2 w-full lg:w-auto">
-          <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200/40 w-fit h-9 items-center">
-            {[
-              { key: "all", label: "Tất cả công nợ" },
-              { key: "Paid", label: "Đã tất toán" },
-              { key: "Pending", label: "Chờ thanh toán" },
-              { key: "Overdue", label: "Quá hạn treo" },
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => {
-                  setStatusTab(tab.key as any);
-                  setSelectedIds([]);
-                }}
-                className={`h-7 px-3.5 rounded-md text-xs font-semibold transition-all ${
-                  statusTab === tab.key
-                    ? "bg-white shadow-2xs text-slate-900"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+      {isLoading ? (
+        <InvoicePageSkeleton />
+      ) : (
+        <>
+          {/* 2. KHỐI THỐNG KÊ KPI CARDS FLAT, LIỀN MẠCH */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 select-none">
+            <StatsMetricCard
+              title="Tổng doanh số phát hành"
+              value={`${totalAmount.toLocaleString("vi-VN")}đ`}
+              sub="Kỳ hạn T05/2026"
+              icon={CreditCard}
+              color="indigo"
+            />
+            <StatsMetricCard
+              title="Dòng tiền thực thu"
+              value={`${totalAmountf.toLocaleString("vi-VN")}đ`}
+              sub="Đạt tiến độ 68%"
+              icon={CheckCircle2}
+              color="emerald"
+            />
+            <StatsMetricCard
+              title="Nợ chờ đối soát"
+              value={`${(totalAmount - totalAmountf).toLocaleString("vi-VN")}đ`}
+              sub="45 lệnh treo"
+              icon={Clock}
+              color="amber"
+            />
+            <StatsMetricCard
+              title="Nợ đọng quá hạn"
+              value="0đ"
+              sub="Rủi ro dòng tiền cao"
+              icon={AlertCircle}
+              color="rose"
+            />
           </div>
+          {/* 3. TOOLBAR TÌM KIẾM & CHUYỂN TAB TRẠNG THÁI TRÀN VIỀN */}
+          <div className="flex flex-col lg:flex-row gap-3 justify-between items-center select-none pt-1">
+            <div className="relative w-full lg:w-96 group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-slate-800 transition-colors stroke-[1.5]" />
+              <Input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Tìm nhanh số phòng, họ tên cư dân, ID hóa đơn..."
+                className="w-full pl-9 pr-4 h-10 bg-white border border-slate-200/80 focus-visible:border-slate-400 focus-visible:ring-0 rounded-lg text-xs font-medium text-slate-800 placeholder:text-slate-400 placeholder:font-normal transition-all"
+              />
+            </div>
 
-          <div className="h-5 w-px bg-slate-200 mx-1 hidden sm:block" />
+            {/* Cụm chuyển trạng thái dẹt khít chuẩn SaaS */}
+            <div className="flex flex-wrap items-center justify-end gap-2 w-full lg:w-auto">
+              <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200/40 w-fit h-9 items-center">
+                {[
+                  { key: "all", label: "Tất cả công nợ" },
+                  { key: "Paid", label: "Đã tất toán" },
+                  { key: "Pending", label: "Chờ thanh toán" },
+                  { key: "Overdue", label: "Quá hạn treo" },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => {
+                      setStatusTab(tab.key as any);
+                      setSelectedIds([]);
+                    }}
+                    className={`h-7 px-3.5 rounded-md text-xs font-semibold transition-all ${
+                      statusTab === tab.key
+                        ? "bg-white shadow-2xs text-slate-900"
+                        : "text-slate-500 hover:text-slate-800"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
 
-          <Button
-            variant="outline"
-            className="h-9 text-xs border-slate-200 bg-white text-slate-600 font-semibold gap-1.5 rounded-lg shadow-2xs"
-            onClick={() => {
-              toast.info("Thông báo hệ thống!", {
-                description: "Chức năng này đang trong quá trình phát triển...",
-              });
-            }}
-          >
-            <FileDown className="w-3.5 h-3.5 text-slate-400" /> Xuất Excel
-          </Button>
-        </div>
-      </div>
+              <div className="h-5 w-px bg-slate-200 mx-1 hidden sm:block" />
 
-      {/* 4. BẢNG HIỂN THỊ CHỨNG TỪ NÉN MẬT ĐỘ THÔNG TIN CHUYÊN SÂU */}
-      <div className=" relative rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.01)] bg-white overflow-hidden flex flex-col min-h-100">
-        {/* Action Console đen sẫm phẳng lì khi có checkbox được tick */}
-        {selectedIds.length > 0 && (
-          <div className="bg-slate-900 px-5 py-2.5 flex items-center justify-between text-white animate-in fade-in slide-in-from-top-2 duration-200 select-none">
-            <span className="text-xs font-semibold font-mono tracking-tight text-slate-300">
-              Đang lựa chọn{" "}
-              <strong className="text-white font-bold">
-                {selectedIds.length}
-              </strong>{" "}
-              chứng từ công nợ
-            </span>
-            <div className="flex gap-2">
               <Button
-                size="sm"
-                className="h-7 text-[10px] font-bold bg-white text-slate-900 hover:bg-slate-100 gap-1.5 rounded-md shadow-none uppercase"
+                variant="outline"
+                className="h-9 text-xs border-slate-200 bg-white text-slate-600 font-semibold gap-1.5 rounded-lg shadow-2xs"
+                onClick={() => {
+                  toast.info("Thông báo hệ thống!", {
+                    description:
+                      "Chức năng này đang trong quá trình phát triển...",
+                  });
+                }}
               >
-                <Send className="w-3 h-3" /> Gửi nhắc nợ hàng loạt
-              </Button>
-              <Button
-                size="sm"
-                className="h-7 text-[10px] font-bold bg-white/10 hover:bg-white/20 text-white gap-1.5 rounded-md border border-white/10 shadow-none uppercase"
-              >
-                <QrCode className="w-3 h-3" /> Xuất QR gộp tiền
+                <FileDown className="w-3.5 h-3.5 text-slate-400" /> Xuất Excel
               </Button>
             </div>
           </div>
-        )}
+          {/* 4. BẢNG HIỂN THỊ CHỨNG TỪ NÉN MẬT ĐỘ THÔNG TIN CHUYÊN SÂU */}
+          <div className=" relative rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(0,0,0,0.01)] bg-white overflow-hidden flex flex-col min-h-100">
+            {/* Action Console đen sẫm phẳng lì khi có checkbox được tick */}
+            {selectedIds.length > 0 && (
+              <div className="bg-slate-900 px-5 py-2.5 flex items-center justify-between text-white animate-in fade-in slide-in-from-top-2 duration-200 select-none">
+                <span className="text-xs font-semibold font-mono tracking-tight text-slate-300">
+                  Đang lựa chọn{" "}
+                  <strong className="text-white font-bold">
+                    {selectedIds.length}
+                  </strong>{" "}
+                  chứng từ công nợ
+                </span>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    className="h-7 text-[10px] font-bold bg-white text-slate-900 hover:bg-slate-100 gap-1.5 rounded-md shadow-none uppercase"
+                  >
+                    <Send className="w-3 h-3" /> Gửi nhắc nợ hàng loạt
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="h-7 text-[10px] font-bold bg-white/10 hover:bg-white/20 text-white gap-1.5 rounded-md border border-white/10 shadow-none uppercase"
+                  >
+                    <QrCode className="w-3 h-3" /> Xuất QR gộp tiền
+                  </Button>
+                </div>
+              </div>
+            )}
 
-        <Table>
-          <TableHeader className="bg-slate-50/40 border-b border-slate-100/80 select-none">
-            <TableRow className="hover:bg-transparent">
-              <TableHead className="w-12 pl-4 py-3">
-                <Checkbox
-                  checked={
-                    filteredInvoices.length > 0 &&
-                    selectedIds.length === filteredInvoices.length
-                  }
-                  onCheckedChange={handleSelectAll}
-                />
-              </TableHead>
-              <TableHead className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider py-3 w-[12%]">
-                ID Hóa đơn
-              </TableHead>
-              <TableHead className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider py-3 w-[15%]">
-                Vị trí phòng
-              </TableHead>
-              <TableHead className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider py-3 w-[35%]">
-                Bóc tách cấu phần điện nước chi tiết
-              </TableHead>
-              <TableHead className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider text-right py-3 w-[13%]">
-                Tổng tiền gốc
-              </TableHead>
-              <TableHead className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider py-3 w-[13%] pl-6">
-                Hạn kì đối soát
-              </TableHead>
-              <TableHead className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider text-center py-3 w-[12%]">
-                Trạng thái tiền
-              </TableHead>
-              <TableHead className="w-10 py-3 pr-4"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody className="divide-y divide-slate-100/60">
-            {filteredInvoices.map((inv) => {
-              const isChecked = selectedIds.includes(inv.id);
-              return (
-                <TableRow
-                  key={inv.id}
-                  className={`group transition-colors border-none ${isChecked ? "bg-indigo-50/20 hover:bg-indigo-50/30" : "hover:bg-slate-50/40"}`}
-                >
-                  <TableCell className="pl-4 py-3">
+            <Table>
+              <TableHeader className="bg-slate-50/40 border-b border-slate-100/80 select-none">
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="w-12 pl-4 py-3">
                     <Checkbox
-                      checked={isChecked}
-                      onCheckedChange={(checked) =>
-                        handleSelectRow(inv.id, !!checked)
+                      checked={
+                        filteredInvoices.length > 0 &&
+                        selectedIds.length === filteredInvoices.length
                       }
+                      onCheckedChange={handleSelectAll}
                     />
-                  </TableCell>
+                  </TableHead>
+                  <TableHead className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider py-3 w-[12%]">
+                    ID Hóa đơn
+                  </TableHead>
+                  <TableHead className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider py-3 w-[15%]">
+                    Vị trí phòng
+                  </TableHead>
+                  <TableHead className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider py-3 w-[35%]">
+                    Bóc tách cấu phần điện nước chi tiết
+                  </TableHead>
+                  <TableHead className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider text-right py-3 w-[13%]">
+                    Tổng tiền gốc
+                  </TableHead>
+                  <TableHead className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider py-3 w-[13%] pl-6">
+                    Hạn kì đối soát
+                  </TableHead>
+                  <TableHead className="text-[10px] font-semibold uppercase text-slate-400 tracking-wider text-center py-3 w-[12%]">
+                    Trạng thái tiền
+                  </TableHead>
+                  <TableHead className="w-10 py-3 pr-4"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="divide-y divide-slate-100/60">
+                {filteredInvoices.map((inv) => {
+                  const isChecked = selectedIds.includes(inv.id);
+                  return (
+                    <TableRow
+                      key={inv.id}
+                      className={`group transition-colors border-none ${isChecked ? "bg-indigo-50/20 hover:bg-indigo-50/30" : "hover:bg-slate-50/40"}`}
+                    >
+                      <TableCell className="pl-4 py-3">
+                        <Checkbox
+                          checked={isChecked}
+                          onCheckedChange={(checked) =>
+                            handleSelectRow(inv.id, !!checked)
+                          }
+                        />
+                      </TableCell>
 
-                  {/* Mã ID hóa đơn */}
-                  <TableCell className="font-mono text-xs font-bold text-slate-400 py-3">
-                    {inv.id.toUpperCase().slice(0, 12)}
-                  </TableCell>
+                      {/* Mã ID hóa đơn */}
+                      <TableCell className="font-mono text-xs font-bold text-slate-400 py-3">
+                        {inv.id.toUpperCase().slice(0, 12)}
+                      </TableCell>
 
-                  {/* Vị trí phòng & Tên chủ hộ */}
-                  <TableCell className="py-3">
-                    <span className="font-bold text-slate-800 text-xs font-mono">
-                      Phòng {inv.roomNumber}
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-sans block mt-0.5 truncate max-w-30 font-medium">
-                      {inv.tenantName}
-                    </span>
-                  </TableCell>
-
-                  {/* Cấu phần điện nước chi tiết */}
-                  <TableCell className="py-3">
-                    <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] font-medium text-slate-400 font-sans">
-                      <span className="flex items-center gap-1">
-                        <Zap size={11} className="text-amber-500" /> Điện:{" "}
-                        <strong className="text-slate-700 font-mono font-bold">
-                          {inv.invoiceItems.find((i) => i.type === "ELECTRIC")
-                            ?.quantity ?? ""}{" "}
-                          kWh
-                        </strong>{" "}
-                        <span className="text-slate-300">
-                          (
-                          {inv.invoiceItems.find((i) => i.type === "ELECTRIC")
-                            ?.previousReading ?? ""}
-                          ➔
-                          {inv.invoiceItems.find((i) => i.type === "ELECTRIC")
-                            ?.currentReading ?? ""}
-                          )
+                      {/* Vị trí phòng & Tên chủ hộ */}
+                      <TableCell className="py-3">
+                        <span className="font-bold text-slate-800 text-xs font-mono">
+                          Phòng {inv.roomNumber}
                         </span>
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Droplets size={11} className="text-blue-500" /> Nước:{" "}
-                        <strong className="text-slate-700 font-mono font-bold">
-                          {inv.invoiceItems.find((i) => i.type === "WATER")
-                            ?.quantity ?? ""}{" "}
-                          m³
-                        </strong>{" "}
-                        <span className="text-slate-300">
-                          (
-                          {inv.invoiceItems.find((i) => i.type === "WATER")
-                            ?.previousReading ?? ""}
-                          ➔
-                          {inv.invoiceItems.find((i) => i.type === "WATER")
-                            ?.currentReading ?? ""}
-                          )
+                        <span className="text-[10px] text-slate-400 font-sans block mt-0.5 truncate max-w-30 font-medium">
+                          {inv.tenantName}
                         </span>
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-slate-400 font-medium font-sans mt-1 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 w-fit">
-                      <span>
-                        Gốc:{" "}
-                        {(
-                          (inv.invoiceItems.find((i) => i.type == "ROOM")
-                            ?.subTotal || 0) / 1000
-                        ).toLocaleString("vi-VN")}{" "}
-                        k
-                      </span>
-                      <span>•</span>
-                      <span>
-                        Điện:{" "}
-                        {(
-                          (inv.invoiceItems.find((i) => i.type === "ELECTRIC")
-                            ?.subTotal ?? 0) / 1000
-                        ).toLocaleString("vi-VN")}{" "}
-                        k
-                      </span>
-                      <span>•</span>
-                      <span>
-                        Nước:{" "}
-                        {(
-                          (inv.invoiceItems.find((i) => i.type === "WATER")
-                            ?.subTotal ?? 0) / 1000
-                        ).toLocaleString("vi-VN")}{" "}
-                        k
-                      </span>
-                      <span>•</span>
-                      <span>
-                        DV:{" "}
-                        {(
-                          inv.invoiceItems.reduce(
-                            (acc, item) =>
-                              acc +
-                              (item.type === "SERVICE" ? item.subTotal : 0),
-                            0,
-                          ) / 1000
-                        ).toLocaleString("vi-VN")}{" "}
-                        k
-                      </span>
-                    </div>
-                  </TableCell>
+                      </TableCell>
 
-                  {/* Tổng số tiền */}
-                  <TableCell className="font-bold text-slate-900 text-right font-mono py-3">
-                    {inv.totalAmount.toLocaleString("vi-VN")}đ
-                  </TableCell>
+                      {/* Cấu phần điện nước chi tiết */}
+                      <TableCell className="py-3">
+                        <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] font-medium text-slate-400 font-sans">
+                          <span className="flex items-center gap-1">
+                            <Zap size={11} className="text-amber-500" /> Điện:{" "}
+                            <strong className="text-slate-700 font-mono font-bold">
+                              {inv.invoiceItems.find(
+                                (i) => i.type === "ELECTRIC",
+                              )?.quantity ?? ""}{" "}
+                              kWh
+                            </strong>{" "}
+                            <span className="text-slate-300">
+                              (
+                              {inv.invoiceItems.find(
+                                (i) => i.type === "ELECTRIC",
+                              )?.previousReading ?? ""}
+                              ➔
+                              {inv.invoiceItems.find(
+                                (i) => i.type === "ELECTRIC",
+                              )?.currentReading ?? ""}
+                              )
+                            </span>
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Droplets size={11} className="text-blue-500" />{" "}
+                            Nước:{" "}
+                            <strong className="text-slate-700 font-mono font-bold">
+                              {inv.invoiceItems.find((i) => i.type === "WATER")
+                                ?.quantity ?? ""}{" "}
+                              m³
+                            </strong>{" "}
+                            <span className="text-slate-300">
+                              (
+                              {inv.invoiceItems.find((i) => i.type === "WATER")
+                                ?.previousReading ?? ""}
+                              ➔
+                              {inv.invoiceItems.find((i) => i.type === "WATER")
+                                ?.currentReading ?? ""}
+                              )
+                            </span>
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-slate-400 font-medium font-sans mt-1 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 w-fit">
+                          <span>
+                            Gốc:{" "}
+                            {(
+                              (inv.invoiceItems.find((i) => i.type == "ROOM")
+                                ?.subTotal || 0) / 1000
+                            ).toLocaleString("vi-VN")}{" "}
+                            k
+                          </span>
+                          <span>•</span>
+                          <span>
+                            Điện:{" "}
+                            {(
+                              (inv.invoiceItems.find(
+                                (i) => i.type === "ELECTRIC",
+                              )?.subTotal ?? 0) / 1000
+                            ).toLocaleString("vi-VN")}{" "}
+                            k
+                          </span>
+                          <span>•</span>
+                          <span>
+                            Nước:{" "}
+                            {(
+                              (inv.invoiceItems.find((i) => i.type === "WATER")
+                                ?.subTotal ?? 0) / 1000
+                            ).toLocaleString("vi-VN")}{" "}
+                            k
+                          </span>
+                          <span>•</span>
+                          <span>
+                            DV:{" "}
+                            {(
+                              inv.invoiceItems.reduce(
+                                (acc, item) =>
+                                  acc +
+                                  (item.type === "SERVICE" ? item.subTotal : 0),
+                                0,
+                              ) / 1000
+                            ).toLocaleString("vi-VN")}{" "}
+                            k
+                          </span>
+                        </div>
+                      </TableCell>
 
-                  {/* Hạn đóng & Cảnh báo số ngày trễ */}
-                  <TableCell className="py-3 pl-6 font-medium">
-                    <div className="text-xs text-slate-600 font-mono">
-                      {inv.dueDate}
-                    </div>
-                    {inv.status === "Overdue" && (
-                      <div className="text-[9px] text-rose-500 font-bold font-sans mt-0.5 flex items-center gap-0.5">
-                        Đã trễ 4 ngày
-                      </div>
-                    )}
-                  </TableCell>
+                      {/* Tổng số tiền */}
+                      <TableCell className="font-bold text-slate-900 text-right font-mono py-3">
+                        {inv.totalAmount.toLocaleString("vi-VN")}đ
+                      </TableCell>
 
-                  {/* Badge dẹt phẳng lì trạng thái dòng tiền */}
-                  <TableCell className="text-center py-3">
-                    <StatusBadge status={inv.status} />
-                  </TableCell>
+                      {/* Hạn đóng & Cảnh báo số ngày trễ */}
+                      <TableCell className="py-3 pl-6 font-medium">
+                        <div className="text-xs text-slate-600 font-mono">
+                          {inv.dueDate}
+                        </div>
+                        {inv.status === "Overdue" && (
+                          <div className="text-[9px] text-rose-500 font-bold font-sans mt-0.5 flex items-center gap-0.5">
+                            Đã trễ 4 ngày
+                          </div>
+                        )}
+                      </TableCell>
 
-                  {/* Dropdown tác vụ hệ thống */}
-                  <TableCell className="text-right pr-4 py-3">
-                    <div className="flex justify-end gap-1 items-center h-7">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 cursor-pointer rounded-md group-hover:opacity-100 text-slate-400 hover:text-slate-700 hover:bg-slate-100"
-                          >
-                            <MoreVertical className="w-3.5 h-3.5" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                          align="end"
-                          className="w-48 p-1 rounded-lg border border-slate-200/70 bg-white shadow-md"
-                        >
-                          <DropdownMenuItem
-                            onClick={() => handleOpenDetail(inv)} // Bắn toàn bộ Object hóa đơn vào state kích hoạt
-                            className="gap-2 rounded py-2 text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer"
-                          >
-                            <ArrowUpRight className="w-3.5 h-3.5 text-slate-400" />{" "}
-                            Chi tiết hóa đơn
-                          </DropdownMenuItem>
-                          {/* <DropdownMenuItem className="gap-2 rounded py-2 text-emerald-600 hover:bg-emerald-50/40 text-xs font-semibold cursor-pointer">
+                      {/* Badge dẹt phẳng lì trạng thái dòng tiền */}
+                      <TableCell className="text-center py-3">
+                        <StatusBadge status={inv.status} />
+                      </TableCell>
+
+                      {/* Dropdown tác vụ hệ thống */}
+                      <TableCell className="text-right pr-4 py-3">
+                        <div className="flex justify-end gap-1 items-center h-7">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7 cursor-pointer rounded-md group-hover:opacity-100 text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                              >
+                                <MoreVertical className="w-3.5 h-3.5" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="w-48 p-1 rounded-lg border border-slate-200/70 bg-white shadow-md"
+                            >
+                              <DropdownMenuItem
+                                onClick={() => handleOpenDetail(inv)} // Bắn toàn bộ Object hóa đơn vào state kích hoạt
+                                className="gap-2 rounded py-2 text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer"
+                              >
+                                <ArrowUpRight className="w-3.5 h-3.5 text-slate-400" />{" "}
+                                Chi tiết hóa đơn
+                              </DropdownMenuItem>
+                              {/* <DropdownMenuItem className="gap-2 rounded py-2 text-emerald-600 hover:bg-emerald-50/40 text-xs font-semibold cursor-pointer">
                             <CheckCircle2 className="w-3.5 h-3.5" /> Xác nhận
                             khớp tiền
                           </DropdownMenuItem> */}
-                          <DropdownMenuItem
-                            onClick={() => handleViewInvoice(inv.id)}
-                            className=" gap-2 cursor-pointer rounded-md py-2 text-xs font-medium text-slate-600 hover:bg-sky-50 focus:bg-sky-50"
-                          >
-                            <Receipt className="h-4 w-4" />
-                            Xem biên lai điện tử
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDownloadInvoice(inv.id)}
-                            className="gap-2 rounded py-2 text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer"
-                          >
-                            <FileDown className="h-4 w-4" />
-                            Xuất hóa đơn PDF
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator className="my-1 border-slate-100" />
-                          <DropdownMenuItem className="gap-2 rounded py-2 text-rose-600 hover:bg-rose-50/50 text-xs font-semibold cursor-pointer">
-                            <AlertTriangle /> Đánh dấu sai sót
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                              <DropdownMenuItem
+                                onClick={() => handleViewInvoice(inv.id)}
+                                className=" gap-2 cursor-pointer rounded-md py-2 text-xs font-medium text-slate-600 hover:bg-sky-50 focus:bg-sky-50"
+                              >
+                                <Receipt className="h-4 w-4" />
+                                Xem biên lai điện tử
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleDownloadInvoice(inv.id)}
+                                className="gap-2 rounded py-2 text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer"
+                              >
+                                <FileDown className="h-4 w-4" />
+                                Xuất hóa đơn PDF
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator className="my-1 border-slate-100" />
+                              <DropdownMenuItem className="gap-2 rounded py-2 text-rose-600 hover:bg-rose-50/50 text-xs font-semibold cursor-pointer">
+                                <AlertTriangle /> Đánh dấu sai sót
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
 
-        {/* CỤM ĐIỀU HƯỚNG PHÂN TRANG GẮN CHÂN TABLE */}
-        <div className=" absolute bottom-0 left-0 right-0 px-4 py-2.5 border-t border-slate-100 bg-white flex items-center justify-between shrink-0 select-none">
-          <p className="text-[11px] font-medium text-slate-400">
-            Hiển thị{" "}
-            <span className="text-slate-800 font-semibold font-mono">
-              {filteredInvoices.length}
-            </span>{" "}
-            trên 120 chứng từ hóa đơn tháng
-          </p>
-          <div className="flex items-center gap-3">
-            <span className="text-[11px] font-medium text-slate-400">
-              Trang{" "}
-              <span className="text-slate-900 font-bold font-mono">1</span> / 12
-            </span>
-            <div className="flex items-center gap-1">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-6.5 w-6.5 rounded-md border-slate-200 text-slate-600 bg-white disabled:opacity-40"
-                disabled
-              >
-                <ChevronLeft className="w-3.5 h-3.5 stroke-[1.8]" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-6.5 w-6.5 rounded-md border-slate-200 text-slate-600 bg-white"
-              >
-                <ChevronRight className="w-3.5 h-3.5 stroke-[1.8]" />
-              </Button>
+            {/* CỤM ĐIỀU HƯỚNG PHÂN TRANG GẮN CHÂN TABLE */}
+            <div className=" absolute bottom-0 left-0 right-0 px-4 py-2.5 border-t border-slate-100 bg-white flex items-center justify-between shrink-0 select-none">
+              <p className="text-[11px] font-medium text-slate-400">
+                Hiển thị{" "}
+                <span className="text-slate-800 font-semibold font-mono">
+                  {filteredInvoices.length}
+                </span>{" "}
+                trên 120 chứng từ hóa đơn tháng
+              </p>
+              <div className="flex items-center gap-3">
+                <span className="text-[11px] font-medium text-slate-400">
+                  Trang{" "}
+                  <span className="text-slate-900 font-bold font-mono">1</span>{" "}
+                  / 12
+                </span>
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-6.5 w-6.5 rounded-md border-slate-200 text-slate-600 bg-white disabled:opacity-40"
+                    disabled
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5 stroke-[1.8]" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-6.5 w-6.5 rounded-md border-slate-200 text-slate-600 bg-white"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5 stroke-[1.8]" />
+                  </Button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </div>{" "}
+        </>
+      )}
       <InvoiceDetailDialog
         isOpen={isDetailOpen}
         onClose={() => setIsDetailOpen(false)}

@@ -33,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select";
+import { cn } from "@/shared/utils/cn";
 
 // Định nghĩa Zod Schema cho Form Điều Phối
 const ticketFormSchema = z.object({
@@ -408,14 +409,18 @@ export function TicketDetailModal({
 
           {/* ĐIỀU PHỐI LUỒNG TRẠNG THÁI (ACTION BUTTONS THỰC TẾ) */}
           <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3 select-none">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleAction("cancelled")}
-              className="h-9 text-xs text-slate-400 border-slate-200 hover:text-red-600 hover:bg-red-50/30 font-bold rounded-xl"
-            >
-              Hủy yêu cầu
-            </Button>
+            {selectedTicket.status !== "completed" && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleAction("cancelled")}
+                className={cn(
+                  "h-9 text-xs text-slate-400 border-slate-200 hover:text-red-600 hover:bg-red-50/30 font-bold rounded-xl",
+                )}
+              >
+                Hủy yêu cầu
+              </Button>
+            )}
 
             <div className="flex items-center gap-1.5">
               {/* Pending -> Received */}

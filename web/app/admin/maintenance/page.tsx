@@ -83,12 +83,24 @@ export default function MaintenanceTicketsManagement() {
 
   // Mở modal và nạp dữ liệu cũ của ticket vào state điều khiển
   const openDetailDialog = (ticket: any) => {
-    setSelectedTicket(ticket);
-    setAssignee(ticket.assignedTo || "");
-    setTicketCost(ticket.cost.toString());
-    setAdminNotes(ticket.notes || "");
-  };
+    // Khởi tạo một biến clone để chứa dữ liệu mới
+    let updatedTicket = { ...ticket };
 
+    if (ticket.status === "pending") {
+      updatedTicket = {
+        ...ticket,
+        status: "received",
+      };
+
+      //ticketApi.updateStatus(ticket.id, "received")
+    }
+
+    // Toàn bộ các hàm setter bên dưới ăn theo biến đã được cập nhật mượt mà
+    setSelectedTicket(updatedTicket);
+    setAssignee(updatedTicket.assignedTo || "");
+    setTicketCost(updatedTicket.cost?.toString() || "0"); // Thêm dấu ? để phòng hờ ticket.cost bị null/undefined gây crash app
+    setAdminNotes(updatedTicket.notes || "");
+  };
   // Cập nhật lệnh điều phối nội bộ (Lưu Ticket)
   const handleUpdateTicket = (statusTarget: string, updatedFields: any) => {
     if (!selectedTicket) return;

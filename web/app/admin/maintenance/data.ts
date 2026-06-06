@@ -2,7 +2,7 @@
 export const INITIAL_TICKETS = [
   {
     id: "TK-4420",
-    room: "Phòng 202 - LuxHouse",
+    room: "Phòng 202",
     resident: "Trần Thế Anh",
     phone: "0934567890",
     category: "plumbing", // plumbing | electrical | appliance | infrastructure
@@ -18,7 +18,7 @@ export const INITIAL_TICKETS = [
   },
   {
     id: "TK-4418",
-    room: "Phòng 104 - LuxHouse",
+    room: "Phòng 104",
     resident: "Nguyễn Văn Anh",
     phone: "0356789123",
     category: "electrical",
@@ -34,7 +34,7 @@ export const INITIAL_TICKETS = [
   },
   {
     id: "TK-4415",
-    room: "Phòng 405 - LuxHouse",
+    room: "Phòng 405",
     resident: "Lê Văn Nam",
     phone: "0789123456",
     category: "appliance",
