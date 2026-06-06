@@ -18,6 +18,7 @@ import {
   ChevronLeft,
   ChevronRight,
   SlidersHorizontal,
+  Home,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
@@ -33,7 +34,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
@@ -239,43 +239,55 @@ export default function NotificationManagement() {
           </div>
         </div>
 
-        {/* Nút kích hoạt Form tạo thông báo */}
+        {/* ============================================================ */}
+        {/* NÚT KÍCH HOẠT FORM SOẠN THÔNG BÁO CHUẨN MINIMALIST */}
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 h-9.5 rounded-xl gap-2 shadow-xs transition-colors cursor-pointer">
-              <Plus className="w-4 h-4 stroke-3" /> Soạn thông báo mới
+            <Button className="cursor-pointer h-9 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-2xs gap-1.5 px-4 transition-all active:scale-[0.98]">
+              <Plus size={14} className="stroke-[2.5]" /> Soạn thông báo mới
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-137.5 bg-white rounded-2xl p-6 font-sans">
-            <DialogHeader>
-              <DialogTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <Megaphone className="w-4 h-4 text-blue-600" /> Soạn văn bản
-                phát thanh mới
-              </DialogTitle>
-              <DialogDescription className="text-xs text-slate-400">
-                Nội dung sẽ được gửi thông báo đẩy (Push Notification) tức thì
-                đến thiết bị của cư dân được chọn.
-              </DialogDescription>
-            </DialogHeader>
 
-            <form onSubmit={handleCreate} className="space-y-4 pt-3 text-xs">
+          <DialogContent className="sm:max-w-xl bg-white rounded-2xl p-6 border border-slate-200/80 shadow-2xl overflow-hidden font-sans">
+            {/* Header Bản tin bóc tách không gian */}
+            <div className="space-y-1 border-b border-slate-100 pb-3.5 select-none">
+              <DialogTitle className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <Megaphone size={16} className="text-indigo-600 stroke-[1.8]" />
+                Soạn văn bản thông điệp phát thanh
+              </DialogTitle>
+              <DialogDescription className="text-[11px] text-slate-400 font-medium">
+                Bản tin hệ thống sẽ được gửi thông báo đẩy (Push Notification)
+                tức thời đến ứng dụng di động của cư dân.
+              </DialogDescription>
+            </div>
+
+            {/* Form xử lý luồng tương tác chuyên sâu */}
+            <form onSubmit={handleCreate} className="space-y-4.5 pt-2 text-xs">
+              {/* 1. Tiêu đề bản tin */}
               <div className="space-y-1.5">
-                <label className="font-bold text-slate-700">
-                  Tiêu đề bản tin thông báo
+                <label className="font-bold text-slate-500 uppercase tracking-wide">
+                  Tiêu đề bản tin thông báo *
                 </label>
-                <Input
-                  placeholder="Ví dụ: Lịch cắt nước sửa chữa trục ống chính..."
-                  value={newNoti.title}
-                  onChange={(e) =>
-                    setNewNoti({ ...newNoti, title: e.target.value })
-                  }
-                  className="h-9.5 rounded-xl bg-slate-50/50 border-slate-200 text-xs font-semibold text-slate-800 focus-visible:bg-white transition-all shadow-2xs"
-                />
+                <div className="relative flex items-center">
+                  <Input
+                    placeholder="Ví dụ: Lịch cắt nước sửa chữa trục ống chính..."
+                    value={newNoti.title}
+                    onChange={(e) =>
+                      setNewNoti({ ...newNoti, title: e.target.value })
+                    }
+                    className="h-9.5 pl-9 rounded-xl border-slate-200 bg-slate-50/30 text-xs font-semibold text-slate-800 focus-visible:bg-white focus-visible:border-slate-400 focus-visible:ring-0 shadow-3xs transition-all placeholder:font-normal placeholder:text-slate-400"
+                  />
+                  <FileText
+                    size={14}
+                    className="absolute left-3 text-slate-400"
+                  />
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* 2. Danh mục nội dung */}
                 <div className="space-y-1.5">
-                  <label className="font-bold text-slate-700">
+                  <label className="font-bold text-slate-500 uppercase tracking-wide">
                     Danh mục nội dung
                   </label>
                   <Select
@@ -284,55 +296,36 @@ export default function NotificationManagement() {
                       setNewNoti({ ...newNoti, type: val })
                     }
                   >
-                    <SelectTrigger className="h-9.5 border-slate-200 bg-slate-50/50 rounded-xl text-xs font-medium px-3 focus:ring-0">
+                    <SelectTrigger className="h-9.5 border-slate-200 bg-slate-50/30 rounded-xl text-xs font-semibold px-3 text-slate-700 shadow-3xs focus:ring-0 focus:border-slate-400">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-slate-200">
-                      <SelectItem value="finance" className="text-xs">
-                        Tài chính / Công nợ
+                    <SelectContent className="rounded-xl border-slate-200 p-1 bg-white shadow-md">
+                      <SelectItem
+                        value="finance"
+                        className="text-xs cursor-pointer rounded-lg"
+                      >
+                        Tài chính / Công nợ hóa đơn
                       </SelectItem>
-                      <SelectItem value="maintenance" className="text-xs">
-                        Kỹ thuật / Bảo trì
+                      <SelectItem
+                        value="maintenance"
+                        className="text-xs cursor-pointer rounded-lg"
+                      >
+                        Kỹ thuật / Bảo trì hạ tầng
                       </SelectItem>
-                      <SelectItem value="life" className="text-xs">
-                        Đời sống / Nội quy
+                      <SelectItem
+                        value="life"
+                        className="text-xs cursor-pointer rounded-lg"
+                      >
+                        Đời sống / Nội quy tòa nhà
                       </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
+                {/* 3. Đối tượng tiếp nhận */}
                 <div className="space-y-1.5">
-                  <label className="font-bold text-slate-700">
-                    Mức độ khẩn cấp
-                  </label>
-                  <Select
-                    value={newNoti.priority}
-                    onValueChange={(val) =>
-                      setNewNoti({ ...newNoti, priority: val })
-                    }
-                  >
-                    <SelectTrigger className="h-9.5 border-slate-200 bg-slate-50/50 rounded-xl text-xs font-medium px-3 focus:ring-0">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="rounded-xl border-slate-200">
-                      <SelectItem value="low" className="text-xs">
-                        Thông thường (Thấp)
-                      </SelectItem>
-                      <SelectItem value="medium" className="text-xs">
-                        Quan trọng (Trung bình)
-                      </SelectItem>
-                      <SelectItem value="high" className="text-xs">
-                        Khẩn cấp (Cao)
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 border-t border-slate-100 pt-3">
-                <div className="space-y-1.5">
-                  <label className="font-bold text-slate-700">
-                    Đối tượng tiếp nhận
+                  <label className="font-bold text-slate-500 uppercase tracking-wide">
+                    Phạm vi tiếp nhận
                   </label>
                   <Select
                     value={newNoti.targetType}
@@ -340,66 +333,130 @@ export default function NotificationManagement() {
                       setNewNoti({ ...newNoti, targetType: val })
                     }
                   >
-                    <SelectTrigger className="h-9.5 border-slate-200 bg-slate-50/50 rounded-xl text-xs font-medium px-3 focus:ring-0">
+                    <SelectTrigger className="h-9.5 border-slate-200 bg-slate-50/30 rounded-xl text-xs font-semibold px-3 text-slate-700 shadow-3xs focus:ring-0 focus:border-slate-400">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-slate-200">
-                      <SelectItem value="all" className="text-xs">
-                        Gửi Toàn bộ tòa nhà
+                    <SelectContent className="rounded-xl border-slate-200 p-1 bg-white shadow-md">
+                      <SelectItem
+                        value="all"
+                        className="text-xs cursor-pointer rounded-lg flex items-center gap-1.5"
+                      >
+                        Gửi toàn bộ tòa nhà
                       </SelectItem>
-                      <SelectItem value="room" className="text-xs">
-                        Gửi riêng Đích danh phòng
+                      <SelectItem
+                        value="room"
+                        className="text-xs cursor-pointer rounded-lg flex items-center gap-1.5"
+                      >
+                        Gửi đích danh phòng
                       </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
 
-                {newNoti.targetType === "room" && (
-                  <div className="space-y-1.5 animate-in fade-in duration-150">
-                    <label className="font-bold text-slate-700">
-                      Mã số phòng cụ thể
-                    </label>
+              {/* 4. Nhập mã phòng động (Trượt xuống mượt mà khi chọn gửi đích danh) */}
+              {newNoti.targetType === "room" && (
+                <div className="space-y-1.5 animate-in slide-in-from-top-2 fade-in duration-200">
+                  <label className="font-bold text-slate-500 uppercase tracking-wide">
+                    Mã số phòng tiếp nhận cụ thể *
+                  </label>
+                  <div className="relative flex items-center">
                     <Input
-                      placeholder="Ví dụ: 302, 405..."
+                      placeholder="Ví dụ: 202, 305 (Dùng dấu phẩy nếu gửi nhiều phòng)..."
                       value={newNoti.specificRoom}
                       onChange={(e) =>
                         setNewNoti({ ...newNoti, specificRoom: e.target.value })
                       }
-                      className="h-9.5 rounded-xl bg-slate-50/50 border-slate-200 text-xs font-mono font-bold text-slate-800 focus-visible:bg-white shadow-2xs"
+                      className="h-9.5 pl-9 rounded-xl bg-slate-50/30 border-slate-200 text-xs font-mono font-bold text-indigo-600 focus-visible:bg-white focus-visible:border-slate-400 focus-visible:ring-0 shadow-3xs"
+                    />
+                    <Home
+                      size={14}
+                      className="absolute left-3 text-slate-400"
                     />
                   </div>
-                )}
+                </div>
+              )}
+
+              {/* 5. ĐỔI UX: Mức độ khẩn cấp biến thành Card Radio Groups lì, phẳng thay vì Select */}
+              <div className="space-y-1.5">
+                <label className="font-bold text-slate-500 uppercase tracking-wide select-none">
+                  Mức độ khẩn cấp & Độ ưu tiên
+                </label>
+                <div className="grid grid-cols-3 gap-2.5">
+                  {[
+                    {
+                      key: "low",
+                      label: "Thông thường",
+                      class:
+                        "hover:border-slate-300 border-slate-200 text-slate-700",
+                      activeClass:
+                        "border-slate-400 bg-slate-50 ring-1 ring-slate-400 text-slate-900",
+                    },
+                    {
+                      key: "medium",
+                      label: "Quan trọng",
+                      class:
+                        "hover:border-amber-300 border-slate-200 text-slate-700",
+                      activeClass:
+                        "border-amber-400 bg-amber-50/20 ring-1 ring-amber-400 text-amber-800",
+                    },
+                    {
+                      key: "high",
+                      label: "Hỏa tốc khẩn",
+                      class:
+                        "hover:border-rose-300 border-slate-200 text-slate-700",
+                      activeClass:
+                        "border-rose-400 bg-rose-50/20 ring-1 ring-rose-400 text-rose-800",
+                    },
+                  ].map((priority) => {
+                    const isActive = newNoti.priority === priority.key;
+                    return (
+                      <button
+                        key={priority.key}
+                        type="button"
+                        onClick={() =>
+                          setNewNoti({ ...newNoti, priority: priority.key })
+                        }
+                        className={`cursor-pointer h-9 text-[11px] font-bold rounded-xl border flex items-center justify-center transition-all select-none ${isActive ? priority.activeClass : priority.class}`}
+                      >
+                        {priority.label}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
+              {/* 6. Chi tiết văn bản */}
               <div className="space-y-1.5">
-                <label className="font-bold text-slate-700">
-                  Chi tiết nội dung phát thông báo
+                <label className="font-bold text-slate-500 uppercase tracking-wide">
+                  Chi tiết nội dung phát thông báo *
                 </label>
                 <Textarea
-                  placeholder="Nhập nội dung văn bản chi tiết gửi tới cư dân..."
+                  placeholder="Nhập nội dung văn bản chi tiết gửi tới cư dân, ghi rõ mốc thời gian và hướng dẫn vận hành nếu có..."
                   rows={4}
                   value={newNoti.content}
                   onChange={(e) =>
                     setNewNoti({ ...newNoti, content: e.target.value })
                   }
-                  className="rounded-xl bg-slate-50/50 border-slate-200 text-xs font-medium leading-relaxed p-3 focus-visible:bg-white resize-none"
+                  className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50/30 text-xs font-medium text-slate-800 leading-relaxed placeholder:font-normal placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-slate-400 focus:ring-0 shadow-3xs transition-all resize-none"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 select-none">
+              {/* 7. Footer điều hướng nút bấm chân form */}
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 select-none">
                 <Button
                   type="button"
                   variant="ghost"
                   onClick={() => setIsCreateOpen(false)}
-                  className="h-9 text-xs text-slate-400 hover:text-slate-700 font-semibold rounded-xl"
+                  className="cursor-pointer h-9 px-4 text-xs font-semibold text-slate-400 hover:text-slate-700 rounded-xl"
                 >
                   Hủy bỏ
                 </Button>
                 <Button
                   type="submit"
-                  className="h-9 px-5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-sm gap-1.5"
+                  className="cursor-pointer h-9 px-5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-2xs flex items-center gap-1.5 uppercase tracking-wider text-[10px] transition-all active:scale-[0.98]"
                 >
-                  <Send className="w-3.5 h-3.5" /> Phát thanh ngay
+                  <Send size={12} /> Phát thanh ngay
                 </Button>
               </div>
             </form>
@@ -489,13 +546,13 @@ export default function NotificationManagement() {
                 value="scheduled"
                 className="text-xs text-blue-600 font-semibold"
               >
-                ⏰ Lên lịch gửi
+                Lên lịch gửi
               </SelectItem>
               <SelectItem
                 value="draft"
                 className="text-xs text-slate-400 font-semibold"
               >
-                📝 Bản lưu nháp
+                Bản lưu nháp
               </SelectItem>
             </SelectContent>
           </Select>
