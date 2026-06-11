@@ -10,7 +10,7 @@ import {
 const getAllRooms = () => apiHandler(http.get(API_ENDPOINTS.ROOMS));
 
 const getRoomById = (id: string) =>
-  apiHandler<RoomResponse>(http.get(API_ENDPOINTS.ROOM_DETAIL(id)));
+  apiHandler(http.get(API_ENDPOINTS.ROOM_DETAIL(id)));
 
 const createRoom = (data: CreateRoomRequest) =>
   apiHandler(http.post(API_ENDPOINTS.ROOMS, data));

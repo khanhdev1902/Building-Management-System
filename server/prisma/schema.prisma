@@ -38,7 +38,7 @@ model User {
   staffProfile   Staff?
   tenantProfile  Tenant?
   messages       Message[]
-  notifications  Notification[]
+  notifications  UserNotification[]
   auditLogs      AuditLog[]
   conversationMembers ConversationMember[]
 }
@@ -449,6 +449,9 @@ enum NotificationType {
   PROBLEM
   ANNOUNCEMENT
   CHAT
+  FINANCE
+  LIFE
+  MAINTENANCE
 }
 
 enum NotificationPriority {
@@ -459,17 +462,31 @@ enum NotificationPriority {
 }
 model Notification {
   id String @id @default(uuid())
-  userId String
-  user User @relation(fields: [userId], references: [id])
 
   title String
   content String
-
   type NotificationType
-  isRead Boolean @default(false)
-  readAt DateTime?
+  status String
+  priority String
+
   actionUrl String?
   createdAt DateTime @default(now())
+
+  userNotifications UserNotification[]
+}
+model UserNotification {
+  id String @id @default(uuid())
+
+  userId         String
+  notificationId String
+
+  isRead Boolean @default(false)
+  readAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+  notification Notification @relation(fields: [notificationId], references: [id])
+
+  @@unique([userId, notificationId])
 }
 
 model AuditLog {

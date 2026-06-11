@@ -44,5 +44,7 @@ export const API_ENDPOINTS = {
   INVOICE_DETAIL: (id: string) => `/invoices/${id}`,
   EXPORT_INVOICE_PDF: (id: string) => `/invoices/${id}/export-pdf`,
 
+  NOTIFICATIONS: "/notifications",
+
   SYSTEM_SETTING: "/setting",
 } as const;

@@ -77,6 +77,7 @@ export const ModelName = {
   ConversationMember: 'ConversationMember',
   Message: 'Message',
   Notification: 'Notification',
+  UserNotification: 'UserNotification',
   AuditLog: 'AuditLog'
 } as const
 
@@ -457,17 +458,27 @@ export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeo
 
 export const NotificationScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
   title: 'title',
   content: 'content',
   type: 'type',
-  isRead: 'isRead',
-  readAt: 'readAt',
+  status: 'status',
+  priority: 'priority',
   actionUrl: 'actionUrl',
   createdAt: 'createdAt'
 } as const
 
 export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const UserNotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  notificationId: 'notificationId',
+  isRead: 'isRead',
+  readAt: 'readAt'
+} as const
+
+export type UserNotificationScalarFieldEnum = (typeof UserNotificationScalarFieldEnum)[keyof typeof UserNotificationScalarFieldEnum]
 
 
 export const AuditLogScalarFieldEnum = {

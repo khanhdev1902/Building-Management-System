@@ -29,7 +29,7 @@ export const navigation = {
         },
         { title: "Chi phí vận hành", url: "/admin/reports/expenses" },
         { title: "Tỷ lệ lấp đầy & Biến động", url: "/admin/reports/occupancy" },
-        //{ title: "Báo cáo kỹ thuật/Bảo trì", url: "/admin/reports/maintenance" }, //Theo dõi sức khỏe tòa nhà
+        //{ title: "Báo cáo kỹ thuật/Bảo trì", url: "/admin/reports/maintenance" }, 
       ],
     },
   ],
@@ -65,8 +65,8 @@ export const navigation = {
       title: "Kênh tương tác",
       icon: MessageSquare,
       children: [
-        { title: "Nhóm chat nội bộ", url: "/admin/chats" },
         { title: "Bảng tin thông báo", url: "/admin/notifications" },
+        { title: "Nhóm chat nội bộ", url: "/admin/chats" },
         { title: "Yêu cầu sửa chữa", url: "/admin/maintenance" },
         //{ title: "Đặt lịch tiện ích (BBQ/Gym)", url: "/admin/amenities" }, //Mới
         //{ title: "Phản hồi & Khiếu nại", url: "/admin/feedback" }, //Cư dân phàn nàn

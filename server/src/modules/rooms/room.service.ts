@@ -158,13 +158,110 @@ export class RoomService {
     const room = await this.prisma.room.findUnique({
       where: { id },
       include: {
-        contracts: true,
+        roomServices: {
+          include: {
+            service: true,
+          },
+        },
+        contracts: {
+          include: {
+            roommates: true,
+            tenant: {
+              include: { user: true },
+            },
+          },
+        },
         meters: true,
         // amenities: { include: { amenity: true } },
       },
     });
     if (!room) throw new NotFoundException(`Room with ID ${id} not found`);
-    return room;
+    const contractActive = room.contracts.find((c) => c.status === 'ACTIVE');
+    const tenant = contractActive?.tenant;
+    const today = new Date();
+
+    const duration = contractActive?.endDate
+      ? Math.ceil(
+          (new Date(contractActive.endDate).getTime() - today.getTime()) /
+            (1000 * 60 * 60 * 24),
+        )
+      : 0;
+    return {
+      roomNumber: room.roomNumber,
+      type: 'Studio',
+      floor: room.floor,
+      area: room.acreage,
+      price: room.roomPrice,
+      deposit: contractActive?.deposit.toNumber() ?? '0',
+      status: room.status,
+      duration: duration,
+      tenant: tenant
+        ? {
+            representative: {
+              name: `${tenant?.user.lastName} ${tenant?.user.firstName}`,
+              phone: tenant?.user.phone,
+              email: tenant?.user.email,
+              cccd: tenant?.citizenId,
+              startDate: '20/03/2026',
+              gender: tenant.user.gender,
+              dateOfBirth: tenant.dateOfBirth,
+              hometown: tenant.hometownProvince,
+            },
+            members: contractActive.roommates.map((rm) => ({
+              id: rm.id,
+              name: rm.fullName,
+              role: 'Thành viên',
+              phone: rm.phone,
+            })),
+          }
+        : {},
+      meteredServices: room.roomServices.map((rs) => ({
+        id: rs.service.id,
+        name: rs.service.name,
+        price: rs.service.price.toNumber(),
+        unit: rs.service.unit,
+        type:
+          rs.service.name === 'Điện'
+            ? 'electric'
+            : rs.service.name === 'Nước'
+              ? 'water'
+              : rs.service.type,
+        lastIndex:
+          rs.service.name === 'Điện'
+            ? room.meters.filter((m) => m.service === 'ELECTRIC')[0]
+                .currentValue
+            : rs.service.name === 'Nước'
+              ? room.meters.filter((m) => m.service === 'WATER')[0].currentValue
+              : 0,
+      })),
+
+      fixedServices: [
+        {
+          id: 'f1',
+          name: 'Internet (Gói Pro)',
+          price: 200000,
+          unit: 'phòng',
+        },
+        {
+          id: 'f2',
+          name: 'Quản lý & Vệ sinh',
+          price: 150000,
+          unit: 'phòng',
+        },
+        {
+          id: 'f3',
+          name: 'Gửi xe máy',
+          price: 150000,
+          unit: 'xe (x2)',
+        },
+      ],
+      contract: {
+        id: contractActive?.id,
+        duration: '12 tháng',
+        expiryDate: contractActive?.endDate.toLocaleDateString('vi-VN'),
+        status: contractActive?.status,
+      },
+    };
   }
 
   async update(roomId: string, dto: UpdateRoomDto) {

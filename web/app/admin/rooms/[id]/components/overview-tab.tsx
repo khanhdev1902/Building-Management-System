@@ -8,6 +8,7 @@ import {
   Info,
   ArrowUpRight,
   FileClock,
+  UserX,
 } from "lucide-react";
 import { Card } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
@@ -24,6 +25,19 @@ import {
 import { StatCard } from "./ui-custom/StatCard";
 
 export const OverviewTab = ({ room }: { room: any }) => {
+  // Flag cốt lõi kiểm tra xem phòng thực sự có cư dân đại diện đang ở hay không
+  const hasTenant = !!room?.tenant && !!room?.tenant?.representative?.name;
+
+  const membersList = room?.tenant?.members ?? [];
+  const fixedServicesList = room?.fixedServices ?? [];
+  const meteredServicesList = room?.meteredServices ?? [];
+
+  // Trích xuất chỉ số đồng hồ điện nước kỳ gần nhất
+  const electricService = meteredServicesList.find(
+    (s: any) => s.type === "electric",
+  );
+  const waterService = meteredServicesList.find((s: any) => s.type === "water");
+
   return (
     <TabsContent
       value="overview"
@@ -32,30 +46,38 @@ export const OverviewTab = ({ room }: { room: any }) => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* --- CỘT TRÁI (8/12 phần): KHÔNG GIAN VẬN HÀNH LÕI --- */}
         <div className="lg:col-span-8 space-y-5">
-          {/* 1. Ba thẻ chỉ số tài chính phẳng dẹt */}
+          {/* 1. BA THẺ CHỈ SỐ TÀI CHÍNH PHẲNG DẸT CHUYỂN ĐỔI THEO KHÁCH THUÊ */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 select-none">
             <StatCard
               label="Giá thuê hợp đồng"
-              value={`${room.price.toLocaleString("vi-VN")} đ`}
-              subValue="Chu kỳ: 01 tháng/lần"
-              className="rounded-xl border-slate-200/80 shadow-none bg-white"
+              value={
+                hasTenant
+                  ? `${(room?.price ?? 0).toLocaleString("vi-VN")} đ`
+                  : "Chưa cho thuê"
+              }
+              subValue={hasTenant ? "Chu kỳ: 01 tháng/lần" : "Phòng đang trống"}
+              className="rounded-xl border-slate-200/80 shadow-none bg-white font-sans"
             />
             <StatCard
               label="Quỹ tiền cọc giữ hộ"
-              value={`${room.deposit.toLocaleString("vi-VN")} đ`}
+              value={
+                hasTenant
+                  ? `${(room?.deposit ?? 0).toLocaleString("vi-VN")} đ`
+                  : "0 đ"
+              }
               subValue="Ủy nhiệm chi: Danjin"
-              highlight
-              className="rounded-xl shadow-none"
+              highlight={hasTenant}
+              className="rounded-xl shadow-none font-sans"
             />
             <StatCard
               label="Thời hạn chu kỳ thuê"
-              value="Còn 10 tháng"
-              subValue={`Đáo hạn: ${room.contract.expiryDate}`}
-              className="rounded-xl border-slate-200/80 shadow-none bg-white"
+              value={hasTenant ? `${room.duration} ngày` : "Sẵn sàng bàn giao"}
+              subValue={`Đáo hạn: ${hasTenant ? (room?.contract?.expiryDate ?? "—/—/—") : "—/—/—"}`}
+              className="rounded-xl border-slate-200/80 shadow-none bg-white font-sans"
             />
           </div>
 
-          {/* 2. BẢNG NHÂN KHẨU THỰC TẾ ĐANG LƯU TRÚ (Nâng cấp sát thực tế) */}
+          {/* 2. BẢNG NHÂN KHẨU THỰC TẾ ĐANG LƯU TRÚ */}
           <div className="bg-white border border-slate-200/80 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.01)] p-5 space-y-3">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 select-none">
               <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
@@ -64,77 +86,91 @@ export const OverviewTab = ({ room }: { room: any }) => {
               </h3>
               <Badge
                 variant="outline"
-                className="bg-slate-50 text-slate-600 border-slate-200 text-[10px] font-bold rounded"
+                className="bg-slate-50 text-slate-600 border-slate-200 text-[10px] font-bold rounded shadow-none"
               >
-                {room.tenant.members.length + 1} CƯ DÂN
+                {hasTenant ? `${membersList.length + 1} CƯ DÂN` : "0 CƯ DÂN"}
               </Badge>
             </div>
 
-            <Table>
-              <TableHeader className="bg-slate-50/40 border-b border-slate-100/60 select-none">
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider pl-2 py-2">
-                    Họ và tên
-                  </TableHead>
-                  <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider py-2">
-                    Vai trò lưu trú
-                  </TableHead>
-                  <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider py-2 font-mono">
-                    Số điện thoại
-                  </TableHead>
-                  <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider py-2">
-                    Khai báo công an
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody className="divide-y divide-slate-100/50 text-xs">
-                {/* Chủ hộ */}
-                <TableRow className="hover:bg-slate-50/20 border-none">
-                  <TableCell className="font-bold text-slate-900 pl-2 py-2.5">
-                    {room.tenant.representative.name}
-                  </TableCell>
-                  <TableCell className="py-2.5">
-                    <Badge className="bg-indigo-50 text-indigo-700 border-none font-bold text-[9px] px-1.5 rounded">
-                      Đại diện ký HĐ
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="font-mono text-slate-700 font-bold py-2.5">
-                    {room.tenant.representative.phone}
-                  </TableCell>
-                  <TableCell className="text-emerald-600 font-medium py-2.5">
-                    ✓ Đã nộp tờ khai
-                  </TableCell>
-                </TableRow>
-                {/* Các thành viên ở ghép */}
-                {room.tenant.members.map((m: any) => (
-                  <TableRow
-                    key={m.id}
-                    className="hover:bg-slate-50/20 border-none"
-                  >
-                    <TableCell className="font-semibold text-slate-800 pl-2 py-2.5">
-                      {m.name}
+            {hasTenant ? (
+              <Table>
+                <TableHeader className="bg-slate-50/40 border-b border-slate-100/60 select-none">
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider pl-2 py-2">
+                      Họ và tên
+                    </TableHead>
+                    <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider py-2">
+                      Vai trò lưu trú
+                    </TableHead>
+                    <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider py-2 font-mono">
+                      Số điện thoại
+                    </TableHead>
+                    <TableHead className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider py-2">
+                      Khai báo công an
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="divide-y divide-slate-100/50 text-xs">
+                  <TableRow className="hover:bg-slate-50/20 border-none">
+                    <TableCell className="font-bold text-slate-900 pl-2 py-2.5">
+                      {room?.tenant?.representative?.name ?? "—"}
                     </TableCell>
                     <TableCell className="py-2.5">
-                      <Badge
-                        variant="outline"
-                        className="text-slate-500 border-slate-200 font-medium text-[9px] px-1.5 rounded"
-                      >
-                        Thành viên ở cùng
+                      <Badge className="bg-indigo-50 text-indigo-700 border-none font-bold text-[9px] px-1.5 rounded shadow-none">
+                        Đại diện ký HĐ
                       </Badge>
                     </TableCell>
-                    <TableCell className="font-mono text-slate-400 py-2.5">
-                      Đối chiếu qua App
+                    <TableCell className="font-mono text-slate-700 font-bold py-2.5">
+                      {room?.tenant?.representative?.phone ?? "—"}
                     </TableCell>
-                    <TableCell className="text-slate-400 italic py-2.5">
-                      • Chờ bổ sung CCCD
+                    <TableCell className="text-emerald-600 font-medium py-2.5">
+                      ✓ Đã nộp tờ khai
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                  {membersList.map((m: any) => (
+                    <TableRow
+                      key={m.id}
+                      className="hover:bg-slate-50/20 border-none"
+                    >
+                      <TableCell className="font-semibold text-slate-800 pl-2 py-2.5">
+                        {m.name}
+                      </TableCell>
+                      <TableCell className="py-2.5">
+                        <Badge
+                          variant="outline"
+                          className="text-slate-500 border-slate-200 font-medium text-[9px] px-1.5 rounded shadow-none"
+                        >
+                          Thành viên ở cùng
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="font-mono text-slate-400 py-2.5">
+                        {m?.phone || "Đối chiếu qua App"}
+                      </TableCell>
+                      <TableCell className="text-slate-400 italic py-2.5">
+                        • Chờ bổ sung CCCD
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              /* EMPTY STATE BẢNG DÂN CƯ KHI PHÒNG TRỐNG TRƠN */
+              <div className="py-8 text-center flex flex-col items-center justify-center select-none animate-in fade-in zoom-in-95 duration-200">
+                <div className="h-9 w-9 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 mb-2">
+                  <UserX size={16} />
+                </div>
+                <p className="text-[11px] text-slate-500 font-bold">
+                  Căn hộ hiện tại đang bỏ trống
+                </p>
+                <p className="text-[10px] text-slate-400 max-w-60 leading-normal pt-0.5">
+                  Hệ thống chưa ghi nhận bất kỳ nhân khẩu nào đăng ký cư trú tại
+                  đây.
+                </p>
+              </div>
+            )}
           </div>
 
-          {/* 3. BIÊN BẢN TÀI SẢN BÀN GIAO & KHẤU HAO (Thay thế diện tích/hướng cửa bất hợp lý) */}
+          {/* 3. BIÊN BẢN TÀI SẢN BÀN GIAO */}
           <div className="bg-white border border-slate-200/80 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.01)] p-5 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 select-none">
               <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
@@ -142,7 +178,10 @@ export const OverviewTab = ({ room }: { room: any }) => {
                 trang thiết bị nội thất bàn giao phòng
               </h3>
               <span className="text-[10px] font-mono text-slate-400 font-medium">
-                Khóa chốt ngày: {room.tenant.representative.startDate}
+                Khóa chốt ngày:{" "}
+                {hasTenant
+                  ? (room?.tenant?.representative?.startDate ?? "—/—/—")
+                  : "—/—/—"}
               </span>
             </div>
 
@@ -189,14 +228,20 @@ export const OverviewTab = ({ room }: { room: any }) => {
                 căn hộ
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {room.fixedServices.map((tag: any) => (
-                  <span
-                    key={tag.id}
-                    className="px-2 py-0.5 rounded-md bg-slate-50 text-slate-600 text-[11px] font-medium border border-slate-200/60 flex items-center gap-1"
-                  >
-                    {tag.icon} {tag.name}
+                {fixedServicesList.length > 0 ? (
+                  fixedServicesList.map((tag: any) => (
+                    <span
+                      key={tag.id}
+                      className="px-2 py-0.5 rounded-md bg-slate-50 text-slate-600 text-[11px] font-medium border border-slate-200/60 flex items-center gap-1"
+                    >
+                      {tag.name}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-[11px] text-slate-400 italic font-medium">
+                    Chưa gán gói phí cố định nào
                   </span>
-                ))}
+                )}
               </div>
             </div>
           </div>
@@ -204,7 +249,7 @@ export const OverviewTab = ({ room }: { room: any }) => {
 
         {/* --- CỘT PHẢI (4/12 phần): TRUNG TÂM TÀI CHÍNH & CHỈ SỐ KỸ THUẬT --- */}
         <div className="lg:col-span-4 space-y-4">
-          {/* Card 1: Dòng tiền dự kiến (King Card đen sẫm cao cấp) */}
+          {/* Card 1: Dòng tiền dự kiến (King Card bọc lót dẹt mịn số 0 nếu phòng trống) */}
           <Card className="bg-slate-900 border-none rounded-xl overflow-hidden shadow-[0_10px_25px_-5px_rgba(15,23,42,0.12)] relative">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,var(--tw-gradient-stops))] from-white/5 via-transparent to-transparent pointer-events-none" />
             <div className="p-5 space-y-5 relative z-10 select-none">
@@ -213,7 +258,7 @@ export const OverviewTab = ({ room }: { room: any }) => {
                   Dòng tiền dự kiến (Tháng 05)
                 </p>
                 <p className="text-2xl font-bold text-white tracking-tight font-sans">
-                  7,150,000
+                  {hasTenant ? "7,150,000" : "0"}
                   <span className="text-xs font-normal text-slate-500 ml-1.5">
                     VNĐ
                   </span>
@@ -226,7 +271,9 @@ export const OverviewTab = ({ room }: { room: any }) => {
                     Giá thuê mặt bằng (Cứng)
                   </span>
                   <span className="text-white font-semibold font-mono">
-                    6,500,000đ
+                    {hasTenant
+                      ? `${(room?.price ?? 0).toLocaleString("vi-VN")}đ`
+                      : "0đ"}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
@@ -234,17 +281,28 @@ export const OverviewTab = ({ room }: { room: any }) => {
                     Phí dịch vụ & Chỉ số phát sinh
                   </span>
                   <span className="text-white font-semibold font-mono">
-                    650,000đ
+                    {hasTenant ? "650,000đ" : "0đ"}
                   </span>
                 </div>
                 <Separator className="bg-white/10 my-1" />
                 <div className="flex justify-between items-center pt-0.5">
-                  <span className="inline-flex items-center rounded bg-amber-500/10 text-amber-500 border border-amber-500/20 px-1.5 py-0.5 text-[9px] font-bold uppercase">
-                    Chưa quyết toán
+                  <span
+                    className={`inline-flex items-center rounded text-[9px] font-bold uppercase border px-1.5 py-0.5 shadow-none ${
+                      hasTenant
+                        ? "bg-amber-500/10 text-amber-500 border-amber-500/20"
+                        : "bg-slate-500/10 text-slate-400 border-slate-700/30"
+                    }`}
+                  >
+                    {hasTenant ? "Chưa quyết toán" : "Phòng trống"}
                   </span>
-                  <button className="text-[10px] font-bold text-indigo-400 hover:text-indigo-300 transition-colors uppercase flex items-center gap-1 cursor-pointer">
-                    Gửi Remind <ArrowUpRight size={12} />
-                  </button>
+                  {hasTenant && (
+                    <button
+                      type="button"
+                      className="text-[10px] font-bold text-indigo-400 hover:text-indigo-300 transition-colors uppercase flex items-center gap-1 cursor-pointer"
+                    >
+                      Gửi Remind <ArrowUpRight size={12} />
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -258,10 +316,12 @@ export const OverviewTab = ({ room }: { room: any }) => {
             <div className="grid grid-cols-2 gap-3">
               <div className="p-3 bg-slate-50/60 border border-slate-100 rounded-xl space-y-1">
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
-                  Điện (Tháng 04)
+                  Điện (Tháng 05)
                 </span>
                 <span className="text-sm font-bold font-mono text-slate-800 tracking-tight">
-                  1,240{" "}
+                  {electricService?.lastIndex
+                    ? electricService.lastIndex.toLocaleString("vi-VN")
+                    : "0"}{" "}
                   <span className="text-[10px] text-slate-400 font-sans font-normal">
                     kWh
                   </span>
@@ -272,7 +332,9 @@ export const OverviewTab = ({ room }: { room: any }) => {
                   Nước (Tháng 04)
                 </span>
                 <span className="text-sm font-bold font-mono text-slate-800 tracking-tight">
-                  85{" "}
+                  {waterService?.lastIndex
+                    ? waterService.lastIndex.toLocaleString("vi-VN")
+                    : "0"}{" "}
                   <span className="text-[10px] text-slate-400 font-sans font-normal">
                     m³
                   </span>
@@ -339,8 +401,9 @@ export const OverviewTab = ({ room }: { room: any }) => {
                 Ghi chú vận hành nội khu
               </span>
               <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
-                Khách nuôi thú cưng (01 mèo). Nhắc nhở vệ sinh lọc gió điều hòa
-                định kỳ để tránh bám lông gây tắc máng thoát nước ngưng.
+                {hasTenant
+                  ? "Khách nuôi thú cưng (01 mèo). Nhắc nhở vệ sinh lọc gió điều hòa định kỳ để tránh bám lông gây tắc máng thoát nước ngưng."
+                  : "Căn hộ hiện đang để trống. Tiến hành ngắt Automat tổng và khóa van nước cấp để phòng ngừa sự cố rò rỉ âm tường."}
               </p>
             </div>
           </div>

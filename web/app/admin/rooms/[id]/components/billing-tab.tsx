@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
@@ -25,14 +24,16 @@ import {
 } from "@/shared/components/ui/table";
 
 interface BillingTabProps {
-  room: {
+  room?: {
     roomNumber: string;
-  };
+  } | null;
+  // Bổ sung prop nhận data lịch sử hóa đơn thực tế từ API Backend nếu có
+  invoicesData?: any[];
 }
 
 const ITEMS_PER_PAGE = 4;
 
-export function BillingTab({ room }: BillingTabProps) {
+export function BillingTab({ room, invoicesData }: BillingTabProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
     "all" | "paid" | "partial" | "overdue"
@@ -40,118 +41,128 @@ export function BillingTab({ room }: BillingTabProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Giả lập luồng API Gateway Fetching sổ phụ tài chính phòng trong 0.8s
+  // MOCKUP dữ liệu Sổ gốc công nợ hóa đơn toàn kỳ chuẩn hóa an toàn (Sử dụng fallback mảng rỗng nếu khuyết dữ liệu)
+  const billingHistory = useMemo(() => {
+    if (invoicesData && invoicesData.length > 0) return invoicesData;
+
+    // Nếu chưa đấu nối API, giữ nguyên phôi data mẫu chuẩn để test UI
+    return [
+      {
+        invoiceId: "INV-2026-05",
+        period: "Tháng 05/2026",
+        dueDate: "20/05/2026",
+        breakdown: {
+          rent: 4500000,
+          electric: 420000,
+          water: 300000,
+          service: 150000,
+        },
+        total: 5370000,
+        paidAmount: 4020000,
+        debt: 1350000,
+        status: "partial",
+        method: "Chuyển khoản (Vietcombank)",
+        payDate: "18/05/2026",
+        txId: "FT26139982",
+      },
+      {
+        invoiceId: "INV-2026-04",
+        period: "Tháng 04/2026",
+        dueDate: "20/04/2026",
+        breakdown: {
+          rent: 4500000,
+          electric: 420000,
+          water: 255000,
+          service: 150000,
+        },
+        total: 5325000,
+        paidAmount: 5325000,
+        debt: 0,
+        status: "paid",
+        method: "Quét mã VietQR (MB)",
+        payDate: "19/04/2026",
+        txId: "QR88291042",
+      },
+      {
+        invoiceId: "INV-2026-03",
+        period: "Tháng 03/2026",
+        dueDate: "20/03/2026",
+        breakdown: {
+          rent: 4500000,
+          electric: 385000,
+          water: 240000,
+          service: 150000,
+        },
+        total: 5275000,
+        paidAmount: 5275000,
+        debt: 0,
+        status: "paid",
+        method: "Chuyển khoản (Techcombank)",
+        payDate: "15/03/2026",
+        txId: "FT26074192",
+      },
+      {
+        invoiceId: "INV-2026-02",
+        period: "Tháng 02/2026",
+        dueDate: "20/02/2026",
+        breakdown: {
+          rent: 4500000,
+          electric: 332500,
+          water: 210000,
+          service: 150000,
+        },
+        total: 5192500,
+        paidAmount: 5192500,
+        debt: 0,
+        status: "paid",
+        method: "Ví điện tử Momo",
+        payDate: "12/02/2026",
+        txId: "MM10928812",
+      },
+      {
+        invoiceId: "INV-2026-01",
+        period: "Tháng 01/2026",
+        dueDate: "20/01/2026",
+        breakdown: {
+          rent: 4500000,
+          electric: 367500,
+          water: 270000,
+          service: 150000,
+        },
+        total: 5287500,
+        paidAmount: 0,
+        debt: 5287500,
+        status: "overdue",
+        method: "Chưa thanh toán",
+        payDate: "—",
+        txId: "—",
+      },
+    ];
+  }, [invoicesData]);
+
+  // Giả lập luồng API Gateway Fetching sổ phụ tài chính phòng
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 800);
+    const timer = setTimeout(() => setIsLoading(false), 600);
     return () => clearTimeout(timer);
-  }, [currentPage, searchTerm, statusFilter]);
+  }, [currentPage, searchTerm, statusFilter, billingHistory]);
 
-  // Mockup dữ liệu Sổ gốc công nợ hóa đơn toàn kỳ của riêng phòng A.101
-  const billingHistory = [
-    {
-      invoiceId: "INV-2026-05",
-      period: "Tháng 05/2026",
-      dueDate: "20/05/2026",
-      breakdown: {
-        rent: 4500000,
-        electric: 420000,
-        water: 300000,
-        service: 150000,
-      },
-      total: 5370000,
-      paidAmount: 4020000,
-      debt: 1350000,
-      status: "partial",
-      method: "Chuyển khoản (Vietcombank)",
-      payDate: "18/05/2026",
-      txId: "FT26139982",
-    },
-    {
-      invoiceId: "INV-2026-04",
-      period: "Tháng 04/2026",
-      dueDate: "20/04/2026",
-      breakdown: {
-        rent: 4500000,
-        electric: 420000,
-        water: 255000,
-        service: 150000,
-      },
-      total: 5325000,
-      paidAmount: 5325000,
-      debt: 0,
-      status: "paid",
-      method: "Quét mã VietQR (MB)",
-      payDate: "19/04/2026",
-      txId: "QR88291042",
-    },
-    {
-      invoiceId: "INV-2026-03",
-      period: "Tháng 03/2026",
-      dueDate: "20/03/2026",
-      breakdown: {
-        rent: 4500000,
-        electric: 385000,
-        water: 240000,
-        service: 150000,
-      },
-      total: 5275000,
-      paidAmount: 5275000,
-      debt: 0,
-      status: "paid",
-      method: "Chuyển khoản (Techcombank)",
-      payDate: "15/03/2026",
-      txId: "FT26074192",
-    },
-    {
-      invoiceId: "INV-2026-02",
-      period: "Tháng 02/2026",
-      dueDate: "20/02/2026",
-      breakdown: {
-        rent: 4500000,
-        electric: 332500,
-        water: 210000,
-        service: 150000,
-      },
-      total: 5192500,
-      paidAmount: 5192500,
-      debt: 0,
-      status: "paid",
-      method: "Ví điện tử Momo",
-      payDate: "12/02/2026",
-      txId: "MM10928812",
-    },
-    {
-      invoiceId: "INV-2026-01",
-      period: "Tháng 01/2026",
-      dueDate: "20/01/2026",
-      breakdown: {
-        rent: 4500000,
-        electric: 367500,
-        water: 270000,
-        service: 150000,
-      },
-      total: 5287500,
-      paidAmount: 0,
-      debt: 5287500,
-      status: "overdue",
-      method: "Chưa thanh toán",
-      payDate: "—",
-      txId: "—",
-    },
-  ];
-
-  // 1. Thuật toán xử lý bộ lọc tập trung (Tìm kiếm kì hạn + Bộ lọc trạng thái dòng tiền)
+  // 1. Thuật toán xử lý bộ lọc tập trung (Kháng crash mảng rỗng)
   const filteredBills = useMemo(() => {
+    if (!billingHistory || billingHistory.length === 0) return [];
+
     return billingHistory.filter((bill) => {
       const matchesSearch =
-        bill.period.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        bill.invoiceId.toLowerCase().includes(searchTerm.toLowerCase());
+        (bill?.period ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (bill?.invoiceId ?? "")
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
       const matchesStatus =
-        statusFilter === "all" || bill.status === statusFilter;
+        statusFilter === "all" || bill?.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
-  }, [searchTerm, statusFilter]);
+  }, [searchTerm, statusFilter, billingHistory]);
 
   // 2. Thuật toán phân trang mượt mà
   const totalPages = Math.ceil(filteredBills.length / ITEMS_PER_PAGE) || 1;
@@ -160,10 +171,11 @@ export function BillingTab({ room }: BillingTabProps) {
     return filteredBills.slice(start, start + ITEMS_PER_PAGE);
   }, [filteredBills, currentPage]);
 
-  // Tính tổng nợ đọng tích lũy của riêng phòng này để hiển thị nhanh
+  // Tính tổng nợ đọng tích lũy của riêng phòng này (Kháng crash mảng rỗng)
   const totalDebt = useMemo(() => {
-    return billingHistory.reduce((acc, curr) => acc + curr.debt, 0);
-  }, []);
+    if (!billingHistory || billingHistory.length === 0) return 0;
+    return billingHistory.reduce((acc, curr) => acc + (curr?.debt ?? 0), 0);
+  }, [billingHistory]);
 
   return (
     <div className="p-5 space-y-4 font-sans bg-white antialiased animate-in fade-in duration-300">
@@ -176,7 +188,7 @@ export function BillingTab({ room }: BillingTabProps) {
           </h3>
           <p className="text-[11px] text-slate-400 font-medium">
             Lưu vết luồng tiền thực thu, công nợ treo tích lũy lũy kế của căn hộ
-            #{room.roomNumber}.
+            #{room?.roomNumber ?? "—"}.
           </p>
         </div>
 
@@ -195,9 +207,11 @@ export function BillingTab({ room }: BillingTabProps) {
             </span>
           </div>
           <Button
+            type="button"
             variant="outline"
             size="sm"
-            className="h-7 text-[10px] font-semibold border-slate-200 text-slate-600 hover:bg-slate-50 rounded-md"
+            disabled={billingHistory.length === 0}
+            className="h-7 text-[10px] font-semibold border-slate-200 text-slate-600 hover:bg-slate-50 rounded-md cursor-pointer"
           >
             <FileSpreadsheet size={12} className="mr-1 text-slate-400" /> Xuất
             sao kê phòng
@@ -211,6 +225,7 @@ export function BillingTab({ room }: BillingTabProps) {
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 group-focus-within:text-slate-800 transition-colors" />
           <Input
             value={searchTerm}
+            disabled={billingHistory.length === 0}
             onChange={(e) => {
               setSearchTerm(e.target.value);
               setCurrentPage(1);
@@ -229,11 +244,13 @@ export function BillingTab({ room }: BillingTabProps) {
           ].map((t) => (
             <button
               key={t.key}
+              type="button"
+              disabled={billingHistory.length === 0}
               onClick={() => {
                 setStatusFilter(t.key as any);
                 setCurrentPage(1);
               }}
-              className={`h-6.5 px-3 rounded-sm text-[10px] font-bold transition-all cursor-pointer ${
+              className={`h-6.5 px-3 rounded-sm text-[10px] font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${
                 statusFilter === t.key
                   ? "bg-white shadow-3xs text-slate-900"
                   : "text-slate-500 hover:text-slate-800"
@@ -299,17 +316,17 @@ export function BillingTab({ room }: BillingTabProps) {
                 </TableRow>
               ))
             ) : filteredBills.length === 0 ? (
-              /* TRẠNG THÁI DATA RỖNG */
+              /* TRẠNG THÁI DATA RỖNG HOẶC TÌM KIẾM KHÔNG RA */
               <TableRow className="hover:bg-transparent border-none">
                 <TableCell colSpan={6} className="h-47.5 text-center">
-                  <div className="flex flex-col items-center justify-center text-slate-400 space-y-1.5 max-w-xs mx-auto select-none">
+                  <div className="flex flex-col items-center justify-center text-slate-400 space-y-1.5 max-w-xs mx-auto select-none animate-in fade-in zoom-in-95 duration-200">
                     <SearchX size={16} className="text-slate-300" />
                     <h4 className="text-[11px] font-bold text-slate-700">
                       Không có dữ liệu đối soát tài chính
                     </h4>
                     <p className="text-[10px] text-slate-400 text-center leading-normal">
-                      Không tìm thấy kỳ hóa đơn nào trùng khớp với trạng thái
-                      lọc của căn hộ.
+                      Căn hộ này chưa phát sinh kỳ hóa đơn thanh toán nào hoặc
+                      không tìm thấy kết quả phù hợp với bộ lọc.
                     </p>
                   </div>
                 </TableCell>
@@ -318,52 +335,63 @@ export function BillingTab({ room }: BillingTabProps) {
               /* ĐỔ DATA THỰC TẾ */
               paginatedBills.map((bill, idx) => (
                 <TableRow
-                  key={idx}
+                  key={bill.invoiceId ?? idx}
                   className="hover:bg-slate-50/20 border-none group"
                 >
                   <TableCell className="font-bold text-slate-800 pl-4 py-3">
                     <div className="space-y-0.5">
-                      <span>{bill.period}</span>
-                      <span className="text-[9px] font-mono font-medium text-slate-400 block tracking-tight">
-                        {bill.invoiceId}
+                      <span>{bill?.period ?? "Kỳ trống"}</span>
+                      <span className="font-mono text-[9px] font-medium text-slate-400 block tracking-tight">
+                        {bill?.invoiceId ?? "INV-XXXX"}
                       </span>
                     </div>
                   </TableCell>
 
-                  {/* Khay inline bóc tách dẹt cấu phần */}
                   <TableCell className="py-3">
                     <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-medium text-slate-400 font-sans">
                       <span>
                         Gốc:{" "}
                         <strong className="text-slate-600 font-mono">
-                          {(bill.breakdown.rent / 1000).toLocaleString()}k
+                          {(
+                            (bill?.breakdown?.rent ?? 0) / 1000
+                          ).toLocaleString()}
+                          k
                         </strong>
                       </span>
                       <span>
                         Điện:{" "}
                         <strong className="text-slate-600 font-mono">
-                          {bill.breakdown.electric / 1000}k
+                          {(
+                            (bill?.breakdown?.electric ?? 0) / 1000
+                          ).toLocaleString()}
+                          k
                         </strong>
                       </span>
                       <span>
                         Nước:{" "}
                         <strong className="text-slate-600 font-mono">
-                          {bill.breakdown.water / 1000}k
+                          {(
+                            (bill?.breakdown?.water ?? 0) / 1000
+                          ).toLocaleString()}
+                          k
                         </strong>
                       </span>
                       <span>
                         DV:{" "}
                         <strong className="text-slate-600 font-mono">
-                          {bill.breakdown.service / 1000}k
+                          {(
+                            (bill?.breakdown?.service ?? 0) / 1000
+                          ).toLocaleString()}
+                          k
                         </strong>
                       </span>
                     </div>
-                    {/* Luồng giao dịch số hóa kèm mã ngân hàng bên dưới */}
+
                     <div className="text-[9px] text-slate-400 mt-1 font-sans flex items-center gap-1 font-medium select-none">
                       <CreditCard size={10} className="text-slate-300" />
                       <span>
-                        {bill.method}{" "}
-                        {bill.txId !== "—" && (
+                        {bill?.method ?? "Chưa rõ hình thức"}{" "}
+                        {bill?.txId && bill?.txId !== "—" && (
                           <span className="font-mono text-slate-500">
                             • TxID: {bill.txId}
                           </span>
@@ -373,15 +401,15 @@ export function BillingTab({ room }: BillingTabProps) {
                   </TableCell>
 
                   <TableCell className="text-right font-mono font-bold text-slate-900 py-3">
-                    {bill.total.toLocaleString("vi-VN")}đ
+                    {(bill?.total ?? 0).toLocaleString("vi-VN")}đ
                   </TableCell>
                   <TableCell className="text-right font-mono font-bold text-emerald-600 py-3">
-                    {bill.paidAmount.toLocaleString("vi-VN")}đ
+                    {(bill?.paidAmount ?? 0).toLocaleString("vi-VN")}đ
                   </TableCell>
                   <TableCell
-                    className={`text-right font-mono font-bold py-3 ${bill.debt > 0 ? "text-rose-600" : "text-slate-300"}`}
+                    className={`text-right font-mono font-bold py-3 ${(bill?.debt ?? 0) > 0 ? "text-rose-600" : "text-slate-300"}`}
                   >
-                    {bill.debt > 0
+                    {(bill?.debt ?? 0) > 0
                       ? `${bill.debt.toLocaleString("vi-VN")}đ`
                       : "—"}
                   </TableCell>
@@ -389,17 +417,17 @@ export function BillingTab({ room }: BillingTabProps) {
                   <TableCell className="text-center py-3">
                     <Badge
                       variant="outline"
-                      className={`border-none text-[9px] font-bold px-1.5 py-0.5 rounded select-none cursor-default ${
-                        bill.status === "paid"
+                      className={`border-none text-[9px] font-bold px-1.5 py-0.5 rounded select-none cursor-default shadow-none ${
+                        bill?.status === "paid"
                           ? "bg-emerald-50 text-emerald-700"
-                          : bill.status === "partial"
+                          : bill?.status === "partial"
                             ? "bg-amber-50 text-amber-700 animate-pulse"
                             : "bg-rose-50 text-rose-700"
                       }`}
                     >
-                      {bill.status === "paid"
+                      {bill?.status === "paid"
                         ? "Đã tất toán"
-                        : bill.status === "partial"
+                        : bill?.status === "partial"
                           ? "Thu một phần"
                           : "Quá hạn treo"}
                     </Badge>
@@ -418,18 +446,20 @@ export function BillingTab({ room }: BillingTabProps) {
             </span>
             <div className="flex items-center gap-1">
               <Button
+                type="button"
                 variant="outline"
                 size="icon"
-                className="h-6 w-6 rounded border-slate-200 text-slate-600 bg-white"
+                className="h-6 w-6 rounded border-slate-200 text-slate-600 bg-white cursor-pointer"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               >
                 <ChevronLeft className="w-3 h-3" />
               </Button>
               <Button
+                type="button"
                 variant="outline"
                 size="icon"
-                className="h-6 w-6 rounded border-slate-200 text-slate-600 bg-white"
+                className="h-6 w-6 rounded border-slate-200 text-slate-600 bg-white cursor-pointer"
                 disabled={currentPage === totalPages}
                 onClick={() =>
                   setCurrentPage((p) => Math.min(totalPages, p + 1))

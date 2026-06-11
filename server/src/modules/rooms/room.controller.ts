@@ -29,8 +29,13 @@ export class RoomController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.roomService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const roomDetail = await this.roomService.findOne(id);
+    return ApiResponse.success(
+      roomDetail,
+      'lấy thông tin phòng thành công!',
+      200,
+    );
   }
 
   @Patch(':id')

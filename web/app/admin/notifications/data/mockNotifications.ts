@@ -1,0 +1,98 @@
+export const INITIAL_NOTIFICATIONS = [
+  {
+    id: "NOTI-001",
+    type: "finance",
+    title: "Thông báo đóng tiền dịch vụ và tiền nước tháng 05/2026",
+    content:
+      "Ban quản lý thông báo hạn đóng tiền phòng, tiền nước định kỳ từ ngày 01 đến ngày 05 hàng tháng. Vui lòng thanh toán đúng hạn qua app Danjin BMS để tránh phát sinh phí phạt.",
+    target: "Toàn bộ tòa nhà",
+    status: "sent",
+    priority: "high",
+    createdAt: "20/05/2026 08:00",
+    stats: { sent: 48, read: 32 },
+  },
+  {
+    id: "NOTI-002",
+    type: "maintenance",
+    title: "Bảo trì định kỳ hệ thống thang máy khu tòa nhà A",
+    content:
+      "Tiến hành bảo dưỡng định kỳ cáp và động cơ thang máy trục chính tòa A trong khoảng thời gian từ 13:00 đến 16:00 ngày mai. Cư dân vui lòng di chuyển bằng cầu thang bộ.",
+    target: "(24 Phòng)",
+    status: "scheduled",
+    priority: "medium",
+    createdAt: "19/05/2026 15:30",
+    stats: { sent: 24, read: 0 },
+  },
+  {
+    id: "NOTI-003",
+    type: "life",
+    title: "Nhắc nhở phân loại rác thải tại nhà rác tầng hầm",
+    content:
+      "Hiện tại có tình trạng một số phòng để rác không đúng nơi quy định, không phân loại rác tái chế. Yêu cầu cư dân tuân thủ nội quy chung cư mini để bảo vệ không gian chung.",
+    target: "Toàn bộ tòa nhà",
+    status: "draft",
+    priority: "low",
+    createdAt: "18/05/2026 10:15",
+    stats: { sent: 0, read: 0 },
+  },
+  {
+    id: "NOTI-004",
+    type: "finance",
+    title: "Cảnh báo cắt điện nước do quá hạn thanh toán - P.302",
+    content:
+      "Yêu cầu phòng 302 hoàn thành nghĩa vụ tài chính hóa đơn tháng 04 trước 17h00 hôm nay. Quá thời gian trên hệ thống sẽ tự động ngắt rơ-le điện của phòng.",
+    target: "Phòng 302",
+    status: "sent",
+    priority: "high",
+    createdAt: "18/05/2026 09:00",
+    stats: { sent: 1, read: 1 },
+  },
+  {
+    id: "NOTI-005",
+    type: "finance",
+    title: "Cảnh báo cắt điện nước do quá hạn thanh toán - P.302",
+    content:
+      "Yêu cầu phòng 302 hoàn thành nghĩa vụ tài chính hóa đơn tháng 04 trước 17h00 hôm nay. Quá thời gian trên hệ thống sẽ tự động ngắt rơ-le điện của phòng.",
+    target: "Phòng 302",
+    status: "sent",
+    priority: "high",
+    createdAt: "18/05/2026 09:00",
+    stats: { sent: 1, read: 1 },
+  },
+  {
+    id: "NOTI-006",
+    type: "finance",
+    title: "Cảnh báo cắt điện nước do quá hạn thanh toán - P.302",
+    content:
+      "Yêu cầu phòng 302 hoàn thành nghĩa vụ tài chính hóa đơn tháng 04 trước 17h00 hôm nay. Quá thời gian trên hệ thống sẽ tự động ngắt rơ-le điện của phòng.",
+    target: "Phòng 302",
+    status: "sent",
+    priority: "high",
+    createdAt: "18/05/2026 09:00",
+    stats: { sent: 1, read: 1 },
+  },
+  {
+    id: "NOTI-007",
+    type: "finance",
+    title: "Cảnh báo cắt điện nước do quá hạn thanh toán - P.302",
+    content:
+      "Yêu cầu phòng 302 hoàn thành nghĩa vụ tài chính hóa đơn tháng 04 trước 17h00 hôm nay. Quá thời gian trên hệ thống sẽ tự động ngắt rơ-le điện của phòng.",
+    target: "Phòng 302",
+    status: "sent",
+    priority: "high",
+    createdAt: "18/05/2026 09:00",
+    stats: { sent: 1, read: 1 },
+  },
+  {
+    id: "NOTI-008",
+    type: "finance",
+    title: "Cảnh báo cắt điện nước do quá hạn thanh toán - P.302",
+    content:
+      "Yêu cầu phòng 302 hoàn thành nghĩa vụ tài chính hóa đơn tháng 04 trước 17h00 hôm nay. Quá thời gian trên hệ thống sẽ tự động ngắt rơ-le điện của phòng.",
+    target: "Phòng 302",
+    status: "sent",
+    priority: "high",
+    createdAt: "18/05/2026 09:00",
+    stats: { sent: 1, read: 1 },
+  },
+];

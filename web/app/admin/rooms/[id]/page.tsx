@@ -1,14 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { useState } from "react";
-import {
-  Users,
-  LayoutGrid,
-  Wallet,
-  Activity,
-  ShieldCheck,
-  Zap,
-} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Users, Wallet, Activity, ShieldCheck, Zap } from "lucide-react";
 import {
   Tabs,
   TabsContent,
@@ -21,100 +16,106 @@ import { ResidentTab } from "./components/resident-tab";
 import { ServiceManagement } from "./components/service-management-tab";
 import { ContractTab } from "./components/ui-custom/contract-tab";
 import { BillingTab } from "./components/billing-tab";
+import { roomApi } from "../apis/room.api";
+import { useParams } from "next/navigation";
+import { RoomDetailData } from "./types/room-detail.type";
 
 export default function RoomDetailPage() {
-  const [room] = useState({
-    roomNumber: "101",
-    type: "Studio Deluxe",
-    floor: "1",
-    area: "32",
-    price: 6500000,
-    deposit: 13000000,
-    status: "occupied",
-    tenant: {
-      representative: {
-        name: "Nguyễn Văn Khanh",
-        phone: "0987.654.321",
-        email: "khanhnv@danjin.vn",
-        cccd: "001092008888",
-        startDate: "20/03/2026",
-      },
-      members: [
-        { id: 1, name: "Trần Thế Anh", role: "Thành viên" },
-        { id: 2, name: "Lê Minh Nhật", role: "Thành viên" },
-      ],
-    },
-    meteredServices: [
-      {
-        id: "s1",
-        name: "Điện",
-        price: 3500,
-        unit: "kWh",
-        lastIndex: 1240,
-        type: "electric",
-      },
-      {
-        id: "s2",
-        name: "Nước",
-        price: 30000,
-        unit: "m3",
-        lastIndex: 85,
-        type: "water",
-      },
-    ],
-    fixedServices: [
-      {
-        id: "f1",
-        name: "Internet (Gói Pro)",
-        price: 200000,
-        unit: "phòng",
-        icon: <LayoutGrid className="w-3.5 h-3.5" />,
-      },
-      {
-        id: "f2",
-        name: "Quản lý & Vệ sinh",
-        price: 150000,
-        unit: "phòng",
-        icon: <LayoutGrid className="w-3.5 h-3.5" />,
-      },
-      {
-        id: "f3",
-        name: "Gửi xe máy",
-        price: 150000,
-        unit: "xe (x2)",
-        icon: <LayoutGrid className="w-3.5 h-3.5" />,
-      },
-    ],
-    contract: {
-      id: "DJ-2026-A101",
-      duration: "12 tháng",
-      expiryDate: "20/03/2027",
-      status: "active",
-    },
-  });
+  const params = useParams();
+  const id = params.id as string;
+  const [room, setRoom] = useState<RoomDetailData>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const getRoomData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await roomApi.getRoomById(id);
+      setRoom(res.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      // Giữ hiệu ứng loading tối thiểu 400ms để tránh UI giật nhanh quá mức
+      setTimeout(() => setIsLoading(false), 400);
+    }
+  };
+
+  useEffect(() => {
+    if (id) getRoomData();
+  }, [id]);
+
+  // ================= 🎨 BỘ KHUNG XƯƠNG SKELETON ĐỒNG TRỤC NỀN LUXURY =================
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto p-6 space-y-6 bg-slate-50/20 min-h-screen antialiased select-none animate-in fade-in duration-200">
+        {/* 1. Skeleton cho RoomHeader */}
+        <div className="space-y-4 pb-1 border-b border-slate-100">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3 w-full">
+              <div className="h-8 w-8 rounded-lg bg-slate-200/70 animate-pulse shrink-0" />
+              <div className="h-5 bg-slate-200/70 rounded-md w-36 animate-pulse" />
+              <div className="h-4.5 bg-slate-100 rounded-sm w-20 animate-pulse" />
+            </div>
+            <div className="h-8 w-8 rounded-lg bg-slate-200/70 animate-pulse shrink-0" />
+          </div>
+          <div className="flex flex-col sm:flex-row justify-between gap-3 pt-2">
+            <div className="h-4 bg-slate-200/60 rounded-sm w-44 animate-pulse" />
+            <div className="h-4 bg-slate-200/60 rounded-sm w-72 animate-pulse" />
+          </div>
+        </div>
+
+        {/* 2. Skeleton cho dải Tabs List Tab */}
+        <div className="h-11 w-full bg-slate-100/60 rounded-lg flex items-center px-4 gap-2 border border-slate-200/20">
+          <div className="h-7 bg-white rounded-md w-28 animate-pulse shadow-3xs" />
+          <div className="h-7 bg-slate-200/40 rounded-md w-28 animate-pulse" />
+          <div className="h-7 bg-slate-200/40 rounded-md w-28 animate-pulse" />
+        </div>
+
+        {/* 3. Skeleton cho cấu trúc Overview Tab Layout (Phỏng theo lưới 12 cột) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start pt-2">
+          {/* Cột trái (8/12): Chỉ số + Thẻ bảng biểu */}
+          <div className="lg:col-span-8 space-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="h-20 bg-white border border-slate-100 rounded-xl animate-pulse shadow-3xs" />
+              <div className="h-20 bg-white border border-slate-100 rounded-xl animate-pulse shadow-3xs" />
+              <div className="h-20 bg-white border border-slate-100 rounded-xl animate-pulse shadow-3xs" />
+            </div>
+            <div className="h-48 bg-white border border-slate-100 rounded-xl animate-pulse shadow-3xs" />
+            <div className="h-32 bg-white border border-slate-100 rounded-xl animate-pulse shadow-3xs" />
+          </div>
+          {/* Cột phải (4/12): Tài chính King Card */}
+          <div className="lg:col-span-4 space-y-4">
+            <div className="h-40 bg-slate-800 rounded-xl animate-pulse" />
+            <div className="h-28 bg-white border border-slate-100 rounded-xl animate-pulse shadow-3xs" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ================= GIAO DIỆN CHÍNH KHI ĐÃ ĐỔ ĐẦY ĐỦ DATA VÀO COMPONENT =================
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-5 bg-slate-50/20 min-h-screen antialiased selection:bg-indigo-50">
-      {/* 1. ROOM HEADER: Thanh điều hướng phẳng trần, nén chặt chỉ số tài khóa */}
+      {/* 1. ROOM HEADER */}
       <RoomHeader
-        roomNumber={room.roomNumber}
-        floor={room.floor}
-        area={room.area}
-        type={room.type}
-        statusLabel="Đang cho thuê"
+        roomNumber={room?.roomNumber}
+        floor={room?.floor}
+        area={room?.area}
+        type={room?.type}
+        statusLabel={
+          room?.status === "OCCUPIED" ? "Đang cho thuê" : "Đang trống"
+        }
         metrics={{
-          price: room.price,
-          deposit: room.deposit,
-          expiryDate: room.contract.expiryDate,
+          price: room?.price ?? 0,
+          deposit: room?.deposit ?? 0,
+          expiryDate: room?.contract?.expiryDate ?? "—/—/—",
         }}
       />
 
-      {/* 2. MAIN WORKSPACE CONTENT BỌC TABS PHẲNG CHUẨN ENTERPRISE */}
+      {/* 2. MAIN WORKSPACE CONTENT */}
       <Tabs
         defaultValue="overview"
         className="w-full overflow-hidden flex flex-col"
       >
-        {/* Thanh Tabs List dẹt khít đồng bộ 100% ngôn ngữ thiết kế Danjin BMS */}
         <TabsList className="bg-slate-50/50 w-full justify-start gap-1 px-5 border-b border-slate-100 h-11 rounded-none select-none shrink-0">
           <TabsTrigger
             value="overview"
@@ -148,19 +149,18 @@ export default function RoomDetailPage() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Khay nội dung phẳng dẹt tràn lề hoàn toàn */}
         <TabsContent value="overview" className="mt-0 outline-hidden">
           <OverviewTab room={room} />
         </TabsContent>
 
         <TabsContent value="residents" className="mt-0 outline-hidden">
-          <ResidentTab tenant={room.tenant} />
+          <ResidentTab tenant={room?.tenant} />
         </TabsContent>
 
         <TabsContent value="services" className="mt-0 outline-hidden">
           <ServiceManagement
-            meteredServices={room.meteredServices}
-            fixedServices={room.fixedServices}
+            meteredServices={room?.meteredServices}
+            fixedServices={room?.fixedServices}
           />
         </TabsContent>
 

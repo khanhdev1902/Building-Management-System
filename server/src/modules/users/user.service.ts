@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadGatewayException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/database/prisma.service';
@@ -312,5 +313,28 @@ export class UserService {
       where: { id },
       data: { isActive: !user.isActive },
     });
+  }
+
+  async getTenantById(id: string) {
+    const tenant = await this.prisma.tenant.findUnique({
+      where: { id },
+      include: {
+        user: true,
+        contracts: {
+          include: {
+            roommates: true,
+            invoices: true,
+            room: {
+              include: {
+                problems: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!tenant)
+      throw new BadGatewayException('Không tìm thấy thông tin cư dân!');
+    return tenant;
   }
 }

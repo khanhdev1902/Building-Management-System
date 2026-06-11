@@ -1,15 +1,8 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Patch,
-  Delete,
-  Body,
-  Param,
-} from '@nestjs/common';
+import { Controller, Post, Delete, Body, Param } from '@nestjs/common';
 
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
+import { ApiResponse } from 'src/common/responses/api-response';
 
 @Controller('notifications')
 export class NotificationController {
@@ -25,24 +18,30 @@ export class NotificationController {
   }
 
   @Post()
-  create(@Body() dto: CreateNotificationDto) {
-    return this.notificationService.create(dto);
+  async createNotification(@Body() dto: CreateNotificationDto) {
+    console.log(dto);
+    const newNotification = await this.notificationService.create(dto);
+    return ApiResponse.success(
+      newNotification,
+      'Tạo thông báo mới thành công!',
+      200,
+    );
   }
 
-  @Get(':userId')
-  findByUser(@Param('userId') userId: string) {
-    return this.notificationService.findMyNotifications(userId);
-  }
+  // @Get(':userId')
+  // findByUser(@Param('userId') userId: string) {
+  //   return this.notificationService.findMyNotifications(userId);
+  // }
 
-  @Patch(':id/read')
-  markAsRead(@Param('id') id: string) {
-    return this.notificationService.markAsRead(id);
-  }
+  // @Patch(':id/read')
+  // markAsRead(@Param('id') id: string) {
+  //   return this.notificationService.markAsRead(id);
+  // }
 
-  @Patch('user/:userId/read-all')
-  markAllAsRead(@Param('userId') userId: string) {
-    return this.notificationService.markAllAsRead(userId);
-  }
+  // @Patch('user/:userId/read-all')
+  // markAllAsRead(@Param('userId') userId: string) {
+  //   return this.notificationService.markAllAsRead(userId);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

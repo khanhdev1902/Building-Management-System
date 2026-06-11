@@ -33,6 +33,14 @@ export class UserController {
       200,
     );
   }
+
+  @Get('/tenants/:id')
+  async getTenantById(@Param('id') id: string) {
+    console.log('Fetching user with ID:', id);
+    const tenant = await this.userService.getTenantById(id);
+    return ApiResponse.success(tenant, 'Lấy thông tin cư dân thành công!', 200);
+  }
+
   @Get()
   async findAll(@Query() query: FindAllUserDto) {
     const users = await this.userService.findAll(query);
