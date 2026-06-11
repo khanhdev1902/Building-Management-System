@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { PrismaService } from 'src/database/prisma.service';
@@ -59,7 +58,6 @@ export class NotificationService {
           notificationId: notification.id,
         }));
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         await tx.userNotification.createMany({
           data: userNotifications,
           skipDuplicates: true,
@@ -91,7 +89,6 @@ export class NotificationService {
           notificationId: notification.id,
         }));
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         await tx.userNotification.createMany({
           data: userNotifications,
           skipDuplicates: true,
@@ -99,6 +96,33 @@ export class NotificationService {
       }
 
       return notification;
+    });
+  }
+
+  async getAllNotifications() {
+    const notifications = await this.prisma.notification.findMany({
+      include: {
+        userNotifications: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    return notifications.map((n) => {
+      return {
+        id: n.id,
+        type: n.type,
+        title: n.title,
+        content: n.content,
+        target: 'Toàn bộ tòa nhà',
+        status: n.status,
+        priority: n.priority,
+        createdAt: n.createdAt.toLocaleDateString(),
+        stats: {
+          sent: n.userNotifications.length,
+          read: n.userNotifications.filter((un) => un.isRead === true).length,
+        },
+      };
     });
   }
 

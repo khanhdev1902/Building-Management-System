@@ -119,8 +119,8 @@ export function NotificationTableRow({
               Khẩn cấp
             </Badge>
           )}
-          <span className="text-[10px] font-mono font-bold text-slate-400">
-            {n.id}
+          <span className="text-[10px] font-mono uppercase font-bold text-slate-400">
+            {n.id.slice(0,10)}
           </span>
         </div>
         <h3 className="font-bold text-slate-800 line-clamp-1 text-[13px] tracking-tight">

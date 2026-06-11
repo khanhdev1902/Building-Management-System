@@ -287,7 +287,7 @@ export function NotificationDialog({
     resolver: zodResolver(notificationSchema),
     defaultValues: {
       title: "",
-      type: "life",
+      type: "LIFE",
       targetType: "all",
       specificRoom: "",
       priority: "low",
@@ -418,19 +418,19 @@ export function NotificationDialog({
                 </SelectTrigger>
                 <SelectContent className="rounded-lg border-slate-200 p-1 bg-white shadow-md">
                   <SelectItem
-                    value="finance"
+                    value="FINANCE"
                     className="text-xs cursor-pointer rounded-md"
                   >
                     Tài chính / Công nợ hóa đơn
                   </SelectItem>
                   <SelectItem
-                    value="maintenance"
+                    value="MAINTENANCE"
                     className="text-xs cursor-pointer rounded-md"
                   >
                     Kỹ thuật / Bảo trì hạ tầng
                   </SelectItem>
                   <SelectItem
-                    value="life"
+                    value="LIFE"
                     className="text-xs cursor-pointer rounded-md"
                   >
                     Đời sống / Nội quy tòa nhà

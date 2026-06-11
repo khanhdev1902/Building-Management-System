@@ -1,4 +1,4 @@
-import { Controller, Post, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Post, Delete, Body, Param, Get } from '@nestjs/common';
 
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
@@ -17,6 +17,15 @@ export class NotificationController {
     };
   }
 
+  @Get()
+  async getAllNotification() {
+    const notifications = await this.notificationService.getAllNotifications();
+    return ApiResponse.success(
+      notifications,
+      'Lấy danh sách thông báo thành công!',
+      200,
+    );
+  }
   @Post()
   async createNotification(@Body() dto: CreateNotificationDto) {
     console.log(dto);
@@ -24,7 +33,7 @@ export class NotificationController {
     return ApiResponse.success(
       newNotification,
       'Tạo thông báo mới thành công!',
-      200,
+      201,
     );
   }
 

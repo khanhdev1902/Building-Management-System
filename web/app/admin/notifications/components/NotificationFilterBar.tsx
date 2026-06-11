@@ -11,7 +11,7 @@ import {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export type TypeFilter = "all" | "finance" | "maintenance" | "life";
+export type TypeFilter = "ALL" | "FINANCE" | "MAINTENANCE" | "LIFE";
 export type StatusFilter = "all" | "sent" | "scheduled" | "draft";
 
 interface NotificationFilterBarProps {
@@ -26,10 +26,10 @@ interface NotificationFilterBarProps {
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 const TYPE_TABS: { value: TypeFilter; label: string; activeClass: string }[] = [
-  { value: "all", label: "Tất cả mục", activeClass: "text-slate-900" },
-  { value: "finance", label: "Tài chính", activeClass: "text-blue-600" },
-  { value: "maintenance", label: "Kỹ thuật", activeClass: "text-amber-600" },
-  { value: "life", label: "Đời sống", activeClass: "text-emerald-600" },
+  { value: "ALL", label: "Tất cả mục", activeClass: "text-slate-900" },
+  { value: "FINANCE", label: "Tài chính", activeClass: "text-blue-600" },
+  { value: "MAINTENANCE", label: "Kỹ thuật", activeClass: "text-amber-600" },
+  { value: "LIFE", label: "Đời sống", activeClass: "text-emerald-600" },
 ];
 
 // ─── Component ────────────────────────────────────────────────────────────────

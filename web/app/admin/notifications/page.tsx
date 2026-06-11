@@ -22,21 +22,20 @@ export default function NotificationManagement() {
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>("ALL");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [detailNoti, setDetailNoti] = useState<Notification | null>(null);
 
   const auth = useAuthStore();
 
-  // Giả lập fetch data — anh thay bằng API call thật vào đây
   useEffect(() => {
     const fetchNotifications = async () => {
       setIsLoading(true);
       try {
-        // const data = await notificationApi.getAll();
-        // setNotifications(data);
-        await new Promise((resolve) => setTimeout(resolve, 1200)); // remove khi có API thật
+        const res = await notificationApi.getAllNotifications();
+        setNotifications(res.data);
+        //await new Promise((resolve) => setTimeout(resolve, 1200)); // remove khi có API thật
       } catch {
         toast.error("Không thể tải danh sách thông báo");
       } finally {
@@ -72,7 +71,7 @@ export default function NotificationManagement() {
         n.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
         n.target.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesType = typeFilter === "all" || n.type === typeFilter;
+      const matchesType = typeFilter === "ALL" || n.type === typeFilter;
       const matchesStatus = statusFilter === "all" || n.status === statusFilter;
 
       return matchesSearch && matchesType && matchesStatus;
