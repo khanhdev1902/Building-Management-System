@@ -4,7 +4,7 @@
 import dynamic from "next/dynamic";
 
 const AppSidebar = dynamic(
-  () => import("@/shared/components/sidebar/components/AppSidebar"),
+  () => import("@/shared/components/sidebar-admin/components/AppSidebar"),
   {
     ssr: false,
   },

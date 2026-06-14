@@ -29,6 +29,7 @@ import {
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Separator } from "@/shared/components/ui/separator";
+import { SidebarFooterUser } from "@/features/auth/components/SideBarFooterUser";
 
 // Bộ Menu chuẩn hóa theo luồng vận hành và tương tác thực tế của cư dân Danjin BMS
 const TENANT_NAVIGATION = [
@@ -152,52 +153,7 @@ export default function SidebarClient() {
       </SidebarContent>
 
       {/* 3. SIDEBAR FOOTER: Thẻ profile dẹt mượt, đồng bộ màu sắc */}
-      <SidebarFooter className="p-3 border-t border-slate-100 bg-white select-none">
-        <SidebarMenu className="gap-1.5">
-          {/* Nút trang cá nhân tinh chỉnh cấu trúc flex */}
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              tooltip="Tài khoản cá nhân"
-              className="h-11 w-full rounded-lg px-2 text-slate-600 hover:bg-slate-50 hover:border-slate-100/40 border border-transparent transition-all duration-150 cursor-pointer group"
-            >
-              <Link href="/profile" className="flex items-center gap-2.5">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 border border-slate-200/50 text-slate-700 font-mono text-xs font-bold shadow-2xs group-hover:border-slate-300">
-                  K
-                </div>
-                {open && (
-                  <div className="flex flex-col min-w-0 text-left">
-                    <span className="text-xs font-bold text-slate-800 truncate leading-tight">
-                      Nguyễn Văn Khanh
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-semibold font-mono mt-0.5 leading-none">
-                      Phòng 202 • Cơ sở 1
-                    </span>
-                  </div>
-                )}
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-
-          {open && <Separator className="my-1 bg-slate-100" />}
-
-          {/* Nút Đăng xuất phối màu nhẹ nhàng không bị rực quá mức */}
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              tooltip="Đăng xuất khỏi hệ thống"
-              className="h-8.5 w-full rounded-lg px-2.5 text-rose-500 hover:bg-rose-50/60 hover:text-rose-600 border border-transparent hover:border-rose-100/40 transition-all duration-150 cursor-pointer"
-              onClick={() => console.log("Logout triggered")}
-            >
-              <div className="flex items-center gap-2.5 w-full">
-                <LogOut className="h-4 w-4 shrink-0 stroke-[1.8]" />
-                <span className="text-xs font-medium tracking-tight">
-                  Đăng xuất hệ thống
-                </span>
-              </div>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
+      <SidebarFooterUser />
     </Sidebar>
   );
 }

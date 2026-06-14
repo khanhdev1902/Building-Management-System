@@ -47,6 +47,7 @@ import {
 import dynamic from "next/dynamic";
 import ProtectedRoute from "../protect-router";
 import SidebarClient from "@/shared/components/sidebar-client/sidebar-client";
+import { NotificationCenter } from "@/shared/components/NotificationCenter";
 
 // Mock data được tối ưu lại cho trải nghiệm tra cứu cá nhân của cư dân
 const MOCK_DATA = {
@@ -255,15 +256,7 @@ export default function TenantLayout({
 
                   {/* CỤM CHỨC NĂNG PHỤ TRỢ */}
                   <div className="flex items-center gap-1">
-                    {/* Hộp thư thông báo */}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 rounded-lg relative hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
-                    >
-                      <Bell className="h-4 w-4 stroke-[1.75]" />
-                      <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-rose-500 ring-1 ring-white"></span>
-                    </Button>
+                    <NotificationCenter />
 
                     {/* Hỗ trợ / Liên hệ Ban Quản Lý */}
                     <Button

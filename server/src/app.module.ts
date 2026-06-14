@@ -15,6 +15,7 @@ import { SettingModule } from './modules/setting/settting.moudle';
 import { NotificationModule } from './modules/notifications/notification.module';
 import { PaymentModule } from './modules/payments/payment.module';
 import { ReceiptModule } from './modules/receipt/receipt.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ReceiptModule } from './modules/receipt/receipt.module';
     NotificationModule,
     PaymentModule,
     ReceiptModule,
+    DashboardModule,
   ],
 })
 export class AppModule {}

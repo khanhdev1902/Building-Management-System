@@ -47,4 +47,6 @@ export const API_ENDPOINTS = {
   NOTIFICATIONS: "/notifications",
 
   SYSTEM_SETTING: "/setting",
+
+  DASHBOARD_TENANT: (userId: string) => `/dashboard/tenant/${userId}`,
 } as const;

@@ -43,7 +43,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/components/ui/popover";
-import SidebarWrapper from "@/shared/components/sidebar";
+import SidebarWrapper from "@/shared/components/sidebar-admin";
 import dynamic from "next/dynamic";
 import ProtectedRoute from "../protect-router";
 import { NotificationCenter } from "@/shared/components/NotificationCenter";
