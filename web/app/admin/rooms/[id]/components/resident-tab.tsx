@@ -22,13 +22,13 @@ import { Separator } from "@/shared/components/ui/separator";
 interface ResidentTabProps {
   tenant?: {
     representative?: {
-      name: string;
-      phone: string;
-      email: string;
-      cccd: string;
-      startDate: string;
-      gender: string;
-      hometown: string;
+      name?: string;
+      phone?: string;
+      email?: string;
+      cccd?: string;
+      startDate?: string;
+      gender?: string;
+      hometown?: string;
     };
     members?: Array<{
       id: number;

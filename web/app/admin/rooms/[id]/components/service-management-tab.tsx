@@ -44,7 +44,7 @@ interface ServiceManagementProps {
     name: string;
     price: number;
     unit: string;
-    icon: React.ReactNode;
+    icon?: React.ReactNode;
   }>;
 }
 

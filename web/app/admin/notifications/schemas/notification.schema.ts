@@ -14,9 +14,10 @@ export const notificationSchema = z
       .string()
       .min(1, { message: "Vui lòng chọn phạm vi tiếp nhận" }),
     specificRoom: z.string().optional(),
-    priority: z.enum(["low", "medium", "high"] as const, {
-      required_error: "Vui lòng chọn mức độ khẩn cấp",
-    }),
+    priority: z.string(),
+    // enum(["low", "medium", "high"] as const, {
+    //   required_error: "Vui lòng chọn mức độ khẩn cấp",
+    // }),
     content: z
       .string()
       .min(10, { message: "Nội dung thông báo phải chứa ít nhất 10 ký tự" })

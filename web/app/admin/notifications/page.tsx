@@ -15,6 +15,7 @@ import { NotificationPagination } from "./components/NotificationPagination";
 import { TypeFilter, StatusFilter } from "./components/NotificationFilterBar";
 import { NotificationDetailDialog } from "./components/NotificationDetailDialog";
 import { notificationApi } from "./apis/notification.api";
+import { Notification } from "./types/notification.type";
 
 const ITEMS_PER_PAGE = 5;
 

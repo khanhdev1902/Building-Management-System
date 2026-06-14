@@ -34,19 +34,19 @@ import Link from "next/link";
 
 interface ContractTabProps {
   room: {
-    roomNumber: string;
-    price: number;
-    deposit: number;
-    contract: {
+    roomNumber?: string;
+    price?: number;
+    deposit?: number;
+    contract?: {
       id: string;
-      duration: string;
-      expiryDate: string;
-      status: string;
+      duration?: string;
+      expiryDate?: string;
+      status?: string;
     };
-    tenant: {
-      representative: {
-        name: string;
-        startDate: string;
+    tenant?: {
+      representative?: {
+        name?: string;
+        startDate?: string;
       };
     };
   };
@@ -60,7 +60,7 @@ export function ContractTab({ room }: ContractTabProps) {
     "all" | "active" | "expired" | "terminated"
   >("all");
   const [selectedContractId, setSelectedContractId] = useState(
-    room.contract.id,
+    room?.contract?.id,
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);

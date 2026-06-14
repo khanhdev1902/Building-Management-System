@@ -25,9 +25,9 @@ import {
 
 interface BillingTabProps {
   room?: {
-    roomNumber: string;
+    roomNumber?: string;
   } | null;
-  // Bổ sung prop nhận data lịch sử hóa đơn thực tế từ API Backend nếu có
+
   invoicesData?: any[];
 }
 

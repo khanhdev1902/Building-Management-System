@@ -48,13 +48,34 @@ function DetailRow({
   );
 }
 
+// function TypeBadgeDetail({ type }: { type: Notification["type"] }) {
+//   const map = {
+//     finance: { label: "Tài chính", cls: "bg-blue-50 text-blue-700" },
+//     maintenance: { label: "Bảo trì", cls: "bg-amber-50 text-amber-700" },
+//     life: { label: "Đời sống", cls: "bg-emerald-50 text-emerald-700" },
+//   };
+//   const { label, cls } = map[type] ?? map.life;
+//   return (
+//     <Badge
+//       variant="outline"
+//       className={`border-none rounded-md text-[10px] font-bold px-1.5 py-0.5 ${cls}`}
+//     >
+//       {label}
+//     </Badge>
+//   );
+// }
+
 function TypeBadgeDetail({ type }: { type: Notification["type"] }) {
-  const map = {
+  // Định nghĩa cụ thể kiểu cho Object Map để nhận mọi key string
+  const map: Record<string, { label: string; cls: string }> = {
     finance: { label: "Tài chính", cls: "bg-blue-50 text-blue-700" },
     maintenance: { label: "Bảo trì", cls: "bg-amber-50 text-amber-700" },
     life: { label: "Đời sống", cls: "bg-emerald-50 text-emerald-700" },
   };
+
+  // Bây giờ TypeScript sẽ cho phép index mượt mà
   const { label, cls } = map[type] ?? map.life;
+
   return (
     <Badge
       variant="outline"

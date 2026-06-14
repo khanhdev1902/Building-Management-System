@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
@@ -92,6 +91,8 @@ export default function RoomDetailPage() {
     );
   }
 
+  if(!room) return;
+  if(!room.tenant) return;
   // ================= GIAO DIỆN CHÍNH KHI ĐÃ ĐỔ ĐẦY ĐỦ DATA VÀO COMPONENT =================
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-5 bg-slate-50/20 min-h-screen antialiased selection:bg-indigo-50">
@@ -154,7 +155,7 @@ export default function RoomDetailPage() {
         </TabsContent>
 
         <TabsContent value="residents" className="mt-0 outline-hidden">
-          <ResidentTab tenant={room?.tenant} />
+          <ResidentTab tenant={room.tenant} />
         </TabsContent>
 
         <TabsContent value="services" className="mt-0 outline-hidden">

@@ -6,7 +6,6 @@ import {
   Search,
   MessageSquare,
   Send,
-  Building,
   User,
   CheckCircle2,
   Paperclip,
@@ -44,7 +43,7 @@ import {
   DialogDescription,
 } from "@/shared/components/ui/dialog";
 import { toast } from "sonner";
-import { INITIAL_MESSAGES, INITIAL_ROOMS } from "./data";
+import { INITIAL_MESSAGES } from "./data";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -507,7 +506,7 @@ const TAB_OPTIONS: { key: TabFilter; label: string }[] = [
 ];
 
 export default function AdminChatDashboard() {
-  const [rooms, setRooms] = useState<Room[]>(INITIAL_ROOMS);
+  const [rooms, setRooms] = useState<Room[]>();
   const [messages, setMessages] =
     useState<Record<string, any[]>>(INITIAL_MESSAGES);
   const [activeRoomId, setActiveRoomId] = useState("CHAT-P202");
@@ -524,7 +523,7 @@ export default function AdminChatDashboard() {
   }, [activeRoomId, messages]);
 
   const filteredRooms = useMemo(() => {
-    return rooms.filter((room) => {
+    return rooms?.filter((room) => {
       const q = searchQuery.toLowerCase();
       const matchesSearch =
         !q ||
@@ -537,7 +536,7 @@ export default function AdminChatDashboard() {
     });
   }, [rooms, searchQuery, tabFilter]);
 
-  const activeRoom = rooms.find((r) => r.id === activeRoomId);
+  const activeRoom = rooms?.find((r) => r.id === activeRoomId);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -561,7 +560,7 @@ export default function AdminChatDashboard() {
     }));
 
     setRooms((prev) =>
-      prev.map((room) =>
+      prev?.map((room) =>
         room.id === activeRoomId
           ? {
               ...room,
@@ -579,7 +578,7 @@ export default function AdminChatDashboard() {
 
   const toggleResolveStatus = (id: string) => {
     setRooms((prev) =>
-      prev.map((room) =>
+      prev?.map((room) =>
         room.id === id
           ? {
               ...room,
@@ -588,7 +587,7 @@ export default function AdminChatDashboard() {
           : room,
       ),
     );
-    const room = rooms.find((r) => r.id === id);
+    const room = rooms?.find((r) => r.id === id);
     if (room?.status === "resolved") {
       toast.info(`Đã mở lại luồng xử lý cho ${room.roomName}`);
     } else {
@@ -598,11 +597,12 @@ export default function AdminChatDashboard() {
 
   const handleCreateChat = (room: Room) => {
     setRooms((prev) => {
-      const exists = prev.find((r) => r.id === room.id);
+      const exists = prev?.find((r) => r.id === room.id);
       if (exists) {
         setActiveRoomId(room.id);
         return prev;
       }
+      if (!prev) return;
       return [room, ...prev];
     });
     setMessages((prev) => ({ ...prev, [room.id]: [] }));
@@ -610,7 +610,7 @@ export default function AdminChatDashboard() {
     toast.success(`Đã tạo hội thoại: ${room.roomName}`);
   };
 
-  const totalUnread = rooms.reduce((acc, r) => acc + r.unreadCount, 0);
+  const totalUnread = rooms?.reduce((acc, r) => acc + r.unreadCount, 0);
 
   return (
     <div className="flex h-screen w-full bg-slate-100 text-slate-900 font-sans antialiased overflow-hidden">
@@ -633,7 +633,7 @@ export default function AdminChatDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-1">
-              {totalUnread > 0 && (
+              {totalUnread && totalUnread > 0 && (
                 <span className="text-[9px] font-black bg-red-500 text-white rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
                   {totalUnread}
                 </span>
@@ -683,14 +683,14 @@ export default function AdminChatDashboard() {
 
         {/* Room list */}
         <ScrollArea className="flex-1">
-          {filteredRooms.length === 0 ? (
+          {filteredRooms?.length === 0 ? (
             <div className="py-12 text-center text-slate-400">
               <Circle size={28} className="mx-auto mb-2 text-slate-200" />
               <p className="text-[11px] font-semibold">Không có hội thoại</p>
             </div>
           ) : (
             <div className="py-1">
-              {filteredRooms.map((room) => {
+              {filteredRooms?.map((room) => {
                 const isActive = activeRoomId === room.id;
                 return (
                   <div
@@ -698,7 +698,7 @@ export default function AdminChatDashboard() {
                     onClick={() => {
                       setActiveRoomId(room.id);
                       setRooms((prev) =>
-                        prev.map((r) =>
+                        prev?.map((r) =>
                           r.id === room.id ? { ...r, unreadCount: 0 } : r,
                         ),
                       );
