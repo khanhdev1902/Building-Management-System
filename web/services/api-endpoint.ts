@@ -30,6 +30,7 @@ export const API_ENDPOINTS = {
   // ================= CONTRACTS =================
   CONTRACTS: "/contracts",
   CONTRACT_DETAIL: (id: string) => `/contracts/${id}`,
+  CONTRACT_TENANT: (id: string) => `/contracts/tenant/${id}`,
   CONTRACT_RENEW: (id: string) => `/contracts/${id}/renew`,
   CONTRACT_TERMINATE: (id: string) => `/contracts/${id}/terminate`,
   EXPORT_CONTRACT_PDF: (id: string) => `/contracts/${id}/export-pdf`,
@@ -39,12 +40,14 @@ export const API_ENDPOINTS = {
   UTILITY_METER_READING: "/utilities/meter-reading",
 
   INVOICES: "/invoices",
+  INVOICES_TENANT: (userId: string) => `/invoices/tenant/${userId}`,
   INVOICES_GENERATE: "/invoices/generate",
 
   INVOICE_DETAIL: (id: string) => `/invoices/${id}`,
   EXPORT_INVOICE_PDF: (id: string) => `/invoices/${id}/export-pdf`,
 
   NOTIFICATIONS: "/notifications",
+  NOTIFICATIONTENANT: (userId: string) => `/notifications/tenant/${userId}`,
 
   SYSTEM_SETTING: "/setting",
 

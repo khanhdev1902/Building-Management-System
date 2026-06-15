@@ -25,8 +25,15 @@ export class InvoiceService {
     return `OD${y}${m}${d}${random}`;
   }
 
-  async getAllInvoices() {
+  async getAllInvoices(userId?: string) {
     const invoices = await this.prisma.invoice.findMany({
+      where: {
+        contract: {
+          tenant: {
+            userId,
+          },
+        },
+      },
       orderBy: {
         createdAt: 'desc',
       },

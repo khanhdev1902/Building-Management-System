@@ -26,6 +26,16 @@ export class NotificationController {
       200,
     );
   }
+  @Get('tenant/:userId')
+  async getAllNotificationTenant(@Param('userId') userId: string) {
+    const notifications =
+      await this.notificationService.getAllNotificationTenants(userId);
+    return ApiResponse.success(
+      notifications,
+      'Lấy danh sách thông báo thành công!',
+      200,
+    );
+  }
   @Post()
   async createNotification(@Body() dto: CreateNotificationDto) {
     console.log(dto);

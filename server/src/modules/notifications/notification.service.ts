@@ -99,8 +99,15 @@ export class NotificationService {
     });
   }
 
-  async getAllNotifications() {
+  async getAllNotifications(userId?: string) {
     const notifications = await this.prisma.notification.findMany({
+      where: {
+        userNotifications: {
+          some: {
+            userId: userId,
+          },
+        },
+      },
       include: {
         userNotifications: true,
       },
@@ -124,6 +131,31 @@ export class NotificationService {
         },
       };
     });
+  }
+  async getAllNotificationTenants(userId: string) {
+    const notifications = await this.prisma.userNotification.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        notification: true,
+      },
+      orderBy: {
+        notification: {
+          createdAt: 'desc',
+        },
+      },
+    });
+
+    return notifications.map((un) => ({
+      id: un.notification.id,
+      type: un.notification.type,
+      title: un.notification.title,
+      sender: 'Ban Quản Lý Tòa Nhà',
+      createdAt: un.notification.createdAt.toLocaleString('vi-VN'),
+      isRead: un.isRead,
+      content: un.notification.content,
+    }));
   }
 
   // async findMyNotifications(userId: string) {

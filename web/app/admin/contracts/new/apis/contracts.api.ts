@@ -14,6 +14,8 @@ const getAllContracts = () =>
 
 const getContractById = (id: string) =>
   apiHandler(http.get(API_ENDPOINTS.CONTRACT_DETAIL(id)));
+const getContractTenantById = (id: string) =>
+  apiHandler(http.get(API_ENDPOINTS.CONTRACT_TENANT(id)));
 
 const exportContractPdf = async (id: string) => {
   const response = await http.get(API_ENDPOINTS.EXPORT_CONTRACT_PDF(id), {
@@ -56,6 +58,7 @@ export const contractApi = {
   getAllContracts,
   getContractById,
   createContract,
+  getContractTenantById,
   // updateContract,
   exportContractPdf,
   deleteContract,

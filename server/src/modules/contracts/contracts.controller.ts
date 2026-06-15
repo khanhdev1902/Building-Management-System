@@ -33,6 +33,11 @@ export class ContractsController {
     const contract = await this.contractsService.getContractById(id);
     return ApiResponse.success(contract, 'lấy data contract thành công', 200);
   }
+  @Get('tenant/:id')
+  async getContractTenantById(@Param('id') id: string) {
+    const contract = await this.contractsService.getContractTenantById(id);
+    return ApiResponse.success(contract, 'lấy data contract thành công', 200);
+  }
 
   //   @Patch(':id')
   //   async updateContract(

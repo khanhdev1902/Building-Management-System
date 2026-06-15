@@ -4,11 +4,15 @@ import http from "@/services/http";
 
 import { Invoice, GetAllInvoicesResponse } from "../types/invoice.type";
 
-const getAllInvoices = () =>
-  apiHandler<GetAllInvoicesResponse>(http.get(API_ENDPOINTS.INVOICES));
+const getAllInvoiceTenant = (userId: string) =>
+  apiHandler<GetAllInvoicesResponse>(
+    http.get(API_ENDPOINTS.INVOICES_TENANT(userId)),
+  );
 
 const generateInvoices = () =>
-  apiHandler<GetAllInvoicesResponse>(http.post(API_ENDPOINTS.INVOICES_GENERATE));
+  apiHandler<GetAllInvoicesResponse>(
+    http.post(API_ENDPOINTS.INVOICES_GENERATE),
+  );
 
 const getInvoiceById = (id: string) =>
   apiHandler<Invoice>(http.get(API_ENDPOINTS.INVOICE_DETAIL(id)));
@@ -26,8 +30,8 @@ const exportInvoicePdf = async (id: string) => {
 
 export const invoiceApi = {
   exportInvoicePdf,
-  getAllInvoices,
+  getAllInvoiceTenant,
   getInvoiceById,
   deleteInvoice,
-  generateInvoices
+  generateInvoices,
 };

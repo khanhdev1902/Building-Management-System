@@ -42,6 +42,7 @@ import { toast } from "sonner";
 import { invoiceApi } from "./apis/invoice.api";
 import { Invoice } from "./types/invoice.type";
 import { InvoicePageSkeleton } from "./components/InvoicePageSkeleton";
+import { useAuthStore } from "@/features/auth/stores/auth.store";
 
 export default function InvoiceManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -50,15 +51,17 @@ export default function InvoiceManagementPage() {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const auth = useAuthStore();
 
- const [statusTab, setStatusTab] = useState<
-     "all" | "PAID" | "UNPAID" | "Overdue"
-   >("all");
+  const [statusTab, setStatusTab] = useState<
+    "all" | "PAID" | "UNPAID" | "Overdue"
+  >("all");
 
   const fetchInvoices = async () => {
     try {
       setIsLoading(true);
-      const res = await invoiceApi.getAllInvoices();
+      if (!auth.user) return;
+      const res = await invoiceApi.getAllInvoiceTenant(auth.user?.id);
       setInvoices(res.data);
     } catch (error) {
       console.error("Error fetching invoices:", error);
@@ -69,6 +72,7 @@ export default function InvoiceManagementPage() {
 
   useEffect(() => {
     fetchInvoices();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleViewInvoice = async (invoiceId: string) => {
@@ -117,7 +121,6 @@ export default function InvoiceManagementPage() {
       return true;
     });
   }, [searchTerm, statusTab, invoices]);
-
 
   const totalAmount = invoices.reduce(
     (sum, invoice) => sum + Number(invoice.totalAmount),

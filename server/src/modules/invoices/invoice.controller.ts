@@ -16,6 +16,15 @@ export class InvoiceController {
       200,
     );
   }
+  @Get('tenant/:userId')
+  async getAllInvoiceTenants(@Param('userId') userId: string) {
+    const invoices = await this.invoiceService.getAllInvoices(userId);
+    return ApiResponse.success(
+      invoices,
+      'Lấy danh sách hóa đơn thành công',
+      200,
+    );
+  }
 
   @Post('generate')
   async generateInvoices() {

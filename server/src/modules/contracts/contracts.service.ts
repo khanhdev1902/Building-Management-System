@@ -521,6 +521,92 @@ export class ContractsService {
     };
   }
 
+  async getContractTenantById(userId: string) {
+    const contract = await this.prismaService.contract.findFirst({
+      where: {
+        OR: [{ status: 'ACTIVE' }, { status: 'EXPIRING' }],
+        tenant: {
+          userId,
+        },
+      },
+      include: {
+        room: true,
+        roommates: true,
+        tenant: {
+          include: { user: true },
+        },
+      },
+    });
+    return {
+      id: contract?.id,
+      contractNo: 'HD-2026-0201-CAUGIAY',
+      status: contract?.status,
+      createdAt: '15/01/2026',
+      signedAt: '15/01/2026',
+
+      // Thông tin hai bên ký kết
+      lessor: {
+        name: 'Công ty Cổ phần Vận hành Bất động sản Danjin',
+        representative: 'NGUYỄN Văn Khanh',
+        phone: '090.123.4567',
+      },
+      lessee: {
+        name: `${contract?.tenant.user.lastName} ${contract?.tenant.user.firstName}`,
+        idNo: contract?.tenant.citizenId,
+        phone: contract?.tenant.user.phone,
+      },
+
+      // Chi tiết phòng ở và kinh tế
+      terms: {
+        building: 'DANJIN BUILDING Cầu Giấy (Số 12 Ngõ 86)',
+        room: contract?.room.roomNumber,
+        durationMonths: 12,
+        startDate: contract?.startDate.toLocaleDateString('vi-VN'),
+        endDate: contract?.endDate.toLocaleDateString('vi-VN'),
+        monthlyRent: contract?.rentalPrice.toNumber(),
+        depositAmount: contract?.deposit.toNumber(),
+        paymentCycle: 'Hàng tháng (Từ ngày 25 đến mùng 5)',
+      },
+
+      // MẢNG THÀNH VIÊN Ở CÙNG: ÁP DỤNG DATA MASKING BẢO MẬT TUYỆT ĐỐI KHÔNG LỘ DỮ LIỆU
+      roommates: [
+        {
+          name: 'Trần Trung Hải',
+          phoneMasked: '0912.***.222',
+          idNoMasked: '001******999',
+          status: 'ACTIVE', // ACTIVE (Đã duyệt)
+          relationship: 'Bạn cùng phòng',
+        },
+        {
+          name: 'Lê Văn Nam',
+          phoneMasked: '0934.***.666',
+          idNoMasked: '001******888',
+          status: 'PENDING', // PENDING (Chờ duyệt tạm trú)
+          relationship: 'Em trai',
+        },
+      ],
+
+      // Điều khoản vận hành
+      rules: [
+        {
+          title: 'Quy định hoàn cọc',
+          content:
+            'Cư dân cần thông báo trước cho Ban quản lý ít nhất 30 ngày trước khi chấm dứt hợp đồng để được hoàn trả 100% tiền cọc.',
+        },
+        {
+          title: 'Số lượng thành viên',
+          content:
+            'Phòng giới hạn tối đa 02 người ở cố định. Thành viên mới hoặc khách vãng lai ở qua đêm cần khai báo tạm trú qua cổng hệ thống.',
+        },
+        {
+          title: 'Sử dụng thiết bị',
+          content:
+            'Bảo quản các trang thiết bị nội thất đi kèm (Điều hòa, Bình nóng lạnh). Các hư hỏng do lỗi sử dụng cá nhân sẽ bị trích từ tiền cọc.',
+        },
+      ],
+    };
+  }
+
   //   async updateContract(id: string, updateData: Partial<CreateContractDto>) {
   //     // TODO: Logic cập nhật hợp đồng
   //     return {
@@ -604,8 +690,10 @@ export class ContractsService {
       });
       const chunks: Buffer[] = [];
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       doc.on('data', (chunk) => chunks.push(chunk));
       doc.on('end', () => resolve(Buffer.concat(chunks)));
+      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
       doc.on('error', (err) => reject(err));
 
       // --- NẠP FONT ROBOTO CHUẨN HIỂN THỊ PDF ---
