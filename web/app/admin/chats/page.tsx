@@ -43,7 +43,7 @@ import {
   DialogDescription,
 } from "@/shared/components/ui/dialog";
 import { toast } from "sonner";
-import { INITIAL_MESSAGES } from "./data";
+import { INITIAL_MESSAGES, INITIAL_ROOMS } from "./data";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -506,7 +506,7 @@ const TAB_OPTIONS: { key: TabFilter; label: string }[] = [
 ];
 
 export default function AdminChatDashboard() {
-  const [rooms, setRooms] = useState<Room[]>();
+  const [rooms, setRooms] = useState<Room[]>(INITIAL_ROOMS || []);
   const [messages, setMessages] =
     useState<Record<string, any[]>>(INITIAL_MESSAGES);
   const [activeRoomId, setActiveRoomId] = useState("CHAT-P202");
@@ -595,17 +595,37 @@ export default function AdminChatDashboard() {
     }
   };
 
+  // const handleCreateChat = (room: Room) => {
+  //   setRooms((prev) => {
+  //     const exists = prev?.find((r) => r.id === room.id);
+  //     if (exists) {
+  //       setActiveRoomId(room.id);
+  //       return prev;
+  //     }
+  //     if (!prev) return;
+  //     return [room, ...prev];
+  //   });
+  //   setMessages((prev) => ({ ...prev, [room.id]: [] }));
+  //   setActiveRoomId(room.id);
+  //   toast.success(`Đã tạo hội thoại: ${room.roomName}`);
+  // };
+
   const handleCreateChat = (room: Room) => {
     setRooms((prev) => {
-      const exists = prev?.find((r) => r.id === room.id);
+      const exists = prev.find((r) => r.id === room.id);
+
       if (exists) {
-        setActiveRoomId(room.id);
         return prev;
       }
-      if (!prev) return;
+
       return [room, ...prev];
     });
-    setMessages((prev) => ({ ...prev, [room.id]: [] }));
+
+    setMessages((prev) => ({
+      ...prev,
+      [room.id]: prev[room.id] || [],
+    }));
+
     setActiveRoomId(room.id);
     toast.success(`Đã tạo hội thoại: ${room.roomName}`);
   };

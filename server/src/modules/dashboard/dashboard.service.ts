@@ -48,7 +48,9 @@ export class DashboardService {
 
     const rawDescription = `${fullName}_P${roomNumber}_Thanh Toan tien phong ky ${invoice?.billingPeriod} ${invoice?.invoiceCode}`;
     const encodedDes = encodeURIComponent(rawDescription);
-    const qrUrl = `https://qr.sepay.vn/img?acc=VQRQAJEQY6518&bank=MBBank&amount=${amount}&des=${encodedDes}`;
+    const qrUrl = `https://qr.sepay.vn/img?acc=VQRQAJEQY6518&bank=MBBank&amount=${2000}&des=${encodedDes}`;
+
+    const latestNotification = notifications?.[0];
     return {
       resident: fullName,
       room: roomNumber,
@@ -56,12 +58,14 @@ export class DashboardService {
       billingStatus: data?.contracts[0].invoices[0].status,
       contractId: data?.contracts[0].id,
       // Giả lập thông báo khẩn cấp hệ thống đẩy lên trên đầu trang
-      urgentNotice: {
-        id: notifications[0].id,
-        title: notifications[0].notification.title,
-        time: '14:00 - 17:00 Ngày mai (12/06)',
-        content: notifications[0].notification.content,
-      },
+      urgentNotice: latestNotification
+        ? {
+            id: latestNotification.id,
+            title: latestNotification.notification.title,
+            time: '14:00 - 17:00 Ngày mai (12/06)',
+            content: latestNotification.notification.content,
+          }
+        : null,
       assets: {
         vehicles: [
           {

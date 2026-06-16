@@ -1,5 +1,20 @@
+type RoomCategory = "support" | "channel" | "group";
+
+interface Room {
+  id: string;
+  roomName: string;
+  lastMessage: string;
+  time: string;
+  unreadCount: number;
+  category: RoomCategory; // <--- Ràng buộc kiểu dữ liệu chính xác ở đây
+  residentName: string;
+  status: string;
+  members?: string[];
+  phone?: string;
+  floor?: string;
+}
 // Mock Data danh sách hội thoại thực tế ở chung cư
-export const INITIAL_ROOMS = [
+export const INITIAL_ROOMS: Room[] = [
   {
     id: "CHANNEL-ALL",
     roomName: "Kênh Thông Báo Chung",

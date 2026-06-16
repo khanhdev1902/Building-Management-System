@@ -3,6 +3,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 import {
   Zap,
   Droplet,
@@ -37,17 +38,18 @@ export default function TenantDashboard() {
   const [data, setData] = useState<TenantDashboardData>();
   const [isLoading, setIsLoading] = useState<boolean>(true); // Khởi tạo trạng thái loading
   const [isQrOpen, setIsQrOpen] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
   const [showAlert, setShowAlert] = useState(true);
-  const authStore = useAuthStore();
+  const auth = useAuthStore();
 
   const fechData = async () => {
     try {
       setIsLoading(true);
-      if (!authStore.user) {
+      if (!auth.user) {
         toast.info("Không tìm thấy data người dùng hiện tại!");
         return;
       }
-      const res = await dashboardApi.getDashboardTenantData(authStore.user.id);
+      const res = await dashboardApi.getDashboardTenantData(auth.user.id);
       setData(res.data);
     } catch (error) {
       console.log(error);
@@ -60,6 +62,49 @@ export default function TenantDashboard() {
     fechData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!auth.accessToken) return;
+
+    const socket = io("http://localhost:5000", {
+      auth: {
+        token: auth.accessToken,
+      },
+    });
+
+    socket.on("connect", () => {
+      console.log("Socket connected:", socket.id);
+    });
+
+    socket.on("dashboardTenant", (data) => {
+      setIsQrOpen(false);
+
+      toast.success(data.title, {
+        description: data.content,
+      });
+
+      setData((prev) => {
+        if (!prev) return prev;
+
+        return {
+          ...prev,
+          invoice: {
+            ...prev.invoice,
+            status: "PAID",
+          },
+        };
+      });
+      setIsPaid(true);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Socket disconnected");
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [auth.accessToken]);
 
   const handleCopyField = (text: string, message: string) => {
     navigator.clipboard.writeText(text);
@@ -191,18 +236,18 @@ export default function TenantDashboard() {
                   </p>
                 </div>
 
-                {data?.billingStatus === "UNPAID" ? (
+                {data?.billingStatus === "PAID" || isPaid ? (
+                  <div className="w-full sm:w-auto text-center text-emerald-600 bg-emerald-50/50 px-2.5 py-1.5 rounded border border-emerald-100 text-[10px] font-black uppercase tracking-wider">
+                    <CheckCircle2 className="w-3.5 h-3.5 inline mr-1" /> ĐÃ
+                    THANH TOÁN
+                  </div>
+                ) : (
                   <Button
                     onClick={() => setIsQrOpen(true)}
                     className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-black text-[10px] uppercase tracking-widest h-9 rounded-md px-4 gap-1.5"
                   >
                     <Receipt className="w-3.5 h-3.5" /> Thanh toán ngay
                   </Button>
-                ) : (
-                  <div className="w-full sm:w-auto text-center text-emerald-600 bg-emerald-50/50 px-2.5 py-1.5 rounded border border-emerald-100 text-[10px] font-black uppercase tracking-wider">
-                    <CheckCircle2 className="w-3.5 h-3.5 inline mr-1" /> ĐÃ
-                    THANH TOÁN
-                  </div>
                 )}
               </div>
 

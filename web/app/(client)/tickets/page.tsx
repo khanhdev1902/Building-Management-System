@@ -107,7 +107,7 @@ const MOCK_TICKETS: TicketItem[] = [
   },
 ];
 
-const ITEMS_PER_PAGE = 2; // Cấu hình mỗi trang 2 bản ghi để thấy rõ luồng phân trang
+const ITEMS_PER_PAGE = 5; // Cấu hình mỗi trang 2 bản ghi để thấy rõ luồng phân trang
 
 export default function TenantTicketsPage() {
   const [tickets, setTickets] = useState<TicketItem[]>(MOCK_TICKETS);

@@ -66,10 +66,8 @@ export const navigation = {
       icon: MessageSquare,
       children: [
         { title: "Bảng tin thông báo", url: "/admin/notifications" },
-        { title: "Yêu cầu sửa chữa", url: "/admin/maintenance" },
         { title: "Nhóm chat nội bộ", url: "/admin/chats" },
-        //{ title: "Đặt lịch tiện ích (BBQ/Gym)", url: "/admin/amenities" }, //Mới
-        //{ title: "Phản hồi & Khiếu nại", url: "/admin/feedback" }, //Cư dân phàn nàn
+        { title: "Yêu cầu sửa chữa", url: "/admin/maintenance" },
       ],
     },
     {
@@ -81,7 +79,6 @@ export const navigation = {
           url: "/admin/invoices",
           permission: "invoice.view",
         },
-        //{ title: "Đối soát cổng thanh toán", url: "/finance/gateways" },
       ],
     },
   ],

@@ -190,7 +190,7 @@ export default function PositionPage() {
             </div>
 
             {/* Mã định danh vai trò */}
-            <div className="space-y-1.5">
+            {/* <div className="space-y-1.5">
               <label className="font-semibold text-slate-700">
                 Mã định danh (Role Code) *
               </label>
@@ -203,7 +203,7 @@ export default function PositionPage() {
                 }
                 className="w-full h-9 px-3 border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 font-mono shadow-2xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-bold uppercase"
               />
-            </div>
+            </div> */}
 
             {/* Mức lương định mức */}
             <div className="space-y-1.5">

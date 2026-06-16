@@ -2,10 +2,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
+import { NotificationGateway } from '../notifications/notification.gateway';
 
 @Injectable()
 export class PaymentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private gateway: NotificationGateway,
+  ) {}
 
   async handleSepay(data: any) {
     // SePay dùng transferAmount, không phải amount
@@ -74,6 +78,31 @@ export class PaymentService {
     console.log(
       `Đơn hàng ${invoiceCode} thanh toán thành công ${transferAmount}đ`,
     );
+    const user = await this.prisma.user.findFirst({
+      where: {
+        tenantProfile: {
+          contracts: {
+            some: {
+              invoices: {
+                some: {
+                  id: invoice.id,
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    if (user) this.sendToUser(user.id);
+  }
+
+  sendToUser(userId: string) {
+    console.log('đã gửi tin');
+    this.gateway.sendNotificationTenantDashBoard(userId, {
+      title: 'Thanh toán hóa đơn',
+      content: 'Thanh toán thành công',
+      createdAt: new Date(),
+    });
   }
 
   // Tách mã đơn hàng dựa trên data thực tế bạn gửi

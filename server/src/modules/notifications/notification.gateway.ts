@@ -66,4 +66,14 @@ export class NotificationGateway
 
     this.server.to(userId).emit('notification', payload);
   }
+  sendNotificationTenantDashBoard(userId: string, payload: unknown) {
+    console.log('rooms:', [...this.server.sockets.adapter.rooms.keys()]);
+
+    console.log(
+      'sockets in room:',
+      this.server.sockets.adapter.rooms.get(userId),
+    );
+
+    this.server.to(userId).emit('dashboardTenant', payload);
+  }
 }

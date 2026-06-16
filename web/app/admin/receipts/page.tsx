@@ -34,13 +34,14 @@ import { ReceiptDetailDialog } from "./components/ReceiptDetailDialog";
 import { receiptApi } from "./apis/receipt.api";
 import { Receipt } from "./types/receipt.type";
 
-
 export default function ReceiptManagementPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<"all" | "ROOM" | "EXTERNAL">(
     "all",
   );
   const [receipts, setReceipts] = useState<Receipt[]>([]);
+  // ⚡ Thêm state quản lý trạng thái loading
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [selectedReceipt, setSelectedReceipt] = useState<any | null>(null);
@@ -52,16 +53,18 @@ export default function ReceiptManagementPage() {
 
   const fechData = async () => {
     try {
+      setIsLoading(true); // Bật loading trước khi gọi API
       const res = await receiptApi.getAllReceipts();
       console.log(res);
       setReceipts(res);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false); // Tắt loading dù thành công hay lỗi
     }
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     fechData();
   }, []);
 
@@ -108,7 +111,7 @@ export default function ReceiptManagementPage() {
           {/* NÚT TẠO PHIẾU THU TỰ ĐỘNG CHUẨN SAAS */}
           <CreateReceiptDialog
             onSuccess={() => {
-              // API load lại danh sách sổ cái phiếu thu thực tế sau khi thêm mới thành công
+              fechData(); // Tiện tay load lại data sau khi thêm mới thành công nhé anh
             }}
           />
         </div>
@@ -149,7 +152,7 @@ export default function ReceiptManagementPage() {
       </div>
 
       {/* TABLE SỔ CÁI NÉN THÔNG TIN */}
-      <div className="rounded-xl border border-slate-200/80 shadow-3xs bg-white overflow-hidden flex flex-col min-h-96">
+      <div className="rounded-xl border border-slate-200/80 shadow-3xs bg-white overflow-hidden flex flex-col min-h-140">
         <Table>
           <TableHeader className="bg-slate-50/40 border-b border-slate-100/80">
             <TableRow className="hover:bg-transparent">
@@ -178,102 +181,112 @@ export default function ReceiptManagementPage() {
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-slate-100/60 text-xs font-medium text-slate-600">
-            {filteredReceipts.map((rec) => (
-              <TableRow
-                key={rec.id}
-                className="group hover:bg-slate-50/30 border-none transition-colors"
-              >
-                <TableCell className="font-mono font-bold text-slate-900 pl-5 py-3">
-                  {rec.id}
-                </TableCell>
-
-                {/* Cột phân loại nghiệp vụ chi tiết */}
-                <TableCell className="py-3">
-                  <TypeBadge type={rec.type} />
-                </TableCell>
-
-                <TableCell className="font-mono text-slate-400 py-3">
-                  {rec.invoiceId || "—"}
-                </TableCell>
-
-                <TableCell className="py-3">
-                  {rec.room ? (
-                    <>
-                      <span className="font-bold text-slate-800 font-mono">
-                        P.{rec.room}
-                      </span>
-                      <span className="text-[10px] text-slate-400 block font-sans truncate max-w-27.5 mt-0.5">
-                        {rec.tenant}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-slate-400 italic">
-                      Ngoại vi • {rec.tenant}
-                    </span>
-                  )}
-                </TableCell>
-
-                <TableCell className="py-3">
-                  <div className="flex items-center gap-2">
-                    <PaymentMethodBadge method={rec.paymentMethod} />
-                    <div className="space-y-0.5">
-                      <span className="text-slate-700 font-semibold block">
-                        {rec.collectedBy}
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-mono block">
-                        Ref: {rec.referenceNo}
-                      </span>
-                    </div>
-                  </div>
-                </TableCell>
-
-                <TableCell className="py-3 font-mono text-slate-500">
-                  {rec.createdAt}
-                </TableCell>
-
-                <TableCell className="font-mono font-black text-green-700 text-right text-sm pr-6 py-3">
-                  +{rec.amount.toLocaleString("vi-VN")}đ
-                </TableCell>
-
-                <TableCell className="text-right pr-4 py-3">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      {/* Biến nút in cũ thành nút Ba chấm chìm tinh tế */}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md cursor-pointer transition-colors"
-                      >
-                        <MoreHorizontal className="h-4 w-4" />{" "}
-                        {/* Đổi icon Printer thành MoreHorizontal */}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      align="end"
-                      className="w-44 p-1 rounded-xl border border-slate-200/80 bg-white shadow-md select-none"
-                    >
-                      {/* ⚡ TÁC VỤ 1: Click xem phôi chi tiết */}
-                      <DropdownMenuItem
-                        onClick={() => handleOpenDetail(rec)} // Kích hoạt nạp dữ liệu dòng được chọn
-                        className="gap-2 rounded-lg py-2 text-slate-600 text-xs font-semibold focus:bg-slate-50 cursor-pointer transition-colors"
-                      >
-                        <Eye size={13} className="text-slate-400" /> Xem chi
-                        tiết phiếu
-                      </DropdownMenuItem>
-
-                      {/* TÁC VỤ 2: Gọi lệnh in */}
-                      <DropdownMenuItem
-                        className="gap-2 rounded-lg py-2 text-slate-600 text-xs font-semibold focus:bg-slate-50 cursor-pointer transition-colors"
-                        onClick={() => window.print()}
-                      >
-                        <Printer size={13} className="text-slate-400" /> In
-                        phiếu thu (K80)
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+            {isLoading ? (
+              // ⚡ Hiển thị hiệu ứng xương cá (Skeleton) khi đang fetch data
+              <TableSkeleton rows={10} />
+            ) : filteredReceipts.length === 0 ? (
+              // Trạng thái trống nếu không tìm thấy dữ liệu
+              <TableRow>
+                <TableCell
+                  colSpan={8}
+                  className="text-center py-12 text-slate-400 font-medium italic"
+                >
+                  Không tìm thấy dữ liệu phiếu thu phù hợp.
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              filteredReceipts.map((rec) => (
+                <TableRow
+                  key={rec.id}
+                  className="group hover:bg-slate-50/30 border-none transition-colors"
+                >
+                  <TableCell className="font-mono font-bold text-slate-900 pl-5 py-3">
+                    {rec.id}
+                  </TableCell>
+
+                  <TableCell className="py-3">
+                    <TypeBadge type={rec.type} />
+                  </TableCell>
+
+                  <TableCell className="font-mono text-slate-400 py-3">
+                    {rec.invoiceId || "—"}
+                  </TableCell>
+
+                  <TableCell className="py-3">
+                    {rec.room ? (
+                      <>
+                        <span className="font-bold text-slate-800 font-mono">
+                          P.{rec.room}
+                        </span>
+                        <span className="text-[10px] text-slate-400 block font-sans truncate max-w-27.5 mt-0.5">
+                          {rec.tenant}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-slate-400 italic">
+                        Ngoại vi • {rec.tenant}
+                      </span>
+                    )}
+                  </TableCell>
+
+                  <TableCell className="py-3">
+                    <div className="flex items-center gap-2">
+                      <PaymentMethodBadge method={rec.paymentMethod} />
+                      <div className="space-y-0.5">
+                        <span className="text-slate-700 font-semibold block">
+                          {rec.collectedBy}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-mono block">
+                          Ref: {rec.referenceNo}
+                        </span>
+                      </div>
+                    </div>
+                  </TableCell>
+
+                  <TableCell className="py-3 font-mono text-slate-500">
+                    {rec.createdAt}
+                  </TableCell>
+
+                  <TableCell className="font-mono font-black text-green-700 text-right text-sm pr-6 py-3">
+                    +{rec.amount.toLocaleString("vi-VN")}đ
+                  </TableCell>
+
+                  <TableCell className="text-right pr-4 py-3">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md cursor-pointer transition-colors"
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        className="w-44 p-1 rounded-xl border border-slate-200/80 bg-white shadow-md select-none"
+                      >
+                        <DropdownMenuItem
+                          onClick={() => handleOpenDetail(rec)}
+                          className="gap-2 rounded-lg py-2 text-slate-600 text-xs font-semibold focus:bg-slate-50 cursor-pointer transition-colors"
+                        >
+                          <Eye size={13} className="text-slate-400" /> Xem chi
+                          tiết phiếu
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          className="gap-2 rounded-lg py-2 text-slate-600 text-xs font-semibold focus:bg-slate-50 cursor-pointer transition-colors"
+                          onClick={() => window.print()}
+                        >
+                          <Printer size={13} className="text-slate-400" /> In
+                          phiếu thu (K80)
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
           <ReceiptDetailDialog
             isOpen={isDetailOpen}
@@ -283,6 +296,67 @@ export default function ReceiptManagementPage() {
         </Table>
       </div>
     </div>
+  );
+}
+
+// ⚡ SUB-COMPONENT: SKELETON TABLE CHUẨN KÍCH THƯỚC TỪNG CỘT
+function TableSkeleton({ rows = 5 }: { rows?: number }) {
+  return (
+    <>
+      {Array.from({ length: rows }).map((_, index) => (
+        <TableRow
+          key={index}
+          className="border-none hover:bg-transparent animate-pulse"
+        >
+          {/* Mã phiếu thu */}
+          <TableCell className="pl-5 py-3">
+            <div className="h-4 bg-slate-200 rounded-md w-20"></div>
+          </TableCell>
+
+          {/* Phân loại nghiệp vụ */}
+          <TableCell className="py-3">
+            <div className="h-5 bg-slate-200 rounded w-28"></div>
+          </TableCell>
+
+          {/* Hóa đơn gốc */}
+          <TableCell className="py-3">
+            <div className="h-4 bg-slate-100 rounded-md w-14"></div>
+          </TableCell>
+
+          {/* Vị trí phòng */}
+          <TableCell className="py-3 space-y-1.5">
+            <div className="h-4 bg-slate-200 rounded-md w-12"></div>
+            <div className="h-3 bg-slate-100 rounded-md w-20"></div>
+          </TableCell>
+
+          {/* Mã đối soát / Người duyệt */}
+          <TableCell className="py-3">
+            <div className="flex items-center gap-2">
+              <div className="w-6.75 h-6.75 bg-slate-200 rounded-lg shrink-0"></div>
+              <div className="space-y-1.5 w-full">
+                <div className="h-3.5 bg-slate-200 rounded-md w-24"></div>
+                <div className="h-3 bg-slate-100 rounded-md w-32"></div>
+              </div>
+            </div>
+          </TableCell>
+
+          {/* Ngày lập phiếu */}
+          <TableCell className="py-3">
+            <div className="h-4 bg-slate-100 rounded-md w-20 ml-auto"></div>
+          </TableCell>
+
+          {/* Số tiền nhận */}
+          <TableCell className="pr-6 py-3">
+            <div className="h-4 bg-slate-200 rounded-md w-24 ml-auto"></div>
+          </TableCell>
+
+          {/* Action button */}
+          <TableCell className="pr-4 py-3 text-right">
+            <div className="h-7 w-7 bg-slate-100 rounded-md ml-auto"></div>
+          </TableCell>
+        </TableRow>
+      ))}
+    </>
   );
 }
 
